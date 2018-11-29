@@ -9,4 +9,4 @@
   ((:module "src"
             :components
             ((:file "package")
-             (:file "test" :depends-on ("package"))))))
+             (:file "text-to-speech" :depends-on ("package"))))))
