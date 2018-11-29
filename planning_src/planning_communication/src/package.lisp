@@ -1,1 +1,3 @@
-(defpackage :planning-communication)
+(defpackage :planning-communication-pkg
+  (:nicknames :pc)
+  (:use :roslisp :cl))

@@ -1,5 +1,6 @@
 (defsystem planning-communication
   :depends-on (roslisp
+               cram-language
                cl-tf
                actionlib
                geometry_msgs-msg

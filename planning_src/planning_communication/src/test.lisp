@@ -1,9 +1,9 @@
-(in-package :planning-communication)
+(in-package :pc)
 
-(defvar *text-to-speech-publisher*)
+(defvar *text-to-speech-publisher* nil)
 
 (defun init () 
-  (start-ros-node "planning-communication")
-  (setf *text-to-speech-publisher* (advertise "/talk_request" "tmc_msgs/Voice")))
+  (roslisp:start-ros-node "planning-communication")
+  (setf *text-to-speech-publisher* (roslisp:advertise "/talk_request" "tmc_msgs/Voice")))
 
 (defun publish-text-to-speech () )
