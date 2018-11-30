@@ -9,7 +9,5 @@
 (defun publish-text-to-speech (text) 
   (publish *text-to-speech-publisher*
     (make-message "tmc_msgs/Voice"
-      :interrupting "false"
-      :queueing "false"
       :language 1
       :sentence text)))
