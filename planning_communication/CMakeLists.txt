@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
   roslisp
   std_msgs
   tmc_msgs
-  standard_poses
 )
 
 ## System dependencies are found with CMake's conventions

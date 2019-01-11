@@ -15,7 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tmc_msgs
   std_msgs
-  standard_poses
 )
 
 ## System dependencies are found with CMake's conventions
