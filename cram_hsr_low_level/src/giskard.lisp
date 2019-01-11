@@ -5,7 +5,7 @@
 
 (defparameter *giskard-action-timeout* 20.0 "in seconds")
 
-(defun init-giscard-action-client ()
+(defun init-giskard-action-client ()
   (setf *giskard-action-client* (actionlib:make-action-client
                                  "do_move_joints"
                                  "move/DoMoveJointsAction"))
@@ -21,7 +21,7 @@
 
 (defun get-action-client ()
   (when (null *giskard-action-client*)
-    (init-giscard-action-client))
+    (init-giskard-action-client))
   *giskard-action-client*)
 
 ;; TODO: define goal
