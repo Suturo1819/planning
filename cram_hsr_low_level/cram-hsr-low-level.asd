@@ -8,7 +8,6 @@
                tmc_msgs-msg
                std_msgs-msg
                trajectory_msgs-msg
-               standard_poses-srv
                control_msgs-msg
                move-msg)
   :components
