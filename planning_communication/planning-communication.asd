@@ -9,4 +9,5 @@
   ((:module "src"
             :components
             ((:file "package")
-             (:file "text-to-speech" :depends-on ("package"))))))
+             (:file "text-to-speech" :depends-on ("package"))
+             (:file "navigation-client" :depends-on ("package"))))))
