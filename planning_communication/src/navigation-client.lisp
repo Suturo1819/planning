@@ -4,8 +4,8 @@
 
 (defun init-navigation-client ()
   (setf *nav-client* (actionlib:make-action-client
-                      "/hsrb/omni_base_controller/follow_joint_trajectory"
-                      "control_msgs/FollowJointTrajectory"))
+                      "/move_base/move" ;; maybe needs hsrb/ before move_base
+                      "move_base_msgs/MoveBaseAction"))
   
   (roslisp:ros-info (navigation-action-client) "waiting for Navigation Action server...")
 
@@ -18,13 +18,30 @@
     (init-navigation-client))
   *nav-client*)
 
-(defun make-navigation-action-goal (goal)
+(defun make-navigation-action-goal (pose-stamped-goal)
   ;; make sure a node is already up and running, if not, one is initialized here.
+  (roslisp:ros-info (navigation-action-client) "make navigation action goal")
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "navigation-action-lisp-client"))
   
   (actionlib:make-action-goal (get-navigation-action-client)
-    goal))
-    
+    target-pose pose-stamped-goal))
+
+(defun call-navigation-action (frame-id translation rotation)
+  (unless (eq roslisp::*node-status* :running)
+    (roslisp:start-ros-node "navigation-action-lisp-client"))
+
+  (multiple-value-bind (result status)
+      (let ((actionlib:*action-server-timeout* 10.0)
+            (the-goal (cl-tf:to-msg
+                       (cl-tf:make-pose-stamped
+                        frame-id
+                        (roslisp::ros-time)
+                        translation rotation))))
+        (actionlib:call-goal
+         (get-action-client)
+         (make-navigation-action-goal the-goal)))
+    (roslisp:ros-info (navigation-action-client) "Navigation action finished.")
+(values result status)))
 
   
