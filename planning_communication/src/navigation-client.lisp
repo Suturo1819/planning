@@ -27,7 +27,7 @@
   (actionlib:make-action-goal (get-navigation-action-client)
     target-pose pose-stamped-goal))
 
-(defun call-navigation-action (x y euler-z)
+(defun call-navigation-action (x y euler-z &optional (frame-id "map"))
   "Calles the navigation action. Expected: x y coordinates within map, and
 euler-z gives the rotation around the z axis."
   (unless (eq roslisp::*node-status* :running)
@@ -37,7 +37,7 @@ euler-z gives the rotation around the z axis."
       (let ((actionlib:*action-server-timeout* 10.0)
             (the-goal (cl-tf:to-msg
                        (cl-tf:make-pose-stamped
-                        "map"
+                        frame-id
                         (roslisp::ros-time)
                         (cl-tf:make-3d-vector x y 0.0)
                         (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))))
