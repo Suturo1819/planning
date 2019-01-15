@@ -9,9 +9,12 @@
                std_msgs-msg
                trajectory_msgs-msg
                control_msgs-msg
-               move-msg)
+               move-msg
+               move_base_msgs-msg
+               actionlib_msgs-msg)
   :components
   ((:module "src"
             :components
             ((:file "package")
-             (:file "giskard" :depends-on ("package"))))))
+             (:file "giskard" :depends-on ("package"))
+             (:file "navigation-client" :depends-on ("package"))))))
