@@ -1,1 +1,2 @@
 ros-kinetic-tmc-desktop-full (siehe hsr Doku)
+https://github.com/ros/kdl_parser.git
