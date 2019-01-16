@@ -1,4 +1,4 @@
-(in-package :pc)
+(in-package :chll)
 
 (defvar *nav-client* nil)
 
@@ -27,7 +27,7 @@
     (roslisp:start-ros-node "navigation-action-lisp-client"))
   
   (actionlib:make-action-goal (get-nav-action-client)
-    target-pose pose-stamped-goal))
+    target_pose pose-stamped-goal))
 
 (defun call-nav-action (x y euler-z &optional (frame-id "map"))
   "Calles the navigation action. Expected: x y coordinates within map, and
@@ -44,9 +44,14 @@ euler-z gives the rotation around the z axis."
                         (cl-tf:make-3d-vector x y 0.0)
                         (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))))
         (actionlib:call-goal
-         (get-action-client)
+         (get-nav-action-client)
          (make-nav-action-goal the-goal)))
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
 (values result status)))
 
   
+(defun navigation-tests ()
+  ;; move to the middle of the room
+  (call-nav-action -0.0844728946686 0.0405520200729 0.0)
+  ;; move close to the shelf and look at it
+  (call-nav-action -0.0238773822784 1.01167118549 1.5))
