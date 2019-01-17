@@ -1,2 +1,3 @@
 ros-kinetic-tmc-desktop-full (siehe hsr Doku)
 https://github.com/ros/kdl_parser.git -> branch zu indigo wechseln pr2_arm_kinematics erstmal rausschmeissen
+https://github.com/Vanessa-rin/hsr_description.git  --> wichtig urdf-fix branch
