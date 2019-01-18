@@ -47,7 +47,7 @@ euler-z gives the rotation around the z axis."
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
-(values result status)))
+    (values result status)))
 
   
 (defun navigation-tests ()
