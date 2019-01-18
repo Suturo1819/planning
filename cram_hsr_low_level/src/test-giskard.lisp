@@ -17,7 +17,10 @@
 
 (defun make-test-single-move-joint ())
 
-(defun make-test-move-poses ())
+(defun make-test-move-poses (poses)
+  (mapcar
+   (lambda (pose) (make-test-pose-stamped (first pose) (second pose) (third pose) (fourth pose)))
+   poses))
 
 (defun make-test-move-joints ())
 
@@ -29,7 +32,9 @@
 
 (defun test-single-move-joint ())
 
-(defun test-move-poses ())
+(defun test-move-poses (&optional (poses (list (list "wrist-roll-link" 0.2 0 0.4)
+                                               (list "wrist-roll-link" 0.1 0 0.5))))
+  (call-giskard-poses-move-action (make-test-move-poses poses)))
 
 (defun test-move-joints ())
 
