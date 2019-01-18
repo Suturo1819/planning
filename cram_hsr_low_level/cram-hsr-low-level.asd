@@ -18,5 +18,4 @@
              (:file "simple-actionlib-client" :depends-on ("package"))
              (:file "giskard-poses" :depends-on ("package" "simple-actionlib-client"))
              (:file "giskard-joints" :depends-on ("package" "simple-actionlib-client"))
-             (:file "test-giskard" :depends-on ("package"))
-             (:file "giskard" :depends-on ("package"))))))
+             (:file "test-giskard" :depends-on ("package"))))))
