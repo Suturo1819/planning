@@ -18,31 +18,27 @@
     object_pose (cl-tf:to-msg object-pose)))
 
 (defun ensure-giskard-poses-grip-input (object-pose)
-  ;; TODO
+  ;; TODO: check if object-pose is possible to grip, e.g. check if it is to wide
   object-pose
   T)
 
 (defun ensure-giskard-poses-move-input (poses)
-  ;; TODO
+  ;; TODO: check if poses are possible to reach, e.g. check if they are to high...
   poses
   T)
 
 (defun ensure-giskard-poses-grip-goal-reached (status object-pose)
-  ;; TODO
+  ;; TODO: check status if given object-pose is reached
   status
   object-pose  
   T
-  (when (eql status :timeout)
-    (cpl:fail 'common-fail:actionlib-action-timed-out :description "do_move_poses grip action timed out"))
 )
 
 (defun ensure-giskard-poses-move-goal-reached (status poses)
-  ;; TODO
+  ;; TODO: check status if given poses are reached
   status
   poses  
   T
-  (when (eql status :timeout)
-    (cpl:fail 'common-fail:actionlib-action-timed-out :description "do_move_poses move action timed out"))
 )
 
 (defun call-giskard-poses-grip-action (object-pose)
