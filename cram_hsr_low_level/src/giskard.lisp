@@ -70,4 +70,7 @@
 ;;       - diesen file refactoren (benennung anpassen, parameter ev anpassen/benennen)
 ;;       - einen action client für do_move_joints implementieren
 ;;       Ziel: in goal_msg: "grip" oder "move"
-;;     
+;;             - wenn "grip" gegeben: list_poses leer, object_pose gegeben
+;;             - wenn "move" gegeben: list_poses gegeben, object_pose leer
+;;
+;; object_pose sollte in relation zum roboter, nicht zur world sein
