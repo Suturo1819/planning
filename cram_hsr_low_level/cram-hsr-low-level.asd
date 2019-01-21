@@ -9,12 +9,13 @@
                tmc_msgs-msg
                std_msgs-msg
                move_base_msgs-msg
-               actionlib_msgs-msg)
+               actionlib_msgs-msg
+               control_msgs-msg
+               move-msg)
   :components
   ((:module "src"
             :components
             ((:file "package")
-             (:file "giskard" :depends-on ("package"))
              (:file "navigation-client" :depends-on ("package"))
              (:file "simple-actionlib-client" :depends-on ("package"))
              (:file "giskard-poses" :depends-on ("package" "simple-actionlib-client"))

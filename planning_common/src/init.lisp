@@ -8,5 +8,7 @@
   ;;Init all the action servers
   (pc:init-action-client) ;; for text-to-speech
   (chll:init-nav-client)
+  (chll:make-giskard-joints-action-client)
+  ;; (chll:make-giskard-poses-action-client)
   (roslisp:ros-info (plc) "All action server clients are set up.")) ;; for navigation
   
