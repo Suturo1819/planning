@@ -9,7 +9,7 @@
    *giskard-poses-action-timeout*
    :initialize-now T))
 
-(roslisp-utilities:register-ros-init-function make-giskard-poses-action-client)
+;; (roslisp-utilities:register-ros-init-function make-giskard-poses-action-client)
 
 (defun make-giskard-poses-action-goal (text &key
                                               (poses NIL)
