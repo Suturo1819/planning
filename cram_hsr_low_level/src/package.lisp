@@ -5,4 +5,6 @@
    init-nav-client
    get-nav-action-client
    make-nav-action-goal
-   call-nav-action))
+   call-nav-action
+   make-giskard-joints-action-client
+   make-giskard-poses-action-client))
