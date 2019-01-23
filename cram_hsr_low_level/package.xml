@@ -54,11 +54,11 @@
   <build_depend>actionlib</build_depend>
   <build_depend>actionlib_lisp</build_depend>
   <build_depend>actionlib_msgs</build_depend>
+  <build_depend>suturo_manipulation_msgs</build_depend>
   <build_depend>cl_tf</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>tmc_msgs</build_depend>
   <build_depend>roslisp</build_depend>
-  <build_depend>move</build_depend>
   <build_depend>turtle_actionlib</build_depend>
   <run_depend>actionlib</run_depend>
   <run_depend>cl_tf</run_depend>
@@ -67,7 +67,7 @@
   <run_depend>roslisp</run_depend>
   <run_depend>actionlib_lisp</run_depend>
   <run_depend>actionlib_msgs</run_depend>
-  <run_depend>move</run_depend>
+  <run_depend>suturo_manipulation_msgs</run_depend>
   <run_depend>turtle_actionlib</run_depend>
 
 </package>

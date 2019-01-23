@@ -11,7 +11,7 @@
                move_base_msgs-msg
                actionlib_msgs-msg
                control_msgs-msg
-               move-msg)
+               suturo_manipulation_msgs-msg)
   :components
   ((:module "src"
             :components
