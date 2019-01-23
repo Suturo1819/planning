@@ -1,6 +1,6 @@
 (in-package :chll)
 
-(defparameter *giskard-joints-action-timeout* 20.0 "in seconds")
+(defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
 
 (defun make-giskard-joints-action-client ()
   (make-simple-action-client
