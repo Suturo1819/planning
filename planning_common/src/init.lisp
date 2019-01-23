@@ -3,7 +3,7 @@
 (defun init-planning ()
   "Initialize all the interfaces from planning to other groups."
 
-  (roslisp-utilities:startup-ros :name "planning-node" :anonymous nil)
+  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
 
   ;;Init all the action servers
   (pc:init-action-client) ;; for text-to-speech

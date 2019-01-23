@@ -1,6 +1,6 @@
 (in-package :chll)
 
-(defparameter *giskard-poses-action-timeout* 20.0 "in seconds")
+(defparameter *giskard-poses-action-timeout* 300.0 "in seconds")
 
 (defun make-giskard-poses-action-client ()
   (make-simple-action-client
@@ -9,7 +9,7 @@
    *giskard-poses-action-timeout*
    :initialize-now T))
 
-(roslisp-utilities:register-ros-init-function make-giskard-poses-action-client)
+;; (roslisp-utilities:register-ros-init-function make-giskard-poses-action-client)
 
 (defun make-giskard-poses-action-goal (text &key
                                               (poses NIL)

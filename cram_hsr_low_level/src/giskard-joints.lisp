@@ -1,6 +1,6 @@
 (in-package :chll)
 
-(defparameter *giskard-joints-action-timeout* 20.0 "in seconds")
+(defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
 
 (defun make-giskard-joints-action-client ()
   (make-simple-action-client
@@ -9,7 +9,7 @@
    *giskard-joints-action-timeout*
    :initialize-now T))
 
-(roslisp-utilities:register-ros-init-function make-giskard-joints-action-client)
+;; (roslisp-utilities:register-ros-init-function make-giskard-joints-action-client)
 
 (defun make-giskard-joints-action-goal (text &key
                                                (object-pose NIL)
@@ -22,7 +22,7 @@
   (actionlib:make-action-goal (get-simple-action-client 'move-joints-action)
     goal_msg text
     object_pose (cl-tf:to-msg object-pose)
-    weigth weight
+    weight weight
     width width
     height height))
 
