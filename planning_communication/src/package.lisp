@@ -7,5 +7,11 @@
    make-next-action-goal
    call-text-to-speech-action
    init-perception-subscriber
-   publish-dummy-message
-   get-perceived-data))
+   send-dummy-message
+   get-perceived-data
+
+   name
+   pose-stamped
+   shape
+   height
+   depth))

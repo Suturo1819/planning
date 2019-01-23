@@ -5,7 +5,7 @@
 
 (defun init-perception-subscriber ()
   (setf *perceived-data* nil)
-  (unless *perception-subscriber*
+  (when *perception-subscriber*
     (roslisp:unsubscribe *perception-subscriber*))
   (unless (eq (roslisp:node-status) :RUNNING)
     (roslisp:start-ros-node "perception-subscriber"))
@@ -14,7 +14,7 @@
                    "suturo_perception_msgs/ObjectDetectionData" 
                    (lambda (msg) (setf *perceived-data* msg)))))
 
-(defun publish-dummy-message ()
+(defun send-dummy-message ()
   (let ((pub (advertise "suturo_perception/object_detection"
                         "suturo_perception_msgs/ObjectDetectionData"))
         (message (roslisp:make-msg "suturo_perception_msgs/ObjectDetectionData"
@@ -31,13 +31,13 @@
     (roslisp:publish pub message)))
 
 (defun get-perceived-data ()
-  (unless *perceived-data*
-    (roslisp:ros-warn perception-client "No data perceived jet. Starting the subscriber.")
-    (init-perception-subscriber))
-  (roslisp:with-fields (name (pose-msg pose) shape width height depth) *perceived-data*
-    `((name . ,name)
-      (pose-stamped . ,(cl-tf:from-msg pose-msg))
-      (shape . ,shape)
-      (width . ,width)
-      (height . ,height)
-      (depth . ,depth))))
+  (if *perceived-data*
+      (roslisp:with-fields (name (pose-msg pose) shape width height depth) *perceived-data*
+        `((name . ,name)
+          (pose-stamped . ,(cl-tf:from-msg pose-msg))
+          (shape . ,shape)
+          (width . ,width)
+          (height . ,height)
+          (depth . ,depth)))
+      (progn (roslisp:ros-warn perception-client "No data perceived jet. Starting the subscriber.")
+             (init-perception-subscriber))))
