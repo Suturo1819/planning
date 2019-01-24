@@ -14,4 +14,5 @@
    pose-stamped
    shape
    height
-   depth))
+   depth
+   width))
