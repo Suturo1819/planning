@@ -1,5 +1,6 @@
 (defsystem planning-communication
   :depends-on (roslisp
+               roslisp-utilities
                cram-language
                cl-tf
                actionlib
