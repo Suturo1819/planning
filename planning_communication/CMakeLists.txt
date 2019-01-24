@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   tmc_msgs
   control_msgs
   suturo_perception_msgs
-  #suturo_manipulation_msgs
+  suturo_manipulation_msgs
 )
 
 ## System dependencies are found with CMake's conventions
