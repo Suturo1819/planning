@@ -6,7 +6,8 @@
                actionlib
                geometry_msgs-msg
                tmc_msgs-msg
-               suturo_perception_msgs-msg)
+               suturo_perception_msgs-msg
+               visualization_msgs-msg)
   :components
   ((:module "src"
     :components
