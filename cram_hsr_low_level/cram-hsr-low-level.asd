@@ -11,7 +11,7 @@
                move_base_msgs-msg
                actionlib_msgs-msg
                control_msgs-msg
-               move-msg)
+               move_base_msgs-msg)
   :components
   ((:module "src"
             :components
