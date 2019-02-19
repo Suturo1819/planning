@@ -8,10 +8,12 @@
                geometry_msgs-msg
                tmc_msgs-msg
                std_msgs-msg
+               suturo_manipulation_msgs-msg
                move_base_msgs-msg
                actionlib_msgs-msg
                control_msgs-msg
-               move_base_msgs-msg)
+               cram-tf)
+  
   :components
   ((:module "src"
             :components

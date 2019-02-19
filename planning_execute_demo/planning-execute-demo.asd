@@ -7,7 +7,8 @@
                tmc_msgs-msg
                planning-communication
                cram-hsr-low-level
-               planning-common)
+               planning-common
+               suturo_manipulation_msgs-msg)
   :components
   ((:module "src"
     :components
