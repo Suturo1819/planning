@@ -5,14 +5,16 @@
 (defun make-giskard-joints-action-client ()
   (make-simple-action-client
    'move-joints-action
-   "do_move_joints" "move/DoMoveJointsAction"
+   "do_move_joints"
+   "suturo_manipulation_msgs/DoMoveJointsAction"
    *giskard-joints-action-timeout*
    :initialize-now T))
 
 ;; (roslisp-utilities:register-ros-init-function make-giskard-joints-action-client)
 
 (defun make-giskard-joints-action-goal (text &key
-                                               (object-pose NIL)
+                                               (object-pose NIL) ; object pose in map
+                                               (object-pose-to-odom NIL) ; object-pose in odom
                                                (weight NIL)
                                                (width NIL)
                                                (height NIL)
@@ -22,13 +24,15 @@
   (actionlib:make-action-goal (get-simple-action-client 'move-joints-action)
     goal_msg text
     object_pose (cl-tf:to-msg object-pose)
+    object_pose_to_odom (cl-tf:to-msg object-pose-to-odom)
     weight weight
     width width
     height height))
 
-(defun ensure-giskard-joints-grip-input (object-pose weight width height)
+(defun ensure-giskard-joints-grip-input (object-pose object-pose-to-odom weight width height)
   ;; TODO: check if object-pose is possible to grip, e.g. check if it is to wide
   object-pose
+  object-pose-to-odom
   weight
   width
   height
@@ -39,11 +43,12 @@
   desired-joint-values
   T)
 
-(defun ensure-giskard-joints-grip-goal-reached (status object-pose weight width height)
+(defun ensure-giskard-joints-grip-goal-reached (status object-pose object-pose-to-odom weight width height)
   ;; TODO: check status if given object-pose is reached
   (roslisp:ros-debug (move-joints-action) "Ensure grip-goal reached.\nStatus: ~a" status)
   ;; TODO: log everything
   object-pose
+  object-pose-to-odom
   weight
   width
   height
@@ -58,19 +63,20 @@
   T
 )
 
-(defun call-giskard-joints-grip-action (object-pose weight width height)
-  (when (ensure-giskard-joints-grip-input object-pose weight width height)
+(defun call-giskard-joints-grip-action (object-pose object-pose-to-odom weight width height)
+  (when (ensure-giskard-joints-grip-input object-pose object-pose-to-odom  weight width height)
     (multiple-value-bind (result status)
       (call-simple-action-client
        'move-joints-action
        :action-goal (make-giskard-joints-action-goal "grip"
                                                      :object-pose object-pose
+                                                     :object-pose-to-odom object-pose-to-odom
                                                      :weight weight
                                                      :width width
                                                      :height height)
        :action-timeout *giskard-joints-action-timeout*)
       (roslisp:ros-info (move-joints-action) "do_move_joints grip action finished.")
-      (ensure-giskard-joints-grip-goal-reached status object-pose weight width height)
+      (ensure-giskard-joints-grip-goal-reached status object-pose object-pose-to-odom  weight width height)
       (values result status))))
 
 (defun call-giskard-joints-move-action (desired-joint-values)

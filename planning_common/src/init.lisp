@@ -9,6 +9,7 @@
   (pc:init-action-client) ;; for text-to-speech
   (chll:init-nav-client)
   (chll:make-giskard-joints-action-client)
+  (cram-tf::init-tf)
   ;; (chll:make-giskard-poses-action-client)
   ;(pc:init-perception-subscriber)
   (roslisp:ros-info (plc) "All action server clients are set up.")) ;; for navigation

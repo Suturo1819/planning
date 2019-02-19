@@ -25,6 +25,7 @@
     (pc::call-text-to-speech-action "I can't tell, what object this is. I  need to get closer")
     (chll::call-nav-action -0.4 0.0157970905304 3)
     (pc::call-text-to-speech-action "Now i can finally identify.")
+    
   ;;perception call and extracting
     (let* ((vision-data (pc:get-perceived-data))
            (vision-pose-stamped
@@ -34,12 +35,20 @@
            (object-width
              (cdr (assoc 'pc:width vision-data)))
            (object-height
-             (cdr (assoc 'pc:height vision-data))))
+             (cdr (assoc 'pc:height vision-data)))
+           (map-T-odom (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+           
+           (odom-object-pose
+             (cl-tf:transform->pose
+              (cl-tf:transform*
+               (cl-tf:transform-inv map-T-odom)
+               (cl-tf:pose->transform vision-pose)))))
+
       (cram-language:par
-        (pc::call-text-to-speech-action "I extracted all the information. I will try to grap now.")
-        ;;graping part first drive back otherwise not grapable
+        (pc::call-text-to-speech-action "I extracted all the information. I will try to grasp now.")
+        ;;grasping part first drive back otherwise not grapable
         (chll::call-nav-action -0.0844728946686 0.0405520200729 3)
-        (chll::call-giskard-joints-grip-action vision-pose 1 object-width object-height))
+        (chll::call-giskard-joints-grip-action vision-pose odom-object-pose 1 object-width object-height))
 
       ;;driving and end-part 
       (cram-language:par

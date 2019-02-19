@@ -1,4 +1,3 @@
-
 (in-package :chll)
 
 (defvar *giskard-action-client* nil)
