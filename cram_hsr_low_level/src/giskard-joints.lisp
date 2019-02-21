@@ -3,7 +3,7 @@
 (defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
 
 (defun make-giskard-joints-action-client ()
-  (make-simple-action-client
+  (cram-simple-actionlib-client:make-simple-action-client
    'move-joints-action
    "do_move_joints"
    "suturo_manipulation_msgs/DoMoveJointsAction"
@@ -21,7 +21,8 @@
                                                (desired-joint-values NIL))
   ;; TODO: desired_joints_values are ignored for now, so moving is not possible
   desired-joint-values
-  (actionlib:make-action-goal (get-simple-action-client 'move-joints-action)
+  (actionlib:make-action-goal
+      (cram-simple-actionlib-client::get-simple-action-client 'move-joints-action)
     goal_msg text
     object_pose (cl-tf:to-msg object-pose)
     object_pose_to_odom (cl-tf:to-msg object-pose-to-odom)
@@ -66,7 +67,7 @@
 (defun call-giskard-joints-grip-action (object-pose object-pose-to-odom weight width height)
   (when (ensure-giskard-joints-grip-input object-pose object-pose-to-odom  weight width height)
     (multiple-value-bind (result status)
-      (call-simple-action-client
+      (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
        :action-goal (make-giskard-joints-action-goal "grip"
                                                      :object-pose object-pose
@@ -82,7 +83,7 @@
 (defun call-giskard-joints-move-action (desired-joint-values)
   (when (ensure-giskard-joints-move-input desired-joint-values)
     (multiple-value-bind (result status)
-      (call-simple-action-client
+      (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
        :action-goal (make-giskard-joints-action-goal "move"
                                                      :desired-joint-values desired-joint-values)

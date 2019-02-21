@@ -3,7 +3,7 @@
 (defparameter *giskard-poses-action-timeout* 300.0 "in seconds")
 
 (defun make-giskard-poses-action-client ()
-  (make-simple-action-client
+  (cram-simple-actionlib-client:make-simple-action-client
    'move-poses-action
    "do_move_poses" "move/DoMovePosesAction"
    *giskard-poses-action-timeout*
@@ -14,7 +14,8 @@
 (defun make-giskard-poses-action-goal (text &key
                                               (poses NIL)
                                               (object-pose (cl-tf:make-identity-pose)))
-  (actionlib:make-action-goal (get-simple-action-client 'move-poses-action)
+  (actionlib:make-action-goal
+      (cram-simple-actionlib-client::get-simple-action-client 'move-poses-action)
     goal_msg text
     list_poses (cl-tf:to-msg poses)
     object_pose (cl-tf:to-msg object-pose)))
@@ -47,7 +48,7 @@
 (defun call-giskard-poses-grip-action (object-pose)
   (when (ensure-giskard-poses-grip-input object-pose)
     (multiple-value-bind (result status)
-      (call-simple-action-client
+      (cram-simple-actionlib-client::call-simple-action-client
        'move-poses-action
        :action-goal (make-giskard-poses-action-goal "grip" :object-pose object-pose)
        :action-timeout *giskard-poses-action-timeout*)
@@ -58,7 +59,7 @@
 (defun call-giskard-poses-move-action (poses)
   (when (ensure-giskard-poses-move-input poses)
     (multiple-value-bind (result status)
-      (call-simple-action-client
+      (cram-simple-actionlib-client::call-simple-action-client
        'move-poses-action
        :action-goal (make-giskard-poses-action-goal "move" :poses poses)
        :action-timeout *giskard-poses-action-timeout*)

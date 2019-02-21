@@ -12,15 +12,15 @@
                move_base_msgs-msg
                actionlib_msgs-msg
                control_msgs-msg
-               cram-tf)
+               cram-tf
+               cram-simple-actionlib-client)
   
   :components
   ((:module "src"
             :components
             ((:file "package")
              (:file "navigation-client" :depends-on ("package"))
-             (:file "simple-actionlib-client" :depends-on ("package"))
-             (:file "giskard-poses" :depends-on ("package" "simple-actionlib-client"))
-             (:file "giskard-joints" :depends-on ("package" "simple-actionlib-client"))
+             (:file "giskard-poses" :depends-on ("package"))
+             (:file "giskard-joints" :depends-on ("package"))
              (:file "test-giskard" :depends-on ("package"))))))
 

@@ -23,6 +23,7 @@
    poses))
 
 ;; TODO test this
+;; test new pose
 (defun make-test-move-joints ()
 (call-giskard-joints-grip-action
        (cl-tf:make-pose (cl-tf:make-3d-vector -0.097 -0.83 0.6)
