@@ -4,7 +4,7 @@
 (defun main ()
   "Main function - Executing and planning robot behaviour on the top level"
   ;;driving and communication part
-  (roslisp:start-ros-node "planning-main") ;;aendern zu with ros node
+  ;; TODO check if a ros node is running?
   (cram-language:top-level
     (setf pc::*perception-subscriber* nil)
     (plc::init-planning)
@@ -15,17 +15,23 @@
     ;;          (roslisp::ros-info "Moving" "Trying to solve error.")
     ;;          (cpl:do-retry retry-counter
     (cram-language:par
-      (chll::call-nav-action -0.0844728946686 0.0405520200729 0.0)
+      (go-to-room-center)
       (pc::call-text-to-speech-action "Good Morning."))
+    
     (pc::call-text-to-speech-action "My name is Toya. The Suturo Members are working hard each day.")
     (cram-language:par
       (chll::call-nav-action -0.0238773822784 1.01167118549 1.5)
-      (pc::call-text-to-speech-action "So i can finall serve you, or atleast grab a something. I am brand new, so please don't be to hard to me. If i do something wrong just correct me. Shall we try?"))
-    (chll::call-nav-action -0.0844728946686 0.0405520200729 3)
+      (pc::call-text-to-speech-action "So i can finally serve you, or atleast grasp
+ a something. I am brand new, so please don't be to hard to me.
+If i do something wrong just correct me. Shall we try?"))
+
+    (go-to-little-table)
     (pc::call-text-to-speech-action "I can't tell, what object this is. I  need to get closer")
-    (chll::call-nav-action -0.4 0.0157970905304 3)
+
+    (go-closer-to-little-table)
     (pc::call-text-to-speech-action "Now i can finally identify.")
-    
+
+    ;; TODO this needs to be replaced with a query of KNOWLEDGE
   ;;perception call and extracting
     (let* ((vision-data (pc:get-perceived-data))
            (vision-pose-stamped
@@ -46,13 +52,20 @@
 
       (cram-language:par
         (pc::call-text-to-speech-action "I extracted all the information. I will try to grasp now.")
-        ;;grasping part first drive back otherwise not grapable
-        (chll::call-nav-action -0.0844728946686 0.0405520200729 3)
-        (chll::call-giskard-joints-grip-action vision-pose odom-object-pose 1 object-width object-height))
+        ;; grasping part first drive back otherwise not graspable
+        ;; go back to standing infront of the little table 
+        (go-to-little-table)
 
-      ;;driving and end-part 
+        ;; start Grasping
+        (chll::call-giskard-joints-grip-action vision-pose
+                                               odom-object-pose
+                                               1
+                                               object-width
+                                               object-height))
+
+      ;; go back to the center of the room
       (cram-language:par
-        (chll::call-nav-action -0.0844728946686 0.0405520200729 0.0)
+        (go-to-room-center)
         (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")
       ))))
 
