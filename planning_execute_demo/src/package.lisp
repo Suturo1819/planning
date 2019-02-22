@@ -1,3 +1,3 @@
 (defpackage :planning-execute-demo
-  (:nicknames :ped)
+  (:nicknames :pexe)
   (:use :roslisp :cl))

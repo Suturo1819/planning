@@ -1,4 +1,4 @@
-(in-package :ped)
+(in-package :pexe)
 
  
 (defun main ()
