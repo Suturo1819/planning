@@ -12,3 +12,12 @@
 
 (defun go-closer-to-little-table ()
   (chll::call-nav-action -0.4 0.0157970905304 3))
+
+(defun go-to-shelf ()
+  (chll::call-nav-action -0.0238773822784 1.01167118549 1.5))
+
+(defun navigation-tests ()
+   ;; move close to the shelf and look at it
+  (go-to-shelf)
+  ;; move to the middle of the room
+  (go-to-room-center))

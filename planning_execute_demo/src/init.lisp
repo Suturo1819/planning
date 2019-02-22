@@ -18,11 +18,12 @@
       (go-to-room-center)
       (pc::call-text-to-speech-action "Good Morning."))
     
-    (pc::call-text-to-speech-action "My name is Toya. The Suturo Members are working hard each day.")
+    (pc::call-text-to-speech-action "My name is Toya. The Suturo Members are
+working hard each day.")
     (cram-language:par
-      (chll::call-nav-action -0.0238773822784 1.01167118549 1.5)
+      (go-to-shelf)
       (pc::call-text-to-speech-action "So i can finally serve you, or atleast grasp
- a something. I am brand new, so please don't be to hard to me.
+  something. I am brand new, so please don't be to hard to me.
 If i do something wrong just correct me. Shall we try?"))
 
     (go-to-little-table)
@@ -71,7 +72,8 @@ If i do something wrong just correct me. Shall we try?"))
 
 (define-condition custom-error (cpl:simple-plan-failure) ((message :initarg :message :initform "" :reader message)))
 
- ;;TODO: error-class wieder erstellen
+;;TODO: error-class wieder erstellen ???
+;; Extend this to cover different kind of failures.
 (define-condition move-error (custom-error) ()
   (:report (lambda (condition stream)
              (format stream "move error: ~A~%"
