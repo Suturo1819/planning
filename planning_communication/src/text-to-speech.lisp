@@ -16,7 +16,7 @@
 
 (defvar *text-to-speech-action-client* nil)
 
-(defun init-action-client ()
+(defun init-text-to-speech-action-client ()
   (setf *text-to-speech-action-client* (actionlib:make-action-client
      "talk_request_action"
      "tmc_msgs/TalkRequestAction"))
@@ -25,13 +25,13 @@
   (roslisp:ros-info (text-to-speech-action-client) 
                     "Text to speech action client created."))
 
-(defun get-action-client ()
+(defun get-text-to-speech-action-client ()
   (when (null *text-to-speech-action-client*)
-    (init-action-client))
+    (init-text-to-speech-action-client))
   *text-to-speech-action-client*)
 
 (defun make-text-action-goal (text)
-  (actionlib:make-action-goal (get-action-client)
+  (actionlib:make-action-goal (get-text-to-speech-action-client)
     :data (make-message "tmc_msgs/Voice"
       :interrupting nil
       :queueing nil
@@ -42,7 +42,7 @@
   (multiple-value-bind (result status)
       (let ((actionlib:*action-server-timeout* 10.0))
         (actionlib:call-goal
-         (get-action-client)
+         (get-text-to-speech-action-client)
          (make-text-action-goal text)))
     (roslisp:ros-info (text-to-speech-action-client) "Text to speech action finished.")
     (values result status)))
