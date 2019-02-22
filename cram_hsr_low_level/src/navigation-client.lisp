@@ -50,9 +50,4 @@ euler-z gives the rotation around the z axis."
     (values result status)))
 
   
-(defun navigation-tests ()
-   ;; move close to the shelf and look at it
-  (call-nav-action -0.0238773822784 1.01167118549 1.5)
-  ;; move to the middle of the room
-  (call-nav-action -0.0844728946686 0.0405520200729 0.0)
- )
+
