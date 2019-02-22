@@ -2,7 +2,7 @@
 
 (defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
 
-(defun make-giskard-joints-action-client ()
+(defun init-giskard-joints-action-client ()
   (cram-simple-actionlib-client:make-simple-action-client
    'move-joints-action
    "do_move_joints"
@@ -10,6 +10,7 @@
    *giskard-joints-action-timeout*
    :initialize-now T))
 
+;; TODO check if this is needed.
 ;; (roslisp-utilities:register-ros-init-function make-giskard-joints-action-client)
 
 (defun make-giskard-joints-action-goal (text &key
@@ -30,8 +31,8 @@
     width width
     height height))
 
-(defun ensure-giskard-joints-grip-input (object-pose object-pose-to-odom weight width height)
-  ;; TODO: check if object-pose is possible to grip, e.g. check if it is to wide
+(defun ensure-giskard-joints-grasping-input (object-pose object-pose-to-odom weight width height)
+  ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
   object-pose
   object-pose-to-odom
   weight
@@ -44,9 +45,9 @@
   desired-joint-values
   T)
 
-(defun ensure-giskard-joints-grip-goal-reached (status object-pose object-pose-to-odom weight width height)
+(defun ensure-giskard-joints-grasping-goal-reached (status object-pose object-pose-to-odom weight width height)
   ;; TODO: check status if given object-pose is reached
-  (roslisp:ros-debug (move-joints-action) "Ensure grip-goal reached.\nStatus: ~a" status)
+  (roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
   ;; TODO: log everything
   object-pose
   object-pose-to-odom
@@ -64,20 +65,20 @@
   T
 )
 
-(defun call-giskard-joints-grip-action (object-pose object-pose-to-odom weight width height)
-  (when (ensure-giskard-joints-grip-input object-pose object-pose-to-odom  weight width height)
+(defun call-giskard-joints-grasping-action (object-pose object-pose-to-odom weight width height)
+  (when (ensure-giskard-joints-grasping-input object-pose object-pose-to-odom  weight width height)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
-       :action-goal (make-giskard-joints-action-goal "grip"
+       :action-goal (make-giskard-joints-action-goal "grasp"
                                                      :object-pose object-pose
                                                      :object-pose-to-odom object-pose-to-odom
                                                      :weight weight
                                                      :width width
                                                      :height height)
        :action-timeout *giskard-joints-action-timeout*)
-      (roslisp:ros-info (move-joints-action) "do_move_joints grip action finished.")
-      (ensure-giskard-joints-grip-goal-reached status object-pose object-pose-to-odom  weight width height)
+      (roslisp:ros-info (move-joints-action) "do_move_joints grasp action finished.")
+      (ensure-giskard-joints-grasping-goal-reached status object-pose object-pose-to-odom  weight width height)
       (values result status))))
 
 (defun call-giskard-joints-move-action (desired-joint-values)

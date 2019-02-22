@@ -20,8 +20,8 @@
     list_poses (cl-tf:to-msg poses)
     object_pose (cl-tf:to-msg object-pose)))
 
-(defun ensure-giskard-poses-grip-input (object-pose)
-  ;; TODO: check if object-pose is possible to grip, e.g. check if it is to wide
+(defun ensure-giskard-poses-grasping-input (object-pose)
+  ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
   object-pose
   T)
 
@@ -30,7 +30,7 @@
   poses
   T)
 
-(defun ensure-giskard-poses-grip-goal-reached (status object-pose)
+(defun ensure-giskard-poses-grasping-goal-reached (status object-pose)
   ;; TODO: check status if given object-pose is reached
   status
   object-pose  
@@ -45,15 +45,15 @@
   T
 )
 
-(defun call-giskard-poses-grip-action (object-pose)
-  (when (ensure-giskard-poses-grip-input object-pose)
+(defun call-giskard-poses-grasping-action (object-pose)
+  (when (ensure-giskard-poses-grasping-input object-pose)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-poses-action
-       :action-goal (make-giskard-poses-action-goal "grip" :object-pose object-pose)
+       :action-goal (make-giskard-poses-action-goal "grasp" :object-pose object-pose)
        :action-timeout *giskard-poses-action-timeout*)
       (roslisp:ros-info (move-poses-action) "do_move_poses grip action finished.")
-      (ensure-giskard-poses-grip-goal-reached status object-pose)
+      (ensure-giskard-poses-grasping-goal-reached status object-pose)
       (values result status))))
 
 (defun call-giskard-poses-move-action (poses)
