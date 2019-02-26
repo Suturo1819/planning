@@ -7,10 +7,12 @@
                geometry_msgs-msg
                tmc_msgs-msg
                suturo_perception_msgs-msg
-               visualization_msgs-msg)
+               visualization_msgs-msg
+               cram-json-prolog)
   :components
   ((:module "src"
     :components
     ((:file "package")
      (:file "text-to-speech" :depends-on ("package"))
-     (:file "perception-client" :depends-on ("package"))))))
+     (:file "perception-client" :depends-on ("package"))
+     (:file "json-prolog-client" :depends-on ("package"))))))
