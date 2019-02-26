@@ -6,9 +6,9 @@
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
 
   ;;Init all the action servers
-  (pc:init-action-client) ;; for text-to-speech
+  (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
-  (chll:make-giskard-joints-action-client)
+  (chll::init-giskard-joints-action-client)
   (cram-tf::init-tf)
   ;; (chll:make-giskard-poses-action-client)
   ;; (pc:init-perception-subscriber)

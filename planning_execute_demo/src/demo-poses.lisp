@@ -21,3 +21,24 @@
   (go-to-shelf)
   ;; move to the middle of the room
   (go-to-room-center))
+
+
+;; TODO test this
+;; test new pose
+(defun make-test-move-joints ()
+  (cram-hsr-low-level::call-giskard-joints-grasping-action
+   (grasp-obj-from-table)
+       (cl-tf:transform->pose 
+        (cl-tf:transform*
+         (cl-tf:transform-inv
+          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+         (grasp-obj-from-table)))
+       0.4
+       0.1
+       0.2))
+
+
+(defun grasp-obj-from-table ()
+  (cl-tf:make-pose
+   (cl-tf:make-3d-vector 0.76 0.0029 0.9)
+   (cl-tf:make-identity-rotation)))

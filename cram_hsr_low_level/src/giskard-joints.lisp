@@ -70,7 +70,7 @@
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
-       :action-goal (make-giskard-joints-action-goal "grasp"
+       :action-goal (make-giskard-joints-action-goal "grip" ;;definied in manipulation
                                                      :object-pose object-pose
                                                      :object-pose-to-odom object-pose-to-odom
                                                      :weight weight

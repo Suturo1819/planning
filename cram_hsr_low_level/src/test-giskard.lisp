@@ -25,16 +25,15 @@
 ;; TODO test this
 ;; test new pose
 (defun make-test-move-joints ()
-(call-giskard-joints-grip-action
-       (cl-tf:make-pose (cl-tf:make-3d-vector -0.097 -0.83 0.6)
-                        (cl-tf:make-identity-rotation))
+  (call-giskard-joints-grasping-action
+   (grasp-obj-from-table)
        (cl-tf:transform->pose 
         (cl-tf:transform*
-         (cl-tf:transform-inv (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (cl-tf:make-transform (cl-tf:make-3d-vector -0.097 -0.83 0.6)
-                        (cl-tf:make-identity-rotation))))
+         (cl-tf:transform-inv
+          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+         (grasp-obj-from-table)))
        0.4
-       0.9
+       0.1
        0.2))
 
 (defun test-single-move-pose (&optional (link-name "wrist-roll-link")
