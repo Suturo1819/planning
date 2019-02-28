@@ -22,5 +22,6 @@
              (:file "navigation-client" :depends-on ("package"))
              (:file "giskard-poses" :depends-on ("package"))
              (:file "giskard-joints" :depends-on ("package"))
-             (:file "test-giskard" :depends-on ("package"))))))
+             (:file "test-giskard" :depends-on ("package"))
+             (:file "json-prolog-client" :depends-on ("package"))))))
 

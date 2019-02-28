@@ -33,12 +33,11 @@
 
 (defun ensure-giskard-joints-grasping-input (object-pose object-pose-to-odom weight width height)
   ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
-  object-pose
-  object-pose-to-odom
-  weight
-  width
-  height
-  T)
+  (and object-pose
+       object-pose-to-odom
+       (<= 0 weight)
+       (<= 0 width 0.2)
+       (<= 0 height)))
 
 (defun ensure-giskard-joints-move-input (desired-joint-values)
   ;; TODO: check if desired-joint-values are possible to reach, e.g. check if they are to high...

@@ -15,4 +15,4 @@
     ((:file "package")
      (:file "text-to-speech" :depends-on ("package"))
      (:file "perception-client" :depends-on ("package"))
-     (:file "json-prolog-client" :depends-on ("package"))))))
+     ))))

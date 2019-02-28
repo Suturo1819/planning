@@ -12,11 +12,13 @@
     (setf pc::*perception-subscriber* nil)
     (plc::init-planning)
 
-    (greeting-introduction)
+    ;;(greeting-introduction)
+    (go-closer-to-table) ;; if not greeting, go to table at least
 
-    ;; TODO this needs to be replaced with a query of KNOWLEDGE
-    ;;perception call and extracting
-    (let* ((vision-data (pc:get-perceived-data))
+    
+    ;;TODO call perception action pipeline here
+    
+    (let* ((vision-data (closest-object-pose-on-table))
            (vision-pose-stamped
              (cdr (assoc 'pc:pose-stamped vision-data)))
            (vision-pose
@@ -53,7 +55,7 @@
         (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
 
 
-(cram-language:def-cram-function greeting-introduction ()
+(cpl:def-cram-function greeting-introduction ()
   "Driving around and saying stuff."
   (cram-language:par
     (go-to-room-center)
@@ -69,7 +71,6 @@
              "If i do something wrong just correct me. Shall we try?")))
   (go-to-table)
   (pc::call-text-to-speech-action "I can't tell, what object this is. I need to get closer")
-
   (go-closer-to-table)
   (pc::call-text-to-speech-action "Now i can finally identify."))
 

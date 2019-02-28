@@ -7,4 +7,5 @@
    make-nav-action-goal
    call-nav-action
    make-giskard-joints-action-client
-   make-giskard-poses-action-client))
+   make-giskard-poses-action-client
+   prolog-table-objects))

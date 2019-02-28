@@ -4,6 +4,22 @@
 
 (in-package :pexe)
 
+(defparameter *tf-listener* nil)
+
+(defun get-tf-listener ()
+  (unless *tf-listener*
+    (setf *tf-listener* (make-instance 'cl-tf:transform-listener))
+    (handler-case
+     (cl-tf:lookup-transform *tf-listener* "map" "odom" :timeout 3)
+     (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
+      () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 3 seconds to get odom in map."))))
+  *tf-listener*)
+
+(defun kill-tf-listener ()
+  (setf *tf-listener* nil))
+
+(roslisp-utilities:register-ros-cleanup-function kill-tf-listener)
+
 (defun go-to-room-center ()
   (chll::call-nav-action -0.991062045097 0.265686005354 3.1))
 
@@ -42,3 +58,18 @@
   (cl-tf:make-pose
    (cl-tf:make-3d-vector 0.76 0.0029 0.9)
    (cl-tf:make-identity-rotation)))
+
+
+(defun closest-object-pose-on-table ()
+  (let ((table-objects (chll:prolog-table-objects)))
+    (if table-objects 
+        (cl-tf:lookup-transform
+         (get-tf-listener) 
+         "map"
+         (car (sort table-objects '<
+                   :key (alexandria:compose 'cl-tf:v-norm
+                                            (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
+                                            'cl-tf:translation
+                                            (alexandria:curry 'cl-tf:lookup-transform (get-tf-listener) "base_footprint")))))
+        (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate")))))
+    
