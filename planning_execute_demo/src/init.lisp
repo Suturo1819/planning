@@ -5,35 +5,17 @@
   "Main function - Executing and planning robot behaviour on the top level"
   ;;driving and communication part
   ;; TODO check if a ros node is running?
+  (unless (eq (roslisp:node-status) :RUNNING)
+    (roslisp-utilities:startup-ros :name "planning-main"))
+  
   (cram-language:top-level
     (setf pc::*perception-subscriber* nil)
     (plc::init-planning)
-    ;; (cpl:with-retry-counters ((retry-counter 2))
-    ;;   (cpl:with-failure-handling
-    ;;       (((or cpl:simple-plan-failure move-error) (error-object)
-    ;;          (format t "An error happened: ~a~%" error-object)
-    ;;          (roslisp::ros-info "Moving" "Trying to solve error.")
-    ;;          (cpl:do-retry retry-counter
-    (cram-language:par
-      (go-to-room-center)
-      (pc::call-text-to-speech-action "Good Morning."))
-    
-    (pc::call-text-to-speech-action "My name is Toya. The Suturo Members are
-working hard each day.")
-    (cram-language:par
-      (go-to-shelf)
-      (pc::call-text-to-speech-action "So i can finally serve you, or atleast grasp
-  something. I am brand new, so please don't be to hard to me.
-If i do something wrong just correct me. Shall we try?"))
 
-    (go-to-little-table)
-    (pc::call-text-to-speech-action "I can't tell, what object this is. I  need to get closer")
-
-    (go-closer-to-little-table)
-    (pc::call-text-to-speech-action "Now i can finally identify.")
+    (greeting-introduction)
 
     ;; TODO this needs to be replaced with a query of KNOWLEDGE
-  ;;perception call and extracting
+    ;;perception call and extracting
     (let* ((vision-data (pc:get-perceived-data))
            (vision-pose-stamped
              (cdr (assoc 'pc:pose-stamped vision-data)))
@@ -63,12 +45,32 @@ If i do something wrong just correct me. Shall we try?"))
                                                1
                                                object-width
                                                object-height))
-
       ;; go back to the center of the room
       (cram-language:par
         (go-to-room-center)
-        (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")
-      ))))
+        (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
+
+
+(cram-language:def-cram-function greeting-introduction ()
+  "Driving around and saying stuff."
+  (cram-language:par
+    (go-to-room-center)
+    (pc::call-text-to-speech-action "Good Morning."))
+  (pc::call-text-to-speech-action
+   "My name is Toya. The Suturo Members are working hard each day.")
+  (cram-language:par
+    (go-to-shelf)
+    (pc::call-text-to-speech-action
+     (format nil "~a ~a ~a"
+             "So i can finally serve you, or atleast grasp something."
+             "I am brand new, so please don't be to hard to me."
+             "If i do something wrong just correct me. Shall we try?")))
+  (go-to-little-table)
+  (pc::call-text-to-speech-action "I can't tell, what object this is. I need to get closer")
+
+  (go-closer-to-little-table)
+  (pc::call-text-to-speech-action "Now i can finally identify."))
+
 
 (define-condition custom-error (cpl:simple-plan-failure) ((message :initarg :message :initform "" :reader message)))
 

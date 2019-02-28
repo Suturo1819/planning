@@ -1,6 +1,6 @@
 (in-package pc)
 
-(defconstant +knowrob-prefix+ "http://knowrob.org/kb/knowrob.owl#")
+(alexandria:define-constant +knowrob-prefix+ "http://knowrob.org/kb/knowrob.owl#" :test 'string=)
 
 (defun prolog-table-objects ()
   (prolog-objects-around-pose (cl-tf:make-pose (cl-tf:make-3d-vector 1 0 0.8)
