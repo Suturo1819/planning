@@ -22,19 +22,6 @@
    (lambda (pose) (make-test-pose-stamped (first pose) (second pose) (third pose) (fourth pose)))
    poses))
 
-;; TODO test this
-;; test new pose
-(defun make-test-move-joints ()
-  (call-giskard-joints-grasping-action
-   (grasp-obj-from-table)
-       (cl-tf:transform->pose 
-        (cl-tf:transform*
-         (cl-tf:transform-inv
-          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-table)))
-       0.4
-       0.1
-       0.2))
 
 (defun test-single-move-pose (&optional (link-name "wrist-roll-link")
                                 (x 0.2)

@@ -5,16 +5,16 @@
 (in-package :pexe)
 
 (defun go-to-room-center ()
-  (chll::call-nav-action -0.0844728946686 0.0405520200729 0.0))
+  (chll::call-nav-action -0.991062045097 0.265686005354 3.1))
 
-(defun go-to-little-table ()
-  (chll::call-nav-action -0.0844728946686 0.0405520200729 3))
+(defun go-to-table ()
+  (chll::call-nav-action -0.270028978586 -0.0241730213165 0))
 
-(defun go-closer-to-little-table ()
-  (chll::call-nav-action -0.4 0.0157970905304 3))
+(defun go-closer-to-table ()
+  (chll::call-nav-action 0.0915691405535 0.0654886364937 0))
 
 (defun go-to-shelf ()
-  (chll::call-nav-action -0.0238773822784 1.01167118549 1.5))
+  (chll::call-nav-action -0.334310114384 0.00131261348724 -1.6))
 
 (defun navigation-tests ()
    ;; move close to the shelf and look at it

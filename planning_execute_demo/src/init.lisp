@@ -26,10 +26,10 @@ working hard each day.")
   something. I am brand new, so please don't be to hard to me.
 If i do something wrong just correct me. Shall we try?"))
 
-    (go-to-little-table)
+    (go-to-table)
     (pc::call-text-to-speech-action "I can't tell, what object this is. I  need to get closer")
 
-    (go-closer-to-little-table)
+    (go-closer-to-table)
     (pc::call-text-to-speech-action "Now i can finally identify.")
 
     ;; TODO this needs to be replaced with a query of KNOWLEDGE
@@ -55,14 +55,14 @@ If i do something wrong just correct me. Shall we try?"))
         (pc::call-text-to-speech-action "I extracted all the information. I will try to grasp now.")
         ;; grasping part first drive back otherwise not graspable
         ;; go back to standing infront of the little table 
-        (go-to-little-table)
+        (go-to-table)
 
         ;; start Grasping
-        (chll::call-giskard-joints-grip-action vision-pose
-                                               odom-object-pose
-                                               1
-                                               object-width
-                                               object-height))
+        (chll::call-giskard-joints-grasping-action vision-pose
+                                                   odom-object-pose
+                                                   1
+                                                   object-width
+                                                   object-height))
 
       ;; go back to the center of the room
       (cram-language:par
