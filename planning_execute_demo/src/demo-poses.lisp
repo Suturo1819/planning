@@ -71,5 +71,5 @@
                                             (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
                                             'cl-tf:translation
                                             (alexandria:curry 'cl-tf:lookup-transform (get-tf-listener) "base_footprint")))))
-        (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate")))))
+        (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate"))))
     
