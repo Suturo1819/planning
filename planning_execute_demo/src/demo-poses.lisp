@@ -70,6 +70,7 @@
                    :key (alexandria:compose 'cl-tf:v-norm
                                             (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
                                             'cl-tf:translation
-                                            (alexandria:curry 'cl-tf:lookup-transform (get-tf-listener) "base_footprint")))))
+                                            (lambda (tf-name)
+                                              (cl-tf:lookup-transform (get-tf-listener) "base_footprint" tf-name :timeout 1))))))
         (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate"))))
     

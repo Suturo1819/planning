@@ -8,4 +8,5 @@
    call-nav-action
    make-giskard-joints-action-client
    make-giskard-poses-action-client
-   prolog-table-objects))
+   prolog-table-objects
+   call-robosherlock-pipeline))

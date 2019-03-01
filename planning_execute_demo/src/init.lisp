@@ -6,44 +6,49 @@
   ;;driving and communication part
   ;; TODO check if a ros node is running?
   (unless (eq (roslisp:node-status) :RUNNING)
-    (roslisp-utilities:startup-ros :name "planning-main"))
+    (roslisp-utilities:startup-ros :name "planning-main" :anonymous NIL))
   
   (cram-language:top-level
-    (setf pc::*perception-subscriber* nil)
+   
     (plc::init-planning)
 
     ;;(greeting-introduction)
     (go-closer-to-table) ;; if not greeting, go to table at least
 
+    (pc::call-text-to-speech-action
+     "Calling the robo sherlok pipeline.")
+    ;; (chll:call-robosherlock-pipeline)
     
-    ;;TODO call perception action pipeline here
-    
-    (let* ((vision-data (closest-object-pose-on-table))
-           (vision-pose-stamped
-             (cdr (assoc 'pc:pose-stamped vision-data)))
-           (vision-pose
-             (cl-tf:pose-stamped->pose vision-pose-stamped))
-           (object-width
-             (cdr (assoc 'pc:width vision-data)))
-           (object-height
-             (cdr (assoc 'pc:height vision-data)))
-           (map-T-odom (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+    (pc::call-text-to-speech-action
+     "I am done with robo sherlock.")
+
+    (get-tf-listener)
+    (let* ((object-transform (closest-object-pose-on-table))
+           (object-class
+             (subseq (cl-tf:child-frame-id object-transform) 0 (position #\_ (cl-tf:child-frame-id object-transform))))
+           (object-pose (cl-tf:make-pose (cl-tf:translation object-transform)
+                                         (cl-tf:rotation object-transform)))
+           (object-width 0.1)
+           (object-height 0.2)
+           ;; (object-weight 0.4)
+           (map-T-odom (cl-tf:lookup-transform (get-tf-listener) "map" "odom"))
            
            (odom-object-pose
              (cl-tf:transform->pose
               (cl-tf:transform*
                (cl-tf:transform-inv map-T-odom)
-               (cl-tf:pose->transform vision-pose)))))
+               (cl-tf:pose->transform object-pose)))))
 
       (cram-language:par
-        (pc::call-text-to-speech-action "I extracted all the information. I will try to grasp now.")
+        (pc::call-text-to-speech-action
+         (format nil "I extracted all the information. I will try to grasp the ~a now." object-class))
         ;; grasping part first drive back otherwise not graspable
         ;; go back to standing infront of the little table 
         (go-to-table)
 
         ;; start Grasping
 
-        (chll::call-giskard-joints-grasping-action vision-pose
+        (chll::call-giskard-joints-grasping-action object-pose
                                                    odom-object-pose
                                                    1
                                                    object-width
@@ -51,7 +56,7 @@
 
       ;; go back to the center of the room
       (cram-language:par
-        (go-to-room-center)
+        ;; (go-to-room-center)
         (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
 
 
