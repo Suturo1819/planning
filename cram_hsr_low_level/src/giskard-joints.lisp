@@ -64,12 +64,12 @@
   T
 )
 
-(defun call-giskard-joints-grasping-action (object-pose object-pose-to-odom weight width height)
+(defun call-giskard-joints-grasping-action (object-pose object-pose-to-odom weight width height pose)
   (when (ensure-giskard-joints-grasping-input object-pose object-pose-to-odom  weight width height)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
-       :action-goal (make-giskard-joints-action-goal "grip" ;;definied in manipulation
+       :action-goal (make-giskard-joints-action-goal pose ;;definied in manipulation
                                                      :object-pose object-pose
                                                      :object-pose-to-odom object-pose-to-odom
                                                      :weight weight

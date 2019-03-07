@@ -43,23 +43,30 @@
 ;; test new pose
 (defun make-test-move-joints ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (grasp-obj-from-table)
+   (grasp-obj-from-floor)
        (cl-tf:transform->pose 
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-table)))
+         (grasp-obj-from-floor)))
        0.4
        0.1
-       0.2))
+       0.2
+       "perceive"))
 
 
 (defun grasp-obj-from-table ()
-  (cl-tf:make-pose
+  (cl-tf:make-transform
    (cl-tf:make-3d-vector 0.76 0.0029 0.9)
    (cl-tf:make-identity-rotation)))
 
+(defun grasp-obj-from-floor ()
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector 0.350765109062 0.0678488686681 0.08)
+   (cl-tf:make-identity-rotation)))
 
+
+    
 (defun closest-object-pose-on-table ()
   (let ((table-objects (chll:prolog-table-objects)))
     (if table-objects 
