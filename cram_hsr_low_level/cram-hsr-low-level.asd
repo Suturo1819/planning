@@ -13,7 +13,9 @@
                actionlib_msgs-msg
                control_msgs-msg
                cram-tf
-               cram-simple-actionlib-client)
+               cram-simple-actionlib-client
+               trajectory_msgs-msg
+               control_manager_msgs-msg)
   
   :components
   ((:module "src"
@@ -24,5 +26,6 @@
              (:file "giskard-joints" :depends-on ("package"))
              (:file "test-giskard" :depends-on ("package"))
              (:file "json-prolog-client" :depends-on ("package"))
-             (:file "robosherlock-client" :depends-on ("package"))))))
+             (:file "robosherlock-client" :depends-on ("package"))
+             (:file "head-client" :depends-on ("package"))))))
 
