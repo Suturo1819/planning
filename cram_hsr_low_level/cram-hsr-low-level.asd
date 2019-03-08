@@ -15,7 +15,7 @@
                cram-tf
                cram-simple-actionlib-client
                trajectory_msgs-msg
-               control_manager_msgs-msg)
+               controller_manager_msgs-msg)
   
   :components
   ((:module "src"
