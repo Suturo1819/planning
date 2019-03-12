@@ -80,15 +80,29 @@
       (ensure-giskard-joints-grasping-goal-reached status object-pose object-pose-to-odom  weight width height)
       (values result status))))
 
-(defun call-giskard-joints-move-action (desired-joint-values)
-  (when (ensure-giskard-joints-move-input desired-joint-values)
+(defun call-giskard-joints-move-action (desired-values desired-velocities)
+  (when (ensure-giskard-joints-move-input desired-values)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
-       :action-goal (make-giskard-joints-action-goal "move"
-                                                     :desired-joint-values desired-joint-values)
+       :action-goal (make-giskard-joints-action-goal
+                     "move"
+                     :desired-joint-values
+                     (roslisp:make-message
+                      "suturo_manipulation_msgs/DoMoveJointsGoal"
+                      desired_joints_values (roslisp:make-message
+                                             "control_msgs/JointTrajectoryControllerState"
+                                             joint_names (vector "arm_lift_joint")
+                                             desired (roslisp:make-message
+                                                      "trajectory_msgs/JointTrajectoryPoint"
+                                                      ;; TODO make generic
+                                                      positions desired-values
+                                                      velocities desired-velocities
+                                                      accelerations (vector 0.1)
+                                                      effort (vector 0.1)
+                                                      time_from_start 3.0))))
        :action-timeout *giskard-joints-action-timeout*)
       (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
-      (ensure-giskard-joints-move-goal-reached status desired-joint-values)
+      (ensure-giskard-joints-move-goal-reached status desired-values)
       (values result status))))
 

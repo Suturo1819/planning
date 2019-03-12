@@ -8,10 +8,16 @@
                planning-communication
                cram-hsr-low-level
                cram-prolog
-               cram-designators)
+               cram-designators
+               cram-process-modules
+               cram-language-designator-support)
   :components
   ((:module "src"
     :components
     ((:file "package")
      (:file "init" :depends-on ("package"))
-     (:file "designators" :depends-on ("package"))))))
+     (:file "designators" :depends-on ("package"))
+     (:file "process_modules" :depends-on ("package"
+                                           "designators"))
+     (:file "select_process_module" :depends-on ("package"
+                                                 "process_modules"))))))

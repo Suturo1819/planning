@@ -3,51 +3,65 @@
 (in-package :plc)
 ;; TODO Adapt to HSR
 
-(def-fact-group hsrb-motion-designators (desig:motion-grounding)
+(cram-prolog:def-fact-group hsrb-motion-designators (desig:motion-grounding)
   ;; for each kind of motion define a desig
 
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
-  (<- (desig:motion-grounding ?designator (move-base goal-pose))
-    (property ?designator (:type :going))
-    (property ?designator (:target ?location-designator))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
+    (desig:desig-prop ?designator (:type :going))
+    (desig:desig-prop ?designator (:target ?location-designator))
     (desig:designator-groundings ?location-designator ?poses)
     (member ?pose ?poses))
 
-  ;;;;;;;;;;;;;;;;;;;; NECK ;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;; looking at?
-  (<- (desig:motion-grounding ?designator (move-neck ?joint-angles-list))
-    (property ?designator (:type :looking))
-    (property ?designator (:configuration ?joint-angles-list)))
-
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
+    (desig:desig-prop ?designator (:type :going))
+    (desig:desig-prop ?designator (:target ?location)))
+  
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
+    (desig:desig-prop ?designator (:type :going))
+    (desig:desig-prop ?designator (:x ?x))
+    (desig:desig-prop ?designator (:y ?y))
+    (desig:desig-prop ?designator (:angle ?angle)))
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; move robot up and down
-  (<- (desig:motion-grounding ?designator (move-neck ?joint-angles-list))
-    (property ?designator (:type :move-up))
-    (property ?designator (:configuration ?joint-angles-list)))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-torso ?joint-angles-list))
+    (desig:desig-prop ?designator (:type :moving-torso))
+    ;;(desig:desig-prop ?designator (:configuration ?joint-angles-list))
+    )
+  
+  ;;;;;;;;;;;;;;;;;;;; NECK ;;;;;;;;;;;;;;;;;;;;;;;;
 
-    ;; move robot up and down
-  (<- (desig:motion-grounding ?designator (move-neck ?joint-angles-list))
-    (property ?designator (:type :move-down))
-    (property ?designator (:configuration ?joint-angles-list)))
-
+  ;; looking at?
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-neck ?pos-vector ?vel-vector))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:positions ?pos-vector))
+    (desig:desig-prop ?designator (:velocities ?vel-vector))
+    )
+  
   ;;;;;;;;;;;;;;;;;;;; GRIPPER ;;;;;;;;;;;;;;;;;;;;;;;;
 
-  (<- (desig:motion-grounding ?designator (move-gripper-joint :open))
-    (property ?designator (:type :opening)))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :open))
+    (desig:desig-prop ?designator (:type :opening)))
 
-  (<- (desig:motion-grounding ?designator (move-gripper-joint :close))
-    (property ?designator (:type :closing)))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :close))
+    (desig:desig-prop ?designator (:type :closing)))
 
-  (<- (desig:motion-grounding ?designator (move-gripper-joint :grip NIL ?effort))
-    (property ?designator (:type :gripping))
-    (once (or (property ?designator (:effort ?effort))
-              (equal ?effort nil))))
+;;  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :grip NIL ?effort))
+;;    (desig:desig-prop ?designator (:type :gripping))
+;;    (once (or (desig:desig-prop ?designator (:effort ?effort))
+;;              (equal ?effort nil))))
 
-  (<- (desig:motion-grounding ?designator (move-gripper-joint nil ?position NIL))
-    (property ?designator (:type :moving-gripper-joint))
-    (property ?designator (:joint-angle ?position)))
+;;  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint nil ?position NIL))
+;;    (desig:desig-prop ?designator (:type :moving-gripper-joint))
+;;    (desig:desig-prop ?designator (:joint-angle ?position)))
 
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :grip NIL ?effort))
+    (or (desig:desig-prop ?motion-designator (:type :gripping))
+        (desig:desig-prop ?motion-designator (:type :moving-gripper-joint))
+        (and (desig:desig-prop ?motion-designator (:gripper ?_))
+             (or (desig:desig-prop ?motion-designator (:type :opening))
+                 (desig:desig-prop ?motion-designator (:type :closing))))))
+  
   
 )

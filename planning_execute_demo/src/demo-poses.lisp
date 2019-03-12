@@ -41,7 +41,7 @@
 
 ;; TODO test this
 ;; test new pose
-(defun make-test-move-joints ()
+(defun grasp-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
    (grasp-obj-from-floor)
        (cl-tf:transform->pose 
@@ -51,9 +51,26 @@
          (grasp-obj-from-floor)))
        0.4
        0.1
-       0.2
-       "perceive"))
+       0.26
+       "grip"))
 
+(defun place-test ()
+  (cram-hsr-low-level::call-giskard-joints-grasping-action
+   (place-obj-on-table)
+       (cl-tf:transform->pose 
+        (cl-tf:transform*
+         (cl-tf:transform-inv
+          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+         (place-obj-on-table)))
+       0.4
+       0.1
+       0.26
+       "place"))
+
+(defun place-obj-on-table ()
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector 0.691284537315 0.040323138237 0.73)
+   (cl-tf:make-identity-rotation)))
 
 (defun grasp-obj-from-table ()
   (cl-tf:make-transform
@@ -62,7 +79,7 @@
 
 (defun grasp-obj-from-floor ()
   (cl-tf:make-transform
-   (cl-tf:make-3d-vector 0.350765109062 0.0678488686681 0.08)
+   (cl-tf:make-3d-vector 0.494331806898 -0.0414100885391 0.08)
    (cl-tf:make-identity-rotation)))
 
 
