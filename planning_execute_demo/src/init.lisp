@@ -47,12 +47,13 @@
         (go-to-table)
 
         ;; start Grasping
-
+        ;; TODO test this
         (chll::call-giskard-joints-grasping-action object-pose
                                                    odom-object-pose
                                                    1
                                                    object-width
-                                                   object-height))
+                                                   object-height
+                                                   "grasp"))
 
       ;; go back to the center of the room
       (cram-language:par

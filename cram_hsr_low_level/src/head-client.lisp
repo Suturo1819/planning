@@ -5,9 +5,9 @@
 (defun init-move-head-action-client ()
   (cram-simple-actionlib-client:make-simple-action-client
    'move-head-action
-   "follow_joint_trajectory"
+   "hsrb/head_trajectory_controller/follow_joint_trajectory"
    "control_msgs/FollowJointTrajectoryAction"
-   *head-action-timeout*
+   *move-head-action-timeout*
    :initialize-now T)
   (roslisp:ros-info (head-action) "head action client created"))
 
@@ -15,16 +15,20 @@
 (defun make-move-head-action-goal (&key pos vel acc eff time)
   (actionlib:make-action-goal
       (cram-simple-actionlib-client::get-simple-action-client 'move-head-action)
-    goal_msg (roslisp:make-message
-              "trajectory_msgs/JointTrajectory"
-              joint_names (vector "head_pan_joint" "head_tilt_joint")
-              points (roslisp:make-message
-                      "trajectory_msgs/JointTrajectoryPoint"
-                      positions pos
-                      velocities vel
-                      accelerations acc
-                      effort eff
-                      time_from_start  time))))
+    trajectory
+    (roslisp:make-message
+     "control_msgs/FollowJointTrajectoryGoal"
+     trajectory (roslisp:make-message
+                 "trajectory_msgs/JointTrajectory"
+                 joint_names (vector "head_pan_joint" "head_tilt_joint")
+                 points (vector
+                         (roslisp:make-message
+                          "trajectory_msgs/JointTrajectoryPoint"
+                          positions pos
+                          velocities vel
+                          accelerations acc
+                          effort eff
+                          time_from_start  time))))))
 
 (defun ensure-move-head-goal-reached (status pos)
   (roslisp:ros-warn (move-head) "Status ~a" status)
@@ -47,3 +51,7 @@
     (roslisp:ros-info (move-head) "move head action finished")
     (ensure-move-head-goal-reached status pos)
     (values result status)))
+
+;;NOTE 0 0 is the deafault lookig straight position.
+(defun test-move-head ()
+  (chll::call-move-head-action (vector 0.5 0.5) (vector 0 0)))
