@@ -22,7 +22,7 @@
   (destructuring-bind (command pos vel) (reference motion-designator)
     (ecase command
       (move-neck
-       (chll::call-move-head-action pos vel )))))
+       (chll::call-move-head-action pos vel)))))
 
 
 

@@ -17,7 +17,12 @@
     ((:file "package")
      (:file "init" :depends-on ("package"))
      (:file "designators" :depends-on ("package"))
+     (:file "action_designators" :depends-on ("package"))
      (:file "process_modules" :depends-on ("package"
                                            "designators"))
      (:file "select_process_module" :depends-on ("package"
-                                                 "process_modules"))))))
+                                                 "process_modules"))
+     (:file "high_level_plans" :depends-on ("package"
+                                            "process_modules"
+                                            "action_designators"
+                                            "designators"))))))

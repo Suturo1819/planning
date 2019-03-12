@@ -3,7 +3,7 @@
 (in-package :plc)
 ;; TODO Adapt to HSR
 
-(cram-prolog:def-fact-group hsrb-motion-designators (desig:motion-grounding)
+(cram-prolog:def-fact-group hsr-motion-designators (desig:motion-grounding)
   ;; for each kind of motion define a desig
 
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
