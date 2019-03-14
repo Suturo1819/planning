@@ -1,6 +1,6 @@
 ;;; Adapted from https://github.com/cram2/cram/blob/master/cram_boxy/cram_boxy_designators/src/motions.lisp
 ;;; use these instead: https://github.com/cram2/cram/tree/master/cram_pr2/cram_pr2_fetch_deliver_plans/src
-(in-package :plc)
+(in-package :pc)
 ;; TODO Adapt to HSR
 
 (cram-prolog:def-fact-group hsr-motion-designators (desig:motion-grounding)
@@ -22,6 +22,7 @@
     (desig:desig-prop ?designator (:x ?x))
     (desig:desig-prop ?designator (:y ?y))
     (desig:desig-prop ?designator (:angle ?angle)))
+   
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; move robot up and down
@@ -33,11 +34,13 @@
   ;;;;;;;;;;;;;;;;;;;; NECK ;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; looking at?
-  (cram-prolog:<- (desig:motion-grounding ?designator (move-neck ?pos-vector ?vel-vector))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-neck ?pos-vector))
     (desig:desig-prop ?designator (:type :looking))
-    (desig:desig-prop ?designator (:positions ?pos-vector))
-    (desig:desig-prop ?designator (:velocities ?vel-vector))
-    )
+    (desig:desig-prop ?designator (:positions ?pos-vector)))
+
+    (cram-prolog:<- (desig:motion-grounding ?designator (look-at :front))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:direction :front)))
   
   ;;;;;;;;;;;;;;;;;;;; GRIPPER ;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -52,9 +55,14 @@
 ;;    (once (or (desig:desig-prop ?designator (:effort ?effort))
 ;;              (equal ?effort nil))))
 
-;;  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint nil ?position NIL))
-;;    (desig:desig-prop ?designator (:type :moving-gripper-joint))
-;;    (desig:desig-prop ?designator (:joint-angle ?position)))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint nil ?position NIL))
+    (desig:desig-prop ?designator (:type :moving-gripper-joint))
+    (desig:desig-prop ?designator (:joint-angle ?position)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?obj-desig))
+    (desig:desig-prop ?designator (:type :grasp))
+    (desig:desig-prop ?designator (:obj ?obj-desig)))
+ 
 
   (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :grip NIL ?effort))
     (or (desig:desig-prop ?motion-designator (:type :gripping))
@@ -63,5 +71,8 @@
              (or (desig:desig-prop ?motion-designator (:type :opening))
                  (desig:desig-prop ?motion-designator (:type :closing))))))
   
-  
+;;TODO this should probably be an action  
+  (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
+    (desig:desig-prop ?designator (:type :say))
+    (desig:desig-prop ?designator (:text ?text)))
 )

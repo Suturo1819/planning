@@ -10,7 +10,8 @@
                cram-prolog
                cram-designators
                cram-process-modules
-               cram-language-designator-support)
+               cram-language-designator-support
+               cram-executive)
   :components
   ((:module "src"
     :components
@@ -25,4 +26,5 @@
      (:file "high_level_plans" :depends-on ("package"
                                             "process_modules"
                                             "action_designators"
-                                            "designators"))))))
+                                            "designators"))
+     (:file "utils" :depends-on ("package"))))))

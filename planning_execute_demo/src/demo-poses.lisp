@@ -3,56 +3,39 @@
 ;;; Alternatively, this can be used as an alternative.
 
 (in-package :pexe)
+;;; NOTE Everythign noted here should be resolved automatically at run time in the future.
 
-(defparameter *tf-listener* nil)
-
-(defun get-tf-listener ()
-  (unless *tf-listener*
-    (setf *tf-listener* (make-instance 'cl-tf:transform-listener))
-    (handler-case
-     (cl-tf:lookup-transform *tf-listener* "map" "odom" :timeout 3)
-     (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
-      () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 3 seconds to get odom in map."))))
-  *tf-listener*)
-
-(defun kill-tf-listener ()
-  (setf *tf-listener* nil))
-
-(roslisp-utilities:register-ros-cleanup-function kill-tf-listener)
 
 (defun go-to-room-center ()
-  (chll::call-nav-action -0.991062045097 0.265686005354 3.1))
+  (make-pose-stamped -0.991062045097 0.265686005354 3.1))
 
 (defun go-to-table ()
-  (chll::call-nav-action -0.270028978586 -0.0241730213165 0))
+  (make-pose-stamped -0.270028978586 -0.0241730213165 0))
 
 (defun go-closer-to-table ()
-  (chll::call-nav-action 0.0915691405535 0.0654886364937 0))
+  (make-pose-stamped 0.0915691405535 0.0654886364937 0))
 
 (defun go-to-shelf ()
-  (chll::call-nav-action -0.334310114384 0.00131261348724 -1.6))
+  (make-pose-stamped -0.334310114384 0.00131261348724 -1.6))
 
-(defun navigation-tests ()
-   ;; move close to the shelf and look at it
-  (go-to-shelf)
-  ;; move to the middle of the room
-  (go-to-room-center))
+
 
 
 ;; TODO test this
 ;; test new pose
 (defun grasp-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (grasp-obj-from-floor)
+   (grasp-from-shelf)
        (cl-tf:transform->pose 
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-floor)))
+         (grasp-from-shelf)))
        0.4
-       0.1
+       0.08
        0.26
        "grip"))
+
 
 (defun place-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
@@ -63,7 +46,7 @@
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
          (place-obj-on-table)))
        0.4
-       0.1
+       0.07
        0.26
        "place"))
 
@@ -82,19 +65,10 @@
    (cl-tf:make-3d-vector 0.494331806898 -0.0414100885391 0.08)
    (cl-tf:make-identity-rotation)))
 
+(defun grasp-from-shelf ()
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector -0.272928059101 -0.656896412373 0.85)
+   (cl-tf:make-identity-rotation)))
 
-    
-(defun closest-object-pose-on-table ()
-  (let ((table-objects (chll:prolog-table-objects)))
-    (if table-objects 
-        (cl-tf:lookup-transform
-         (get-tf-listener) 
-         "map"
-         (car (sort table-objects '<
-                   :key (alexandria:compose 'cl-tf:v-norm
-                                            (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
-                                            'cl-tf:translation
-                                            (lambda (tf-name)
-                                              (cl-tf:lookup-transform (get-tf-listener) "base_footprint" tf-name :timeout 1))))))
-        (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate"))))
-    
+
+

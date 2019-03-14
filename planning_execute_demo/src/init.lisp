@@ -6,7 +6,7 @@
   ;;driving and communication part
   ;; TODO check if a ros node is running?
   (unless (eq (roslisp:node-status) :RUNNING)
-    (roslisp-utilities:startup-ros :name "planning-main" :anonymous NIL))
+    (roslisp-utilities:startup-ros :name "planning" :anonymous NIL))
   
   (cram-language:top-level
    
@@ -22,7 +22,6 @@
     (pc::call-text-to-speech-action
      "I am done with robo sherlock.")
 
-    (get-tf-listener)
     (let* ((object-transform (closest-object-pose-on-table))
            (object-class
              (subseq (cl-tf:child-frame-id object-transform) 0 (position #\_ (cl-tf:child-frame-id object-transform))))

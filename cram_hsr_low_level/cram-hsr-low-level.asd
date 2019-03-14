@@ -27,5 +27,6 @@
              (:file "test-giskard" :depends-on ("package"))
              (:file "json-prolog-client" :depends-on ("package"))
              (:file "robosherlock-client" :depends-on ("package"))
-             (:file "head-client" :depends-on ("package"))))))
+             (:file "head-client" :depends-on ("package"))
+             (:file "torso-client" :depends-on ("package"))))))
 

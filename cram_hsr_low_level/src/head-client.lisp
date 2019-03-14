@@ -37,21 +37,24 @@
   T)
 
 
-(defun call-move-head-action (pos vel)
+(defun call-move-head-action (pos)
+;;  (format t "move head called with pos: ~a" pos)
   (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-head-action
        :action-goal (make-move-head-action-goal
                      :pos pos
-                     :vel vel
+                     :vel (vector 0.0 0.0)
                      :acc (vector 0.1 0.1) ;; acceleration
                      :eff (vector 0.1) ;; effort
                      :time 3.0) ;; time
        :action-timeout *move-head-action-timeout*)
     (roslisp:ros-info (move-head) "move head action finished")
     (ensure-move-head-goal-reached status pos)
-    (values result status)))
+    (values result status)
+    )
+  )
 
 ;;NOTE 0 0 is the deafault lookig straight position.
 (defun test-move-head ()
-  (chll::call-move-head-action (vector 0.5 0.5) (vector 0 0)))
+  (chll::call-move-head-action (vector 0.5 0.5)))
