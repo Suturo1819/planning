@@ -59,9 +59,9 @@
     (desig:desig-prop ?designator (:type :moving-gripper-joint))
     (desig:desig-prop ?designator (:joint-angle ?position)))
 
-  (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?obj-desig))
-    (desig:desig-prop ?designator (:type :grasp))
-    (desig:desig-prop ?designator (:obj ?obj-desig)))
+  ;; (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?obj-desig))
+  ;;   (desig:desig-prop ?designator (:type :grasp))
+  ;;   (desig:desig-prop ?designator (:obj ?obj-desig)))
  
 
   (cram-prolog:<- (desig:motion-grounding ?designator (move-gripper-joint :grip NIL ?effort))

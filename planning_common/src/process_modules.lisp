@@ -49,16 +49,31 @@
        (pc::call-text-to-speech-action text)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
-(cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
+(cram-process-modules:def-process-module hsr-arm-motion (action-designator)
   (roslisp:ros-info (hsr-arm-motion-process-modules)
                     "hsr-arm-motion called with motion designator `~a'."
-                    motion-designator)
-  (destructuring-bind (command map odom weight width height) (desig:reference motion-designator)
-    (ecase command
-      (grasp
-       (chll::call-giskard-joints-grasping-action map odom weight width height "grip"))
-      (place
-       (chll::call-giskard-joints-grasping-action map odom weight width height "place")))))
+                    action-designator)
+  (destructuring-bind (command obj-desig) (desig:reference action-designator)
+   (let* (;(type (desig:desig-prop-value :type  action-designator))
+          (?obj-desig obj-desig))
+     (ecase command
+       (grasping
+        (chll::call-giskard-joints-grasping-action
+         (car (desig:desig-prop-values ?obj-desig :obj-pose-map))
+         (car (desig:desig-prop-values ?obj-desig :obj-pose-odom))
+         (car (desig:desig-prop-values ?obj-desig :obj-weight))
+         (car (desig:desig-prop-values ?obj-desig :obj-width))
+         (car (desig:desig-prop-values ?obj-desig :obj-height))
+         "grip"))
+      
+      (placing
+       (chll::call-giskard-joints-grasping-action
+        (desig:desig-prop-values ?obj-desig :obj-pose-map )
+        (desig:desig-prop-values ?obj-desig :obj-pose-odom )
+        (car (desig:desig-prop-values ?obj-desig :obj-weight ))
+        (car (desig:desig-prop-values ?obj-desig :obj-width ))
+        (car (desig:desig-prop-values ?obj-desig :obj-height ))
+        "place"))))))
 
 
   ;;;;;;;;;;;;;;;;;;;; TESTS FOR DEBUGGING ;;;;;;;;;;;;;;;;;;;;;;;;

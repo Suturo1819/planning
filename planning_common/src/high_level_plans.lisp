@@ -25,10 +25,11 @@
      look-at))
 
 (cpl:def-cram-function say (?text)
-  (cram-executive:perform
-   (desig:an action
-            (:type :say)
-            (:text ?text))))
+  (let* ((say
+           (desig:an action
+                     (:type :say)
+                     (:text ?text))))
+    say))
 
 ;;; LOCATION ;;;
 
@@ -86,29 +87,72 @@
     (cram-process-modules:with-process-modules-running (hsr-say hsr-motion)
       (cram-process-modules:pm-execute-matching
        ;; move head
-       (exe:perform (move-neck (vector 0.2 0.2)))      
+       (exe:perform (say ?text))      
        ))))
-   
+
+(defun make-obj-desig ()
+  (let* ((?object (pc::get-closest-object-pose-on-table))
+         (?obj-class (subseq
+                      (cl-tf:child-frame-id ?object)
+                      0
+                      (position #\_ (cl-tf:child-frame-id ?object))))
+         
+         (?obj-pose-map (cl-tf:make-pose
+                         (cl-tf:translation ?object)
+                         (cl-tf:rotation ?object)))
+         
+         (?obj-pose-odom (pc::map-T-odom-pose ?obj-pose-map)))
+    
+    (desig:an object
+              (:class ?obj-class)
+              (:obj-pose-map (desig:a location
+                                      (pose ?obj-pose-map)))
+              (:obj-pose-odom (desig:a location
+                                       (pose ?obj-pose-odom)))
+              (:obj-weight 0.4)
+              (:obj-widht 0.07) ;; TODO query from knowledge
+              (:obj-height 0.26))))
+
+(defun make-test-obj-desig ()
+  (let* ((?obj-pose-map (cl-tf:transform->pose (pexe::grasp-from-shelf)))
+         (?obj-pose-odom (plc::map-T-odom-pose ?obj-pose-map)))
+         
+    (desig:an object
+              (:class "test")
+              (:obj-pose-map  ?obj-pose-map)
+              (:obj-pose-odom  ?obj-pose-odom)
+              (:obj-weight 0.4)
+              (:obj-width 0.07) ;; TODO query from knowledge
+              (:obj-height 0.26))))
    
 (defun plan ()
   (cram-language:top-level
     (cram-process-modules:with-process-modules-running (hsr-motion
                                                         hsr-say
-                                                        hsr-navigation)
+                                                        hsr-navigation
+                                                        hsr-arm-motion)
       (let* ((?pos (vector 0.0 0.0))
-             (?text "hello")
+             (?text "testing")
              (look-at-something (desig:a motion
                                          (:type :looking)
                                          (:positions ?pos)))
+             
              (say-hello (desig:an action
                                   (:type :say)
                                   (:text ?text)))
+
+             (?obj (make-test-obj-desig))
+             (grasp-obj (desig:an action
+                                  (:type :grasping)
+                                  (:obj ?obj)))
+
              )
 
 
         ;;; Execution chain
-        (cram-process-modules:pm-execute 'hsr-say say-hello)
-
+        ;;(cram-process-modules:pm-execute 'hsr-say say-hello)
+        (cram-process-modules:pm-execute 'hsr-arm-motion grasp-obj)
+        
        ;; (cram-process-modules:pm-execute 'hsr-motion look-at-something)
 
 

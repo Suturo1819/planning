@@ -2,7 +2,7 @@
 
 (defvar *robosherlock-action-client* nil)
 
-(defparameter *robosherlock-action-timeout* 120.0 "in seconds")
+(defparameter *robosherlock-action-timeout* 300.0 "in seconds")
 
 (defun init-robosherlock-action-client ()
   (setf *robosherlock-action-client* (actionlib:make-action-client

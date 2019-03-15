@@ -7,16 +7,16 @@
 
 
 (defun go-to-room-center ()
-  (make-pose-stamped -0.991062045097 0.265686005354 3.1))
+  (chll::call-nav-action  -0.991062045097 0.265686005354 3.1))
 
 (defun go-to-table ()
-  (make-pose-stamped -0.270028978586 -0.0241730213165 0))
+  (chll::call-nav-action  -0.270028978586 -0.0241730213165 0))
 
 (defun go-closer-to-table ()
-  (make-pose-stamped 0.0915691405535 0.0654886364937 0))
+  (chll::call-nav-action  0.0915691405535 0.0654886364937 0))
 
 (defun go-to-shelf ()
-  (make-pose-stamped -0.334310114384 0.00131261348724 -1.6))
+  (chll::call-nav-action  -0.56971013546  0.394732832909 -1.6))
 
 
 
@@ -39,12 +39,12 @@
 
 (defun place-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (place-obj-on-table)
+   (grasp-from-shelf)
        (cl-tf:transform->pose 
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (place-obj-on-table)))
+         (grasp-from-shelf)))
        0.4
        0.07
        0.26

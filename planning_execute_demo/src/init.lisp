@@ -14,23 +14,26 @@
 
     ;;(greeting-introduction)
     (go-closer-to-table) ;; if not greeting, go to table at least
-
+    (chll::call-move-head-action (vector 0.0 -0.2))
+    
     (pc::call-text-to-speech-action
      "Calling the robo sherlok pipeline.")
-    ;; (chll:call-robosherlock-pipeline)
+     (chll:call-robosherlock-pipeline)
     
     (pc::call-text-to-speech-action
      "I am done with robo sherlock.")
 
-    (let* ((object-transform (closest-object-pose-on-table))
+    (chll::call-move-head-action (vector 0.0 0.1))
+    
+    (let* ((object-transform (plc::get-closest-object-pose-on-table))
            (object-class
              (subseq (cl-tf:child-frame-id object-transform) 0 (position #\_ (cl-tf:child-frame-id object-transform))))
            (object-pose (cl-tf:make-pose (cl-tf:translation object-transform)
                                          (cl-tf:rotation object-transform)))
            (object-width 0.1)
            (object-height 0.2)
-           ;; (object-weight 0.4)
-           (map-T-odom (cl-tf:lookup-transform (get-tf-listener) "map" "odom"))
+           (object-weight 0.4)
+           (map-T-odom (cl-tf:lookup-transform (plc::get-tf-listener) "map" "odom"))
            
            (odom-object-pose
              (cl-tf:transform->pose
@@ -38,7 +41,7 @@
                (cl-tf:transform-inv map-T-odom)
                (cl-tf:pose->transform object-pose)))))
 
-      (cram-language:par
+      (cram-language:seq
         (pc::call-text-to-speech-action
          (format nil "I extracted all the information. I will try to grasp the ~a now." object-class))
         ;; grasping part first drive back otherwise not graspable
@@ -52,11 +55,16 @@
                                                    1
                                                    object-width
                                                    object-height
-                                                   "grasp"))
-
+                                                   "grip"))
+      ;;(go-to-room-center)
+      (pc::call-text-to-speech-action "I will try to place the object now.")
+      (go-to-shelf)
+      (chll::call-move-head-action (vector 0.0 -0.2))
+      (place-test)
+      ;;(go-to-room-center)
       ;; go back to the center of the room
       (cram-language:par
-        ;; (go-to-room-center)
+       ;; (go-to-room-center)
         (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
 
 
