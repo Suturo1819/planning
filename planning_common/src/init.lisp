@@ -10,6 +10,7 @@
   ;;Init all the action servers
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
+  (chll::init-move-head-action-client)
   (unless (member 'manipulation ignore-clients)
     (chll::init-giskard-joints-action-client))
 

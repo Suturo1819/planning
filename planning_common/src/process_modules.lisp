@@ -1,9 +1,8 @@
-(in-package :pc)
+(in-package :plc)
 
 
 ;; TODO still in progress
 (cram-process-modules:def-process-module hsr-navigation (motion-designator)
-
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
   (roslisp:ros-info (hsr-navigation-process-modules)
                     "hsr-navigation called with motion designator `~a'."
@@ -29,22 +28,22 @@
           (chll::call-move-head-action (vector 0.0 0.0))))))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
-(cram-process-modules:def-process-module hsr-say (motion-designator)
-  (roslisp:ros-info (hsr-say-process-modules)
-                    "hsr-say-motion called with motion designator `~a'."
-                    motion-designator)
-  (destructuring-bind (command text) (desig:reference motion-designator)
-    (format t "command: ~a  text: ~a"command text)
-    (ecase command
-      (say
-       (pc::call-text-to-speech-action text)))))
+;; (cram-process-modules:def-process-module hsr-say (motion-designator)
+;;   (roslisp:ros-info (hsr-say-process-modules)
+;;                     "hsr-say-motion called with motion designator `~a'."
+;;                     motion-designator)
+;;   (destructuring-bind (command text) (desig:reference motion-designator)
+;;     (format t "command: ~a  text: ~a"command text)
+;;     (ecase command
+;;       (say
+;;        (pc::call-text-to-speech-action text)))))
 
-(cram-process-modules:def-process-module hsr-say-action (action-designator)
-  (roslisp:ros-info (hsr-say-action-process-modules)
-                    "hsr-say-motion called with motion designator `~a'."
+(cram-process-modules:def-process-module hsr-say (action-designator)
+  (roslisp:ros-info (hsr-say-process-modules)
+                    "hsr-say-action called with action designator `~a'."
                     action-designator)
   (destructuring-bind (command text) (desig:reference action-designator)
-    (format t "command: ~a  text: ~a"command text)
+    ;(format t "command: ~a  text: ~a"command text)
     (ecase command
       (say
        (pc::call-text-to-speech-action text)))))
@@ -93,6 +92,7 @@
   (cpl:top-level
     (let ((say
             (cram-process-modules:with-process-modules-running (hsr-say)
-              (desig:a motion (:type :say)
-                       (:text ?text)))))
+              (desig:an action
+                        (:type :say)
+                        (:text ?text)))))
       (cram-process-modules:pm-execute 'hsr-say say))))

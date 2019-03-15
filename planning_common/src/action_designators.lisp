@@ -1,4 +1,4 @@
-(in-package :pc)
+(in-package :plc)
 
 (cram-prolog:def-fact-group hsr-action-designators (action-grounding)
   (cram-prolog:<- (desig:action-grounding ?desig (grasping))
@@ -24,8 +24,8 @@
  ;;;; OTHER
 
   (cram-prolog:<- (desig:action-grounding ?desig (say ?text))
-    (spec:property ?desig (:type :say))
-    (spec:property ?desig (:text ?text)))
+    (desig:desig-prop ?desig (:type :say))
+    (desig:desig-prop ?desig (:text ?text)))
   
   )
 

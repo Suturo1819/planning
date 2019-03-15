@@ -72,7 +72,7 @@
                  (desig:desig-prop ?motion-designator (:type :closing))))))
   
 ;;TODO this should probably be an action  
-  (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
-    (desig:desig-prop ?designator (:type :say))
-    (desig:desig-prop ?designator (:text ?text)))
+;  (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
+;    (desig:desig-prop ?designator (:type :say))
+;    (desig:desig-prop ?designator (:text ?text)))
 )
