@@ -1,5 +1,30 @@
 (in-package :plc)
 
+(defun execute-demo ()
+  (cpl:top-level 
+    (cram-process-modules:with-process-modules-running (hsr-say
+                                                        hsr-navigation)
+
+      (go-to pexe::*test-pose* "hello"))))
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;; DEPRECTAED. DELETE ;;;;
 ;;; BASIC ;;;
 (cpl:def-cram-function go-to-target (?pose)
   (cram-executive:perform
@@ -124,35 +149,35 @@
 ;;               (:obj-width 0.07) ;; TODO query from knowledge
 ;;               (:obj-height 0.26))))
    
-(defun plan ()
-  (cram-language:top-level
-    (cram-process-modules:with-process-modules-running (hsr-motion
-                                                        hsr-say
-                                                        hsr-navigation
-                                                        hsr-arm-motion)
-      (let* ((?pos (vector 0.0 0.0))
-             (?text "testing")
-             (look-at-something (desig:a motion
-                                         (:type :looking)
-                                         (:positions ?pos)))
+;; (defun plan ()
+;;   (cram-language:top-level
+;;     (cram-process-modules:with-process-modules-running (hsr-motion
+;;                                                         hsr-say
+;;                                                         hsr-navigation
+;;                                                         hsr-arm-motion)
+;;       (let* ((?pos (vector 0.0 0.0))
+;;              (?text "testing")
+;;              (look-at-something (desig:a motion
+;;                                          (:type :looking)
+;;                                          (:positions ?pos)))
              
-             (say-hello (desig:an action
-                                  (:type :say)
-                                  (:text ?text)))
+;;              (say-hello (desig:an action
+;;                                   (:type :say)
+;;                                   (:text ?text)))
 
-;             (?obj (make-test-obj-desig))
-             (grasp-obj (desig:an action
-                                  (:type :grasping)
-                                  (:obj ?obj)))
+;; ;             (?obj (make-test-obj-desig))
+;;              (grasp-obj (desig:an action
+;;                                   (:type :grasping)
+;;                                   (:obj ?obj)))
 
-             )
+;;              )
 
 
-        ;;; Execution chain
-        ;;(cram-process-modules:pm-execute 'hsr-say say-hello)
-        (cram-process-modules:pm-execute 'hsr-arm-motion grasp-obj)
+;;         ;;; Execution chain
+;;         ;;(cram-process-modules:pm-execute 'hsr-say say-hello)
+;;         (cram-process-modules:pm-execute 'hsr-arm-motion grasp-obj)
         
-       ;; (cram-process-modules:pm-execute 'hsr-motion look-at-something)
+;;        ;; (cram-process-modules:pm-execute 'hsr-motion look-at-something)
 
 
-        ))))
+;;         ))))

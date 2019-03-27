@@ -26,5 +26,6 @@
      (:file "high_level_plans" :depends-on ("package"
                                             "process_modules"
                                             "designators"))
+     (:file "plans" :depends-on ("package"))
      (:file "utils" :depends-on ("package"))))))
 

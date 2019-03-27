@@ -9,7 +9,7 @@
   (cram-prolog:<- (available-process-module hsr-arm-motion-process-modules))
  
   (cram-prolog:<- (matching-process-module ?desig  hsr-navigation-process-modules)
-    (desig-prop ?desig (:type :going)))
+    (desig:desig-prop ?desig (:type :going)))
 
   
   (cram-prolog:<- (matching-process-module ?desig  hsr-motion-process-modules)
