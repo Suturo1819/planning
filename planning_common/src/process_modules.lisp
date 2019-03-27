@@ -47,7 +47,7 @@
   (destructuring-bind (command text) (desig:reference motion-designator)
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
-      (pc::say
+      (say
        (pc::call-text-to-speech-action text)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,20 +106,21 @@
 
 (defun test-say (?text)
   (cpl:top-level
-    (let ((say
-            (cram-process-modules:with-process-modules-running (hsr-say)
+    (cram-process-modules:with-process-modules-running (hsr-say)
+      (let ((say          
               (desig:a motion
-                        (:type :say)
-                        (:text ?text)))))
-      (cram-process-modules:pm-execute 'hsr-say say))))
+                       (:type :say)
+                       (:text ?text))))
+        (cram-process-modules:pm-execute 'hsr-say say)))))
 
 (defun test-navigation-desig (?pose)
   (cpl:top-level
-    (let ((going
-            (cram-process-modules:with-process-modules-running (hsr-navigation)
+    (cram-process-modules:with-process-modules-running (hsr-navigation)
+      (let ((going 
               (desig:a motion
                        (:type :going)
                        (:target (desig:a location
-                                         (:pose ?pose)))))))
-      (cram-process-modules:pm-execute 'hsr-navigation going))))
+                                         (:pose ?pose))))))
+        (cpl:seq
+          (cram-process-modules:pm-execute 'hsr-navigation going))))))
 

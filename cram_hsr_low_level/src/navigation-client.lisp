@@ -65,5 +65,5 @@ euler-z gives the rotation around the z axis."
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
     (values result status)))
 
-  
+
 
