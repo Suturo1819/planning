@@ -48,6 +48,6 @@
                                             (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
                                             'cl-tf:translation
                                             (lambda (tf-name)
-                                              (cl-tf:lookup-transform (get-tf-listener) "base_footprint" tf-name :timeout 1))))))
+                                              (cl-tf:lookup-transform (get-tf-listener) "base_footprint" tf-name :timeout 5))))))
         (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate"))))
 

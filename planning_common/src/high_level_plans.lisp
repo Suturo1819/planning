@@ -1,6 +1,5 @@
 (in-package :plc)
 
-
 ;;; BASIC ;;;
 (cpl:def-cram-function go-to-target (?pose)
   (cram-executive:perform
@@ -36,13 +35,13 @@
 ;; creates a location designator for object pose
 (cpl:def-cram-function object-location ()
   (let* ((?pose (cl-tf:transform->pose
-                (pc::get-closest-object-pose-on-table))))
+                (plc::get-closest-object-pose-on-table))))
     (desig:a location (pose ?pose))))
 
 ;;; OBJECT ;;;
 
 (cpl:def-cram-function object-data ()
-  (let* ((?object (pc::get-closest-object-pose-on-table))
+  (let* ((?object (plc::get-closest-object-pose-on-table))
          (?obj-class (subseq
                       (cl-tf:child-frame-id ?object)
                       0
@@ -52,7 +51,7 @@
                          (cl-tf:translation ?object)
                          (cl-tf:rotation ?object)))
          
-         (?obj-pose-odom (pc::map-T-odom-pose ?obj-pose-map)))
+         (?obj-pose-odom (plc::map-T-odom-pose ?obj-pose-map)))
          
     (desig:an object
               (:class ?obj-class)
@@ -91,7 +90,7 @@
        ))))
 
 (defun make-obj-desig ()
-  (let* ((?object (pc::get-closest-object-pose-on-table))
+  (let* ((?object (plc::get-closest-object-pose-on-table))
          (?obj-class (subseq
                       (cl-tf:child-frame-id ?object)
                       0
@@ -101,7 +100,7 @@
                          (cl-tf:translation ?object)
                          (cl-tf:rotation ?object)))
          
-         (?obj-pose-odom (pc::map-T-odom-pose ?obj-pose-map)))
+         (?obj-pose-odom (plc::map-T-odom-pose ?obj-pose-map)))
     
     (desig:an object
               (:class ?obj-class)
@@ -113,17 +112,17 @@
               (:obj-widht 0.07) ;; TODO query from knowledge
               (:obj-height 0.26))))
 
-(defun make-test-obj-desig ()
-  (let* ((?obj-pose-map (cl-tf:transform->pose (pexe::grasp-from-shelf)))
-         (?obj-pose-odom (plc::map-T-odom-pose ?obj-pose-map)))
+;; (defun make-test-obj-desig ()
+;;   (let* ((?obj-pose-map (cl-tf:transform->pose (pexe::grasp-from-shelf)))
+;;          (?obj-pose-odom (plc::map-T-odom-pose ?obj-pose-map)))
          
-    (desig:an object
-              (:class "test")
-              (:obj-pose-map  ?obj-pose-map)
-              (:obj-pose-odom  ?obj-pose-odom)
-              (:obj-weight 0.4)
-              (:obj-width 0.07) ;; TODO query from knowledge
-              (:obj-height 0.26))))
+;;     (desig:an object
+;;               (:class "test")
+;;               (:obj-pose-map  ?obj-pose-map)
+;;               (:obj-pose-odom  ?obj-pose-odom)
+;;               (:obj-weight 0.4)
+;;               (:obj-width 0.07) ;; TODO query from knowledge
+;;               (:obj-height 0.26))))
    
 (defun plan ()
   (cram-language:top-level
@@ -141,7 +140,7 @@
                                   (:type :say)
                                   (:text ?text)))
 
-             (?obj (make-test-obj-desig))
+;             (?obj (make-test-obj-desig))
              (grasp-obj (desig:an action
                                   (:type :grasping)
                                   (:obj ?obj)))

@@ -13,8 +13,11 @@
     (plc::init-planning)
 
     ;;(greeting-introduction)
+    (pc::call-text-to-speech-action
+     "Hello and Welcome to the suturo presentation.")
+    
     (go-closer-to-table) ;; if not greeting, go to table at least
-    (chll::call-move-head-action (vector 0.0 -0.2))
+    (chll::call-move-head-action (vector 0.0 -0.4))
     
     (pc::call-text-to-speech-action
      "Calling the robo sherlok pipeline.")
@@ -59,7 +62,7 @@
       ;;(go-to-room-center)
       (pc::call-text-to-speech-action "I will try to place the object now.")
       (go-to-shelf)
-      (chll::call-move-head-action (vector 0.0 -0.2))
+      (chll::call-move-head-action (vector 0.0 -0.4))
       (place-test)
       ;;(go-to-room-center)
       ;; go back to the center of the room

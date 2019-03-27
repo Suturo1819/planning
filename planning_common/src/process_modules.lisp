@@ -10,8 +10,10 @@
   (destructuring-bind (command target) (desig:reference motion-designator)
     (ecase command
       ;;TODO differentiate types
-      (move-base
-       (chll::make-nav-action-goal target))))) ;;??? maybe add (desig:reference ..)
+      (going
+       ;;(format t "COMMAND: ~a POSE: ~a" command (desig:reference target))
+       (chll::call-nav-action-ps (desig:reference target))
+       )))) ;;??? maybe add (desig:reference ..)
 
   ;;;;;;;;;;;;;;;;;;;; BODY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-motion (motion-designator)
@@ -38,14 +40,14 @@
 ;;       (say
 ;;        (pc::call-text-to-speech-action text)))))
 
-(cram-process-modules:def-process-module hsr-say (action-designator)
+(cram-process-modules:def-process-module hsr-say (motion-designator)
   (roslisp:ros-info (hsr-say-process-modules)
-                    "hsr-say-action called with action designator `~a'."
-                    action-designator)
-  (destructuring-bind (command text) (desig:reference action-designator)
+                    "hsr-say-action called with motion designator `~a'."
+                    motion-designator)
+  (destructuring-bind (command text) (desig:reference motion-designator)
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
-      (say
+      (pc::say
        (pc::call-text-to-speech-action text)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -95,19 +97,29 @@
                           
 (defun test-move-base-motion (?pose)
   (cram-language:top-level
-    (cram-process-modules:with-process-modules-running (hsr-motion)
+    (cram-process-modules:with-process-modules-running (hsr-navigation)
       (let ((going (desig:a motion
                               (:type :going)
-                              (:target (desig:a location
-                                                (pose ?pose))))))
-        (cram-process-modules:pm-execute 'hsr-motion going)))))
+                              (:target ?pose))))
+        (cram-process-modules:pm-execute 'hsr-navigation going)))))
 
 
 (defun test-say (?text)
   (cpl:top-level
     (let ((say
             (cram-process-modules:with-process-modules-running (hsr-say)
-              (desig:an action
+              (desig:a motion
                         (:type :say)
                         (:text ?text)))))
       (cram-process-modules:pm-execute 'hsr-say say))))
+
+(defun test-navigation-desig (?pose)
+  (cpl:top-level
+    (let ((going
+            (cram-process-modules:with-process-modules-running (hsr-navigation)
+              (desig:a motion
+                       (:type :going)
+                       (:target (desig:a location
+                                         (:pose ?pose)))))))
+      (cram-process-modules:pm-execute 'hsr-navigation going))))
+

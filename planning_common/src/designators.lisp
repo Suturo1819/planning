@@ -1,23 +1,17 @@
 ;;; Adapted from https://github.com/cram2/cram/blob/master/cram_boxy/cram_boxy_designators/src/motions.lisp
 ;;; use these instead: https://github.com/cram2/cram/tree/master/cram_pr2/cram_pr2_fetch_deliver_plans/src
-(in-package :pc)
+(in-package :plc)
 ;; TODO Adapt to HSR
 
 (cram-prolog:def-fact-group hsr-motion-designators (desig:motion-grounding)
   ;; for each kind of motion define a desig
 
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
-  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
+  (cram-prolog:<- (desig:motion-grounding ?designator (going ?pose))
     (desig:desig-prop ?designator (:type :going))
-    (desig:desig-prop ?designator (:target ?location-designator))
-    (desig:designator-groundings ?location-designator ?poses)
-    (member ?pose ?poses))
+    (desig:desig-prop ?designator (:target ?pose)))
 
-  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
-    (desig:desig-prop ?designator (:type :going))
-    (desig:desig-prop ?designator (:target ?location)))
-  
-  (cram-prolog:<- (desig:motion-grounding ?designator (move-base goal-pose))
+  (cram-prolog:<- (desig:motion-grounding ?designator (going goal-pose))
     (desig:desig-prop ?designator (:type :going))
     (desig:desig-prop ?designator (:x ?x))
     (desig:desig-prop ?designator (:y ?y))
@@ -71,8 +65,8 @@
              (or (desig:desig-prop ?motion-designator (:type :opening))
                  (desig:desig-prop ?motion-designator (:type :closing))))))
   
-;;TODO this should probably be an action  
-;  (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
-;    (desig:desig-prop ?designator (:type :say))
-;    (desig:desig-prop ?designator (:text ?text)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
+    (desig:desig-prop ?designator (:type :say))
+    (desig:desig-prop ?designator (:text ?text)))
 )
