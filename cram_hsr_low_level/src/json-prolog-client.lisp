@@ -17,13 +17,10 @@
               (cut:force-ll
                (with-slots (cl-tf:x cl-tf:y cl-tf:z) (cl-tf:origin pose)
                  (json-prolog:prolog-simple
-                  (format nil "~a~a~a"
-                          "belief_existing_objects(Objectlist),"
-                          "member(Instance,Objectlist),"
-                          (apply 'format nil
-                                 "belief_existing_object_at(_, [map, _, [~a, ~a, ~a], [0, 0, 0, 1]], ~a, Instance)"
+                  (apply 'format nil
+                                 "hsr_existing_object_at(_, [map, _, [~a, ~a, ~a], [0, 0, 0, 1]], ~a, Instance)"
                                  (mapcar (alexandria:rcurry 'coerce 'short-float) 
-                                         (list cl-tf:x cl-tf:y cl-tf:z threshold))))
+                                         (list cl-tf:x cl-tf:y cl-tf:z threshold)))
                   :package :chll))))
     (simple-error ()
       (roslisp:ros-warn (prolog-table-objects) "Json prolog client error. Query invalid."))

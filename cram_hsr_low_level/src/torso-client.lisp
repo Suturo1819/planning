@@ -57,6 +57,8 @@
     (values result status)))
 
 ;;NOTE 0 0 is the deafault lookig straight position.
+;; This is a good perception hight for the table for the moment
 (defun test-move-torso ()
-  (chll::call-move-torso-action (vector 0.2 -0.5 0.0 0.0 0.0)
+  (chll::call-move-torso-action (vector 0.1 -0.1 1.5 -1.5 0.0)
                                 (vector 0.0 0.0 0.0 0.0 0.0)))
+;; up/down torso | lower arm joint | rotate arm | arm joint | wrist roll

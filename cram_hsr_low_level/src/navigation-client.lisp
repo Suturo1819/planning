@@ -49,5 +49,21 @@ euler-z gives the rotation around the z axis."
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
     (values result status)))
 
+;; TODO solve with overloading functon
+(defun call-nav-action-ps (pose-stamped)
+  (unless (eq roslisp::*node-status* :running)
+    (roslisp:start-ros-node "nav-action-lisp-client"))
+  (format t "Pose: ~a " pose-stamped)
+  
+  (multiple-value-bind (result status)
+      (let ((actionlib:*action-server-timeout* 20.0)
+            (the-goal (cl-tf:to-msg
+                       pose-stamped)))
+        (actionlib:call-goal
+         (get-nav-action-client)
+         (make-nav-action-goal the-goal)))
+    (roslisp:ros-info (nav-action-client) "Navigation action finished.")
+    (values result status)))
+
   
 
