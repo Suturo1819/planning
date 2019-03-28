@@ -1,6 +1,6 @@
 (in-package :plc)
 
-(defun init-planning (&rest ignore-clients)
+(defun init-planning ()
   "Initialize all the interfaces from planning to other groups."
   ;;TODO CHECK AUF RUNNING
   (unless (eq (roslisp:node-status) :RUNNING)
@@ -11,9 +11,10 @@
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
   (chll::init-move-head-action-client)
+  (chll::init-giskard-joints-action-client)
+  (chll:init-robosherlock-action-client :table)
+  (chll:init-robosherlock-action-client :shelf)
   
-  (unless (member 'manipulation ignore-clients)
-    (chll::init-giskard-joints-action-client))
 
   ;; (chll:make-giskard-poses-action-client)
   ;; (pc:init-perception-subscriber)

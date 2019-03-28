@@ -18,8 +18,22 @@
 (defun go-to-shelf ()
   (chll::call-nav-action  -0.56971013546  0.394732832909 -1.6))
 
+(defun move-to-home-pose ()
+  (chll::call-move-torso-action (vector 0.1 -0.1 1.5 -1.5 0.0)
+                                (vector 0.0 0.0 0.0 0.0 0.0)))
 
-
+(defun go-to-perceive-middle-shelf ()
+  (pc::call-text-to-speech-action "Approaching the center of the room.")
+  (chll::call-nav-action -0.2d0 0.2d0 0.0d0)
+  (pc::call-text-to-speech-action "Detection pose.")
+  ;; values perceived from joint-state-client
+  (chll:call-move-torso-action  (vector 0.5381456633458479d0
+                                        -2.599288106413679d0 1.5700354334115825d0
+                                        -1.6999959187217963d0 -0.015954257610744094d0)
+                                (vector 0.0 0.0 0.0 0.0 0.0))
+  (chll::call-move-head-action (vector 0.0 -0.7563733806702236))
+  (pc::call-text-to-speech-action "Approaching the shelf.")
+  (chll::call-nav-action -0.459d0 -0.089d0 -1.519d0))
 
 ;; TODO test this
 ;; test new pose

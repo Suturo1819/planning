@@ -37,17 +37,19 @@
                         (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))
 
 ;;; CLOSEST OBJECT ;;;
-(defun get-closest-object-pose-on-table ()
-  (let ((table-objects (chll:prolog-table-objects)))
-    (if table-objects 
-        (cl-tf:lookup-transform
-         (get-tf-listener) 
-         "map"
-         (car (sort table-objects '<
-                   :key (alexandria:compose 'cl-tf:v-norm
-                                            (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
-                                            'cl-tf:translation
-                                            (lambda (tf-name)
-                                              (cl-tf:lookup-transform (get-tf-listener) "base_footprint" tf-name :timeout 5))))))
-        (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate"))))
+(defun frame-closest-to-robot (objects-list)
+  ;; does not involve z-axis calculation
+  (if objects-list
+      (car (sort objects-list '<
+                 :key (alexandria:compose
+                       'cl-tf:v-norm
+                       (lambda (trans) (cl-tf:copy-3d-vector trans :z 0))
+                       'cl-tf:translation
+                       (lambda (tf-name)
+                         (cl-tf:lookup-transform (get-tf-listener)
+                                                 "base_footprint" tf-name :timeout 5)))))
+      (roslisp:ros-warn (closest-object-pose-on-table) "There are no objects to investigate")))
+
+
+
 
