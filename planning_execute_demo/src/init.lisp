@@ -13,37 +13,47 @@
     (plc::init-planning)
 
     ;;(greeting-introduction)
-    (pc::call-text-to-speech-action
-     "Hello and Welcome to the suturo presentation.")
+    (pc::call-text-to-speech-action "Hello and Welcome to the suturo presentation.")
     
     (go-closer-to-table) ;; if not greeting, go to table at least
     (chll::call-move-head-action (vector 0.0 -0.4))
     
-    (pc::call-text-to-speech-action
-     "Calling the robo sherlok pipeline.")
-     (chll:call-robosherlock-pipeline)
-    
-    (pc::call-text-to-speech-action
-     "I am done with robo sherlock.")
+    (pc::call-text-to-speech-action "Calling the robo sherlok pipeline.")
+    (chll:call-robosherlock-pipeline :table)
+    (pc::call-text-to-speech-action "I am done with robo sherlock.")
 
     (chll::call-move-head-action (vector 0.0 0.1))
+
+    (grasping-stuff)
     
-    (let* ((object-transform (plc::get-closest-object-pose-on-table))
-           (object-class
-             (subseq (cl-tf:child-frame-id object-transform) 0 (position #\_ (cl-tf:child-frame-id object-transform))))
-           (object-pose (cl-tf:make-pose (cl-tf:translation object-transform)
-                                         (cl-tf:rotation object-transform)))
+    ;;(go-to-room-center)
+    (pc::call-text-to-speech-action "I will try to place the object now.")
+    (go-to-shelf)
+    (chll::call-move-head-action (vector 0.0 -0.4))
+    (place-test)
+    ;;(go-to-room-center)
+    ;; go back to the center of the room
+    (cram-language:par
+      ;; (go-to-room-center)
+      (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention."))))
+
+;; hardcoded stuff for grasping an object from the table
+;; delete this function when the plans are done
+(cpl:def-cram-function grasping-stuff ()
+  (let* ((all-table-objects (chll:prolog-table-objects))
+           (closest-object (plc:frame-closest-to-robot all-table-objects))
+           (closest-object-pose (cl-tf:lookup-transform (plc:get-tf-listener)
+                                                        "map" closest-object :timeout 5))
+           (object-class (subseq closest-object 0 (position #\_ closest-object)))
+           (object-pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
+                                         (cl-tf:rotation closest-object-pose)))
            (object-width 0.1)
            (object-height 0.2)
            (object-weight 0.4)
            (map-T-odom (cl-tf:lookup-transform (plc::get-tf-listener) "map" "odom"))
-           
-           (odom-object-pose
-             (cl-tf:transform->pose
-              (cl-tf:transform*
-               (cl-tf:transform-inv map-T-odom)
-               (cl-tf:pose->transform object-pose)))))
-
+           (odom-object-pose (cl-tf:transform->pose (cl-tf:transform*
+                                                     (cl-tf:transform-inv map-T-odom)
+                                                     (cl-tf:pose->transform object-pose)))))
       (cram-language:seq
         (pc::call-text-to-speech-action
          (format nil "I extracted all the information. I will try to grasp the ~a now." object-class))
@@ -58,18 +68,7 @@
                                                    1
                                                    object-width
                                                    object-height
-                                                   "grip"))
-      ;;(go-to-room-center)
-      (pc::call-text-to-speech-action "I will try to place the object now.")
-      (go-to-shelf)
-      (chll::call-move-head-action (vector 0.0 -0.4))
-      (place-test)
-      ;;(go-to-room-center)
-      ;; go back to the center of the room
-      (cram-language:par
-       ;; (go-to-room-center)
-        (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
-
+                                                   "grip"))))
 
 (cpl:def-cram-function greeting-introduction ()
   "Driving around and saying stuff."
@@ -89,6 +88,7 @@
   (pc::call-text-to-speech-action "I can't tell, what object this is. I need to get closer")
   (go-closer-to-table)
   (pc::call-text-to-speech-action "Now i can finally identify."))
+
 
 
 (define-condition custom-error (cpl:simple-plan-failure) ((message :initarg :message :initform "" :reader message)))
