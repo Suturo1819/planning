@@ -15,7 +15,8 @@
                cram-tf
                cram-simple-actionlib-client
                trajectory_msgs-msg
-               controller_manager_msgs-msg)
+               controller_manager_msgs-msg
+               sensor_msgs-msg)
   
   :components
   ((:module "src"
@@ -28,5 +29,6 @@
              (:file "json-prolog-client" :depends-on ("package"))
              (:file "robosherlock-client" :depends-on ("package"))
              (:file "head-client" :depends-on ("package"))
-             (:file "torso-client" :depends-on ("package"))))))
+             (:file "torso-client" :depends-on ("package"))
+             (:file "joint-state-client" :depends-on ("package"))))))
 
