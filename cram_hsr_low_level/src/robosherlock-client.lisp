@@ -27,7 +27,7 @@
   (setf *robosherlock-action-clients*
         (alexandria:alist-hash-table '((:table . NIL) (:shelf . NIL)))))
 
-(roslisp-utilities:register-ros-init-function init-clients)
+;; (roslisp-utilities:register-ros-init-function init-clients)
 (roslisp-utilities:register-ros-cleanup-function kill-robosherlock-clients)
 
 (defun get-robosherlock-client (pipeline-name)

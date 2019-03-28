@@ -14,10 +14,10 @@
   (chll::init-giskard-joints-action-client)
   (chll:init-robosherlock-action-client :table)
   (chll:init-robosherlock-action-client :shelf)
-  
+  (chll::init-move-torso-action-client)
 
   ;; (chll:make-giskard-poses-action-client)
   ;; (pc:init-perception-subscriber)
   ;; TODO knowledge interface
-  (roslisp:ros-info (plc) "All action clients are set up.")) ;; for navigation
+  (roslisp:ros-info (init-planning-common) "All action clients are set up.")) ;; for navigation
   

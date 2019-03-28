@@ -54,15 +54,15 @@
 (defun place-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
    (grasp-from-shelf-very-low)
-       (cl-tf:transform->pose 
-        (cl-tf:transform*
-         (cl-tf:transform-inv
-          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-from-shelf-very-low)))
-       0.4
-       0.07
-       0.26
-       "place"))
+   (cl-tf:transform->pose 
+    (cl-tf:transform*
+     (cl-tf:transform-inv
+      (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+     (grasp-from-shelf-very-low)))
+   0.4
+   0.07
+   0.26
+   "place"))
 
 (defun grasp-test-top ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action

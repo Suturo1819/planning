@@ -24,10 +24,10 @@
     (chll:call-robosherlock-pipeline :shelf)
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-all-objects-in-shelf))
-          (text (if perceived-objects
-                    (format nil "Oh boy, I can see ."
-                            (mapcar #'chll:object-name->class perceived-objects))
-                    "There are no objects in the shelf.")))
+           (text (if perceived-objects
+                     (format nil "Oh boy, I can see ."
+                             (mapcar #'chll:object-name->class perceived-objects))
+                     "There are no objects in the shelf.")))
       (pc::call-text-to-speech-action text))
     ;; shelf perception ;; 
     ;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +84,20 @@
       (go-to-shelf)
       (chll::call-move-head-action (vector 0.0 -0.4))
       
-      (place-test))
+      (let* ((goal-shelf (chll:prolog-object-goal closest-object))
+             (goal-transform-stamped (cl-tf:lookup-transform (plc:get-tf-listener) "map" goal-shelf :timeout 2))
+             (goal-transform (cl-tf:make-transform (cl-tf:translation goal-transform-stamped)
+                                                   (cl-tf:rotation goal-transform-stamped))))
+        (cram-hsr-low-level::call-giskard-joints-grasping-action
+         goal-transform
+         (cl-tf:transform->pose
+          (cl-tf:transform*
+           (cl-tf:transform-inv
+            (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+           goal-transform))
+          0.4 0.07 0.26 "place"))
+        ;; (place-test)
+        )
       ;; place object in shelf ;;
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -94,7 +107,7 @@
 
     (cram-language:par
       ;; (go-to-room-center)
-      (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention."))))
+      (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
 
 (cpl:def-cram-function greeting-introduction ()
   "Driving around and saying stuff."

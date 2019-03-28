@@ -55,7 +55,7 @@
                                              :package :chll)))
          (surface (if (eq raw-response 1) NIL (cdr (assoc '?urdfname (cut:lazy-car raw-response))))))
     (if surface
-        (string-trim "'" surface)
+        (format nil "environment/~a" (string-trim "'" surface))
         (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
 
 (defun prolog-all-objects-in-shelf ()
