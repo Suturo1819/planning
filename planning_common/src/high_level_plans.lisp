@@ -1,32 +1,18 @@
 (in-package :plc)
 
-(defun execute-demo ()
-  (cpl:top-level 
-    (cram-process-modules:with-process-modules-running (hsr-say
-                                                        hsr-navigation)
 
-      (go-to pexe::*test-pose* "hello"))))
-
-
-      
-
+;; (defun execute-demo ()
+;;   (cpl:top-level 
+;;     (cram-process-modules:with-process-modules-running (hsr-say
+;;                                                         hsr-navigation)
+;; This requres cyclic dependency with planning-execute-demo.
+;; Define the *test-pose* in this package if needed.
+;;       (go-to pexe::*test-pose* "hello"))))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-;;;; DEPRECTAED. DELETE ;;;;
-;;; BASIC ;;;
-(cpl:def-cram-function go-to-target (?pose)
+#+deprecated-and-not-used-anymore
+(;;; BASIC ;;;
+ (cpl:def-cram-function go-to-target (?pose)
   (cram-executive:perform
    (desig:a motion
             (:type :going)
@@ -181,3 +167,4 @@
 
 
 ;;         ))))
+)
