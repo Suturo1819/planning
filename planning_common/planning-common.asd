@@ -2,6 +2,7 @@
   :depends-on (roslisp
                cram-language
                cl-tf
+               cl-tf2
                actionlib
                geometry_msgs-msg
                tmc_msgs-msg
