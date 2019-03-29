@@ -107,7 +107,8 @@
 
     (cram-language:par
       ;; (go-to-room-center)
-      (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention.")))))
+      (pc::call-text-to-speech-action
+       "This is all i can do for now. Thank you for you attention."))))
 
 (cpl:def-cram-function greeting-introduction ()
   "Driving around and saying stuff."
@@ -138,3 +139,19 @@
   (:report (lambda (condition stream)
              (format stream "move error: ~A~%"
                      (message condition)))))
+
+
+
+
+
+;;;;high lvl planning
+
+
+
+(defun execute-demo ()
+  (cpl:top-level 
+    (plc::with-hsr-process-modules
+;; This requres cyclic dependency with planning-execute-demo.
+;; Define the *test-pose* in this package if needed.
+      ;(go-to pexe::*shelf* "hello")
+      )))

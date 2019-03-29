@@ -124,3 +124,12 @@
         (cpl:seq
           (cram-process-modules:pm-execute 'hsr-navigation going))))))
 
+(defmacro with-hsr-process-modules (&body body)
+  `(cram-process-modules:with-process-modules-running
+       (plc::hsr-navigation
+        plc::hsr-motion
+        plc::hsr-say)
+     (cpl-impl::named-top-level (:name :top-level)
+     ,@body)))
+
+
