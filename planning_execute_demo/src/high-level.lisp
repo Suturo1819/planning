@@ -11,4 +11,4 @@
 
 (defun execute-demo()
   (plc::with-hsr-process-modules
-    (plc::go-to *shelf* "shelf")))
+      (plc::go-to (pose-infront-shelf) "shelf")))

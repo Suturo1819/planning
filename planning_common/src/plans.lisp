@@ -1,8 +1,7 @@
 (in-package :plc)
 
 (cpl:def-cram-function go-to (?pose ?text)
-  "go to a predefined locationn"
-  
+  "go to a predefined location"
   (cpl:seq
     (let* ((?to-say (concatenate 'string "I am going to the " ?text))
            (say-target (desig:a motion

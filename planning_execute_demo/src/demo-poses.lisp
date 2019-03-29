@@ -39,12 +39,12 @@
 ;; test new pose
 (defun grasp-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (grasp-from-shelf-high)
+   (grasp-obj-from-table)
        (cl-tf:transform->pose 
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-from-shelf-high)))
+         (grasp-obj-from-table)))
          0.4    ;; 0.4    ;;  0.4
          0.08    ;;  0.085  ;; 0.10   ;;  0.08
          0.26   ;; 0.085  ;; 0.21   ;;  0.26
@@ -150,3 +150,29 @@
    (roslisp:ros-time)
    (cl-tf:make-3d-vector 0.0915691405535 0.065488636493 0.0)
    (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az 0.0)))
+
+;;; ------------------------------------------------
+(defparameter *x-offset* 0.4)
+(defparameter *y-offset* 0.6)
+
+(defun pose-infront-shelf()
+  (let* ((shelf (cl-tf2:lookup-transform
+                 (plc:get-tf-listener)
+                 "map"
+                 "environment/shelf_base_center"
+                 :timeout 5))
+         (pose (cl-tf:make-pose
+                (cl-tf:translation shelf)
+                (cl-tf:rotation shelf)))
+         
+         (result-pose (cram-tf:translate-pose pose
+                                              :x-offset 0.0
+                                              :y-offset *y-offset*
+                                              :z-offset 0.0)))
+    (cl-tf:make-pose-stamped "map"
+                             (roslisp:ros-time)
+                             (cl-tf:origin result-pose)
+                             (cl-tf:orientation result-pose))))
+
+
+    

@@ -59,6 +59,7 @@ euler-z gives the rotation around the z axis."
       (let ((actionlib:*action-server-timeout* 20.0)
             (the-goal (cl-tf:to-msg
                        pose-stamped)))
+        (format t "my POSE: ~a" the-goal)
         (actionlib:call-goal
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))
