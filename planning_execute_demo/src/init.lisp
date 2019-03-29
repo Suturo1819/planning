@@ -25,7 +25,7 @@
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-all-objects-in-shelf))
            (text (if perceived-objects
-                     (format nil "Oh boy, I can see ."
+                     (format nil "Oh boy, I can see objects."
                              (mapcar #'chll:object-name->class perceived-objects))
                      "There are no objects in the shelf.")))
       (pc::call-text-to-speech-action text))
@@ -54,7 +54,7 @@
     ;; grasping from table ;;
     (let* ((all-table-objects (chll:prolog-table-objects))
          (closest-object (plc:frame-closest-to-robot all-table-objects))
-         (closest-object-pose (cl-tf:lookup-transform (plc:get-tf-listener)
+         (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
                                                       "map" closest-object :timeout 5))
          (object-class (chll:object-name->class closest-object))
          (object-pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
@@ -62,7 +62,7 @@
          (object-width 0.1)
          (object-height 0.2)
          (object-weight 0.4)
-         (map-T-odom (cl-tf:lookup-transform (plc::get-tf-listener) "map" "odom"))
+           (map-T-odom (cl-tf2:lookup-transform (plc:get-tf-listener) "map" "odom"))
          (odom-object-pose (cl-tf:transform->pose (cl-tf:transform*
                                                    (cl-tf:transform-inv map-T-odom)
                                                    (cl-tf:pose->transform object-pose)))))
@@ -85,7 +85,7 @@
       (chll::call-move-head-action (vector 0.0 -0.4))
       
       (let* ((goal-shelf (chll:prolog-object-goal closest-object))
-             (goal-transform-stamped (cl-tf:lookup-transform (plc:get-tf-listener) "map" goal-shelf :timeout 2))
+             (goal-transform-stamped (cl-tf2:lookup-transform (plc:get-tf-listener) "map" goal-shelf :timeout 2))
              (goal-transform (cl-tf:make-transform (cl-tf:translation goal-transform-stamped)
                                                    (cl-tf:rotation goal-transform-stamped))))
         (cram-hsr-low-level::call-giskard-joints-grasping-action
@@ -107,8 +107,7 @@
 
     (cram-language:par
       ;; (go-to-room-center)
-      (pc::call-text-to-speech-action
-       "This is all i can do for now. Thank you for you attention."))))
+      (pc::call-text-to-speech-action "This is all i can do for now. Thank you for you attention."))))
 
 (cpl:def-cram-function greeting-introduction ()
   "Driving around and saying stuff."
@@ -139,19 +138,3 @@
   (:report (lambda (condition stream)
              (format stream "move error: ~A~%"
                      (message condition)))))
-
-
-
-
-
-;;;;high lvl planning
-
-
-
-(defun execute-demo ()
-  (cpl:top-level 
-    (plc::with-hsr-process-modules
-;; This requres cyclic dependency with planning-execute-demo.
-;; Define the *test-pose* in this package if needed.
-      ;(go-to pexe::*shelf* "hello")
-      )))
