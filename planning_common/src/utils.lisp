@@ -53,3 +53,29 @@
 
 
 
+;; (defun check-rotation (nav-goal)
+;;   ;; make sure the robot is facing the direction he is driving
+;;   (let* ((facing-direction (cl-tf2:lookup-transform
+;;                             (plc::get-tf-listener)
+;;                             "map"
+;;                             "base_footprint"
+;;                             :timeout 5))
+;;          (rotation-difference
+;;            (- (car (last (cl-tf2:quaternion->euler (cl-tf2:rotation facing-direction))))
+;;               (car (last (cl-tf::quaternion->euler (cl-tf:orientation nav-goal)))))))
+;;             ;; compare base_footprint orientation with current aka. within a margin.
+
+;;     (format t "difference: ~a" rotation-difference)))
+
+(defun force-rotation (pose)
+  (let* ((current-pose (cl-tf2:lookup-transform
+                            (plc:get-tf-listener)
+                            "map"
+                            "base_footprint"
+                            :timeout 5))
+         (goal-pose (cl-tf:make-pose-stamped
+                     "map"
+                     (roslisp:ros-time)
+                     (cl-tf2:translation current-pose)
+                     (cl-tf2:orientation pose))))
+     goal-pose))

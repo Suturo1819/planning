@@ -7,6 +7,11 @@
            (say-target (desig:a motion
                                 (:type :say)
                                 (:text ?to-say)))
+           (?rotation (plc::force-rotation ?pose))
+           (rotate (desig:a motion
+                            (:type :going)
+                            (:target (desig:a location
+                                              (:pose ?rotation)))))
            
            (move (desig:a motion
                           (:type :going)
@@ -17,6 +22,7 @@
                                  (:text "I have reached my destination"))))
       
       (cram-executive:perform say-target)
+      (cram-executive:perform rotate)
       (cram-executive:perform move)
       (cram-executive:perform say-reached))))
 
