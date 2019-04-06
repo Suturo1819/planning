@@ -28,5 +28,6 @@
                                             "process_modules"
                                             "designators"))
      (:file "plans" :depends-on ("package"))
+     (:file "dynamic-poses" :depends-on ("package"))
      (:file "utils" :depends-on ("package"))))))
 

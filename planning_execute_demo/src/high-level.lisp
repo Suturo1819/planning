@@ -11,9 +11,9 @@
 
 (defun execute-demo()
   (plc::with-hsr-process-modules
-      (plc::go-to (pose-infront-shelf) "shelf")))
+      (plc::go-to (plc::pose-infront-table :manipulation T) "table")))
 
 
 (defun execute-demo-proj()
   (plc::with-hsr-proj-process-modules
-      (plc::go-to (pose-infront-shelf) "shelf")))
+      (plc::go-to (plc::pose-infront-shelf) "shelf")))
