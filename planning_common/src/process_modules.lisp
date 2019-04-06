@@ -130,6 +130,15 @@
         plc::hsr-motion
         plc::hsr-say)
      (cpl-impl::named-top-level (:name :top-level)
-     ,@body)))
+       ,@body)))
 
+;; (defmacro with-hsr-proj-process-modules (&body body)
+;;   `(cram-process-modules:with-process-modules-running
+;;        (hsrb-proj::hsrb-proj-navigation
+;;         hsrb-proj::hsrb-proj-torso
+;;         hsrb-proj::hsrb-proj-ptu
+;;         hsrb-proj::hsrb-proj-perception
+;;         hsrb-proj::hsrb-proj-grippers)
+;;      (cpl-impl::named-top-level (:name :top-level)
+;;      ,@body)))
 
