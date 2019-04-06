@@ -16,9 +16,13 @@
 (defun make-giskard-joints-action-goal (text &key
                                                (object-pose NIL) ; object pose in map
                                                (object-pose-to-odom NIL) ; object-pose in odom
-                                               (weight NIL)
-                                               (width NIL)
-                                               (height NIL)
+                                               (weight NIL)     ;;float64
+                                               (width NIL)      ;;float64
+                                               (height NIL)     ;;float64
+                                               (depth NIL)      ;;float64
+                                               (top NIL)        ;;bool
+                                               (side_right NIL) ;;bool
+                                               (side_left NIL)  ;;bool
                                                (desired-joint-values NIL))
   ;; TODO: desired_joints_values are ignored for now, so moving is not possible
   desired-joint-values
@@ -29,9 +33,21 @@
     object_pose_to_odom (cl-tf:to-msg object-pose-to-odom)
     weight weight
     width width
-    height height))
+    height height
+    depth depth
+    top top
+    side_right
+    side_left))
 
-(defun ensure-giskard-joints-grasping-input (object-pose object-pose-to-odom weight width height)
+(defun ensure-giskard-joints-grasping-input (object-pose
+                                             object-pose-to-odom
+                                             weight
+                                             width
+                                             height
+                                             depth
+                                             top
+                                             side_right
+                                             side_left)
   ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
   (and object-pose
        object-pose-to-odom
@@ -44,7 +60,16 @@
   desired-joint-values
   T)
 
-(defun ensure-giskard-joints-grasping-goal-reached (status object-pose object-pose-to-odom weight width height)
+(defun ensure-giskard-joints-grasping-goal-reached (status
+                                                    object-pose
+                                                    object-pose-to-odom
+                                                    weight
+                                                    width
+                                                    height
+                                                    depth
+                                                    top
+                                                    side_right
+                                                    side_left)
   ;; TODO: check status if given object-pose is reached
   (roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
   ;; TODO: log everything
@@ -53,6 +78,10 @@
   weight
   width
   height
+  depth
+  top
+  side_right
+  side_left
   T
 )
 
@@ -64,8 +93,26 @@
   T
 )
 
-(defun call-giskard-joints-grasping-action (object-pose object-pose-to-odom weight width height pose)
-  (when (ensure-giskard-joints-grasping-input object-pose object-pose-to-odom  weight width height)
+(defun call-giskard-joints-grasping-action (object-pose
+                                            object-pose-to-odom
+                                            weight
+                                            width
+                                            height
+                                            pose
+                                            depth
+                                            top
+                                            side_right
+                                            side_left)
+  (when (ensure-giskard-joints-grasping-input
+         object-pose
+         object-pose-to-odom
+         weight
+         width
+         height
+         depth
+         top
+         side_right
+         side_left)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
@@ -74,10 +121,23 @@
                                                      :object-pose-to-odom object-pose-to-odom
                                                      :weight weight
                                                      :width width
-                                                     :height height)
+                                                     :height height
+                                                     :depth depth
+                                                     :top top
+                                                     :side_right side_right
+                                                     :side_left side_left)
        :action-timeout *giskard-joints-action-timeout*)
       (roslisp:ros-info (move-joints-action) "do_move_joints grasp action finished.")
-      (ensure-giskard-joints-grasping-goal-reached status object-pose object-pose-to-odom  weight width height)
+      (ensure-giskard-joints-grasping-goal-reached status
+                                                   object-pose
+                                                   object-pose-to-odom
+                                                   weight
+                                                   width
+                                                   height
+                                                   depth
+                                                   top
+                                                   side_right
+                                                   side_left)
       (values result status))))
 
 (defun call-giskard-joints-move-action (desired-values desired-velocities)

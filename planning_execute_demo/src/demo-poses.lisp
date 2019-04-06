@@ -66,16 +66,20 @@
 
 (defun grasp-test-top ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (grasp-obj-from-table)
+   (grasp-obj-from-floor-2)
        (cl-tf:transform->pose 
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-table)))
+         (grasp-obj-from-floor-2)))
          0.4    ;; 0.4    ;;  0.4
          0.055    ;;  0.085  ;; 0.10   ;;  0.08
          0.195   ;; 0.085  ;; 0.21   ;;  0.26
-       "grip"))
+         "grip"
+         0.2
+         'true
+         'false
+         'false))
 
 (defun place-obj-on-table ()
   (cl-tf:make-transform
@@ -134,6 +138,13 @@
    (cl-tf:make-3d-vector 0.293501168489
                          0.0614272356033
                          0.195)
+   (cl-tf:make-identity-rotation)))
+
+(defun grasp-obj-from-floor-2 ()
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector 0.394331806898
+                         -0.0414100885391
+                         0.4)
    (cl-tf:make-identity-rotation)))
 
 ;;; testing ;;;
