@@ -83,4 +83,11 @@
       
       (cram-executive:perform grasp))))
                               
-  
+(cpl:def-cram-function look (?position)
+  "grasp object"
+  (cpl:seq
+    (let* ((look-at (desig:a motion
+                             (:type :looking)
+                             (:direction ?position))))
+      
+      (cram-executive:perform look-at))))

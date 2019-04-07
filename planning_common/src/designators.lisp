@@ -30,11 +30,19 @@
   ;; looking at?
   (cram-prolog:<- (desig:motion-grounding ?designator (move-neck ?pos-vector))
     (desig:desig-prop ?designator (:type :looking))
-    (desig:desig-prop ?designator (:positions ?pos-vector)))
+    (desig:desig-prop ?designator (:direction ?pos-vector)))
 
-    (cram-prolog:<- (desig:motion-grounding ?designator (look-at :front))
+  (cram-prolog:<- (desig:motion-grounding ?designator (look :front))
     (desig:desig-prop ?designator (:type :looking))
     (desig:desig-prop ?designator (:direction :front)))
+  
+  (cram-prolog:<- (desig:motion-grounding ?designator (look :perceive))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:direction :perceive)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (look :safe))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:direction :safe)))
   
   ;;;;;;;;;;;;;;;;;;;; GRIPPER ;;;;;;;;;;;;;;;;;;;;;;;;
 

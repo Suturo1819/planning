@@ -1,6 +1,5 @@
 (in-package :plc)
 
-
 ;; TODO still in progress
 (cram-process-modules:def-process-module hsr-navigation (motion-designator)
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,25 +20,17 @@
                     "hsr-motion called with motion designator `~a'."
                     motion-designator)
   (destructuring-bind (command pos) (desig:reference motion-designator)
-    (ecase command
-      (move-neck
-       (chll::call-move-head-action pos))
-      (look-at
-       (ecase pos
-         (:front
-          (chll::call-move-head-action (vector 0.0 0.0))))))))
+    (if (typep pos 'sequence)
+        (chll::call-move-head-action pos)
+        (ecase pos
+          (:front
+           (chll::call-move-head-action (vector 0.0 0.0)))
+          (:perceive
+           (chll::call-move-head-action (vector 0.0 -0.4)))
+          (:safe
+           (chll::call-move-head-action (vector 0.0 0.1)))))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
-;; (cram-process-modules:def-process-module hsr-say (motion-designator)
-;;   (roslisp:ros-info (hsr-say-process-modules)
-;;                     "hsr-say-motion called with motion designator `~a'."
-;;                     motion-designator)
-;;   (destructuring-bind (command text) (desig:reference motion-designator)
-;;     (format t "command: ~a  text: ~a"command text)
-;;     (ecase command
-;;       (say
-;;        (pc::call-text-to-speech-action text)))))
-
 (cram-process-modules:def-process-module hsr-say (motion-designator)
   (roslisp:ros-info (hsr-say-process-modules)
                     "hsr-say-action called with motion designator `~a'."
@@ -86,13 +77,13 @@
 
 
   ;;;;;;;;;;;;;;;;;;;; TESTS FOR DEBUGGING ;;;;;;;;;;;;;;;;;;;;;;;;
-(defun test-head-motion (?pos)
+(defun test-head-motion ()
   (cram-language:top-level
     (cram-process-modules:with-process-modules-running (hsr-motion)
-      (let ((look-at (desig:a motion
+      (let ((look (desig:a motion
                               (:type :looking)
-                              (:positions ?pos))))
-        (cram-process-modules:pm-execute 'hsr-motion look-at)))))
+                              (:positions :front))))
+        (cram-process-modules:pm-execute 'hsr-motion look)))))
 
 (defun test-head-motion2 (?direction)
   (cram-language:top-level
