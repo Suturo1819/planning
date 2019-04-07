@@ -7,6 +7,7 @@
   (cram-prolog:<- (cpm:available-process-module hsr-motion))
   (cram-prolog:<- (cpm:available-process-module hsr-say))
   (cram-prolog:<- (cpm:available-process-module hsr-arm-motion))
+  (cram-prolog:<- (cpm:available-process-module hsr-torso))
  
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-navigation)
     (desig:desig-prop ?desig (:type :going)))
@@ -14,7 +15,7 @@
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-motion)
     (desig:desig-prop ?desig (:type :looking)))
 
-  (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-motion)
+  (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-torso)
     (desig:desig-prop ?desig (:type :moving-torso)))
 
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-motion)

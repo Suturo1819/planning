@@ -20,9 +20,9 @@
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; move robot up and down
-  (cram-prolog:<- (desig:motion-grounding ?designator (move-torso ?joint-angles-list))
+  (cram-prolog:<- (desig:motion-grounding ?designator (move-torso ?height))
     (desig:desig-prop ?designator (:type :moving-torso))
-    ;;(desig:desig-prop ?designator (:configuration ?joint-angles-list))
+    (desig:desig-prop ?designator (:height ?height))
     )
   
   ;;;;;;;;;;;;;;;;;;;; NECK ;;;;;;;;;;;;;;;;;;;;;;;;

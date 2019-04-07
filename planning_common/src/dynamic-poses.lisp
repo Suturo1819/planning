@@ -56,3 +56,28 @@ So that the robot can move his arm safely."
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
                              (cl-tf:orientation result-pose))))
+
+(defparameter *height-offset* 0.15)
+
+(defun table-head-difference()
+  (let* ((table-pos (cl-tf2:lookup-transform
+                      (plc:get-tf-listener)
+                      "map"
+                      "environment/table_front_edge_center"
+                      :timeout 5))
+         (table-height (cl-tf2:z
+                        (cl-tf2:translation table-pos)))
+         
+         (head-pos (cl-tf2:lookup-transform
+                      (plc:get-tf-listener)
+                      "map"
+                      "head_pan_link"
+                      :timeout 5))
+         (head-height (cl-tf2:z
+                       (cl-tf2:translation head-pos)))
+         ;; abs ensures number stays positive
+         (diff (- table-height head-height)))
+    
+    (format t "diff: ~a" (+ diff *height-offset*))
+    (+ diff *height-offset*)
+    ))

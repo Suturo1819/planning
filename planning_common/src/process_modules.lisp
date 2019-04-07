@@ -30,6 +30,15 @@
           (:safe
            (chll::call-move-head-action (vector 0.0 0.1)))))))
 
+  ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
+(cram-process-modules:def-process-module hsr-torso (motion-designator)
+  (roslisp:ros-info (hsr-torso-process-modules)
+                    "hsr-torso called with motion designator `~a'."
+                    motion-designator)
+  (destructuring-bind (command ?height) (desig:reference motion-designator)
+    (chll::call-move-torso-action (vector ?height -0.1 1.5 -1.5 0.0)
+                                  (vector 0.0 0.0 0.0 0.0 0.0))))
+
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-say (motion-designator)
   (roslisp:ros-info (hsr-say-process-modules)
@@ -127,7 +136,8 @@
        (plc::hsr-navigation
         plc::hsr-motion
         plc::hsr-say
-        plc::hsr-arm-motion)
+        plc::hsr-arm-motion
+        plc::hsr-torso)
      (cpl-impl::named-top-level (:name :top-level)
        ,@body)))
 

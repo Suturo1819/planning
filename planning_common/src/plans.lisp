@@ -34,15 +34,17 @@
       (cram-executive:perform say-reached))))
 
 ;;; -----
-(cpl:def-cram-function perceive-table (?pos ?height)
+(cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
   (cpl:seq
     (let* ((say-move-torso (desig:a motion
                                 (:type :say)
                                 (:text "I am going to perceive the table now. Moving my torso up.")))
            
+           (?height (plc::table-head-difference))
+           
            (move-torso (desig:a motion
-                                (:type :move-torso)
+                                (:type :moving-torso)
                                 (:height ?height)))
            
            (say-move-head (desig:a motion
@@ -51,17 +53,27 @@
            
            (move-head (desig:a motion
                           (:type :looking)
-                          (:direction ?pos)))
-           
+                          (:direction :perceive)))
+             
            (say-reached (desig:a motion
                                  (:type :say)
-                                 (:text "Move head complete. Perceiving..."))))
+                                 (:text "Move head complete. Perceiving...")))
+      ;; TODO add perception call here
+           (say-safe (desig:a motion
+                                 (:type :say)
+                                 (:text "Perceiving complete. Moving into default position.")))
+           
+           (move-head-safe (desig:a motion
+                          (:type :looking)
+                          (:direction :safe))))
       
       (cram-executive:perform say-move-torso)
       (cram-executive:perform move-torso)
       (cram-executive:perform say-move-head)
       (cram-executive:perform move-head)
-      (cram-executive:perform say-reached))))
+      (cram-executive:perform say-reached)
+      (cram-executive:perform say-safe)
+      (cram-executive:perform move-head-safe))))
 
 ;; -----
 (cpl:def-cram-function grasp-object ()
@@ -109,4 +121,14 @@ or one of the following: :perceive :safe :front"
                              (:text ?text))))
       
       (cram-executive:perform say-text))))
+
+(cpl:def-cram-function move-torso (?height)
+  "moves torso to given height. keeps the arm out of sight."
+  (cpl:seq
+    (let* ((move-torso (desig:a motion
+                             (:type :moving-torso)
+                             (:height ?height))))
+
+      (move-head :safe)
+      (cram-executive:perform move-torso))))
 
