@@ -21,3 +21,15 @@
   ;; TODO knowledge interface
   (roslisp:ros-info (init-planning-common) "All action clients are set up.")) ;; for navigation
   
+(defun init-integration()
+  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
+  (print "init speech client")
+  (pc::init-text-to-speech-action-client) ;; for text-to-speech
+  (print "init navigation client")
+  (chll:init-nav-client)
+  (print "init moce-head client")
+  (chll::init-move-head-action-client)
+  (print "init giskard-joints")
+  (chll::init-giskard-joints-action-client)
+  (print "init move-torso client")
+  (chll::init-move-torso-action-client))
