@@ -51,31 +51,38 @@
        (pc::call-text-to-speech-action text)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
-(cram-process-modules:def-process-module hsr-arm-motion (action-designator)
+(cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
   (roslisp:ros-info (hsr-arm-motion-process-modules)
                     "hsr-arm-motion called with motion designator `~a'."
-                    action-designator)
-  (destructuring-bind (command obj-desig) (desig:reference action-designator)
-   (let* (;(type (desig:desig-prop-value :type  action-designator))
-          (?obj-desig obj-desig))
-     (ecase command
-       (grasping
-        (chll::call-giskard-joints-grasping-action
-         (car (desig:desig-prop-values ?obj-desig :obj-pose-map))
-         (car (desig:desig-prop-values ?obj-desig :obj-pose-odom))
-         (car (desig:desig-prop-values ?obj-desig :obj-weight))
-         (car (desig:desig-prop-values ?obj-desig :obj-width))
-         (car (desig:desig-prop-values ?obj-desig :obj-height))
-         "grip"))
-      
-      (placing
+                    motion-designator)
+  (destructuring-bind (command
+                       ?pose
+                      ;; ?pose-odom
+                       ?weight
+                       ?width
+                       ?height
+                       ?depth
+                       ?top
+                       ?side_right
+                       ?side_left)
+      (desig:reference motion-designator)
+    (ecase command
+      (grasping
        (chll::call-giskard-joints-grasping-action
-        (desig:desig-prop-values ?obj-desig :obj-pose-map )
-        (desig:desig-prop-values ?obj-desig :obj-pose-odom )
-        (car (desig:desig-prop-values ?obj-desig :obj-weight ))
-        (car (desig:desig-prop-values ?obj-desig :obj-width ))
-        (car (desig:desig-prop-values ?obj-desig :obj-height ))
-        "place"))))))
+        ?pose
+        (plc::map-T-odom ?pose) ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "grip" ;;obj pose /text
+        ?depth
+        ?top
+        ?side_right
+        ?side_left))
+      
+      (place
+       (print "place"))
+      )))
 
 
   ;;;;;;;;;;;;;;;;;;;; TESTS FOR DEBUGGING ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -128,7 +135,8 @@
   `(cram-process-modules:with-process-modules-running
        (plc::hsr-navigation
         plc::hsr-motion
-        plc::hsr-say)
+        plc::hsr-say
+        plc::hsr-arm-motion)
      (cpl-impl::named-top-level (:name :top-level)
        ,@body)))
 
@@ -141,4 +149,5 @@
 ;;         hsrb-proj::hsrb-proj-grippers)
 ;;      (cpl-impl::named-top-level (:name :top-level)
 ;;      ,@body)))
+
 

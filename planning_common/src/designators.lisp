@@ -64,8 +64,29 @@
         (and (desig:desig-prop ?motion-designator (:gripper ?_))
              (or (desig:desig-prop ?motion-designator (:type :opening))
                  (desig:desig-prop ?motion-designator (:type :closing))))))
-  
 
+  ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
+  (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?pose
+                                                              ;;  ?pose-odom
+                                                                ?weight
+                                                                ?width
+                                                                ?height
+                                                                ?depth
+                                                                ?top
+                                                                ?side_right
+                                                                ?side_left))
+    (desig:desig-prop ?designator (:type :grasping))
+    (desig:desig-prop ?designator (:pose ?pose))
+   ;; (desig:desig-prop ?designator (:pose-odom ?pose-odom))
+    (desig:desig-prop ?designator (:weight ?weight))
+    (desig:desig-prop ?designator (:width ?width))
+    (desig:desig-prop ?designator (:height ?height))
+    (desig:desig-prop ?designator (:depth ?depth))
+    (desig:desig-prop ?designator (:top ?top))
+    (desig:desig-prop ?designator (:side_right ?side_right))
+    (desig:desig-prop ?designator (:side_left ?side_left)))
+  
+  ;;;;;;;;;;;;;;;;;;;; SPEECH ;;;;;;;;;;;;;;;;;;;;;;;;
   (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
     (desig:desig-prop ?designator (:type :say))
     (desig:desig-prop ?designator (:text ?text)))

@@ -7,7 +7,9 @@
            (say-target (desig:a motion
                                 (:type :say)
                                 (:text ?to-say)))
+           
            (?rotation (plc::force-rotation ?pose))
+           
            (rotate (desig:a motion
                             (:type :going)
                             (:target (desig:a location
@@ -55,3 +57,30 @@
       (cram-executive:perform say-move-head)
       (cram-executive:perform move-head)
       (cram-executive:perform say-reached))))
+
+;; -----
+(cpl:def-cram-function grasp-object ()
+  "grasp object"
+  (cpl:seq
+    (let* ((?pose (pexe::grasp-obj-from-floor-2))
+           (?weight 0.4)
+           (?width 0.055)
+           (?height 0.195)
+           (?depth 0.2)
+           (?top 'false)
+           (?side_right 'false)
+           (?side_left 'false)
+           (grasp (desig:a motion
+                              (:type :grasping)
+                              (:pose ?pose)
+                              (:weight ?weight)
+                              (:width ?width)
+                              (:height ?height)
+                              (:depth ?depth)
+                              (:top ?top)
+                              (:side_right ?side_right)
+                              (:side_left ?side_left))))
+      
+      (cram-executive:perform grasp))))
+                              
+  
