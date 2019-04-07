@@ -11,7 +11,12 @@
 
 (defun execute-demo()
   (plc::with-hsr-process-modules
-      (plc::go-to (plc::pose-infront-table :manipulation T) "table")))
+    ;;(plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+    ;;(plc::grasp-object)
+    ;;(plc::look :safe)
+    ;;(plc::say "hello")
+    (plc::perceive-table)
+    ))
 
 
 (defun execute-demo-proj()
