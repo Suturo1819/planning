@@ -12,8 +12,7 @@
   (chll:init-nav-client)
   (chll::init-move-head-action-client)
   (chll::init-giskard-joints-action-client)
-  (chll:init-robosherlock-action-client :table)
-  (chll:init-robosherlock-action-client :shelf)
+  (chll:init-robosherlock-action-client)
   (chll::init-move-torso-action-client)
 
   ;; (chll:make-giskard-poses-action-client)

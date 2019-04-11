@@ -21,7 +21,11 @@
     ;; shelf perception ;;
     (go-to-perceive-middle-shelf)
     (pc::call-text-to-speech-action "Let me see what we have in the shelf.")
-    (chll:call-robosherlock-pipeline :shelf)
+    (chll:call-robosherlock-pipeline '("robocup_shelf_0"
+                                       "robocup_shelf_1"
+                                       "robocup_shelf_2"
+                                       "robocup_shelf_3"
+                                       "robocup_shelf_4"))
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-all-objects-in-shelf))
            (text (if perceived-objects
@@ -37,7 +41,7 @@
     (go-closer-to-table) ;; if not greeting, go to table at least
     (chll::call-move-head-action (vector 0.0 -0.4))
     (pc::call-text-to-speech-action "Let's see what's on the table.")
-    (chll:call-robosherlock-pipeline :table)
+    (chll:call-robosherlock-pipeline '("robocup_table"))
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-table-objects))
           (text (if perceived-objects

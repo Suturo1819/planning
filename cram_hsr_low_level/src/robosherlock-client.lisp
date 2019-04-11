@@ -1,9 +1,38 @@
 (in-package chll)
 
+(defvar *robosherlock-action-client* NIL)
+(defparameter *robosherlock-action-timeout* 120.0 "in seconds")
+
+(defun init-robosherlock-action-client ()
+  (roslisp:ros-info (robosherlock-client)
+                    "Creating robosherlock action client for server 'extract_object_infos'.")
+  (setf *robosherlock-action-client*
+        (actionlib:make-action-client "extract_object_infos" "suturo_perception_msgs/ExtractObjectInfoAction"))
+  (loop until (actionlib:wait-for-server *robosherlock-action-client*
+                                         *robosherlock-action-timeout*))
+  (roslisp:ros-info (robosherlock-client)
+                    "Robosherlock action client for ~a created." "'extract_object_infos'"))
+
+(defun get-robosherlock-client ()
+  (unless *robosherlock-action-client*
+    (init-robosherlock-action-client))
+  *robosherlock-action-client*)
+
+(defun call-robosherlock-pipeline (&optional (regions-value '("robocup_table")) (visualisation-value 'False))
+  (roslisp:ros-info (robosherlock-client) "Calling pipeline for regions ~{~a~^, ~}." regions-value)
+  ;; actual call
+  (actionlib:call-goal (get-robosherlock-client)
+                       (actionlib:make-action-goal (get-robosherlock-client)
+                         visualize visualisation-value
+                         regions regions-value)
+                       :timeout *robosherlock-action-timeout*
+                       :result-timeout *robosherlock-action-timeout*))
+
+
+#+old-perception-client-for-2-pipelines
+(
 (defvar *robosherlock-action-clients*
   (alexandria:alist-hash-table '((:table . NIL) (:shelf . NIL))))
-
-(defparameter *robosherlock-action-timeout* 300.0 "in seconds")
 
 (defun init-robosherlock-action-client (pipeline-name)
   ;; pipeline-name must be either :table or :shelf
@@ -48,3 +77,4 @@
                          (actionlib:make-action-goal (get-robosherlock-client pipeline-name)
                            visualisation visualisation-value)
                          :timeout 60 :result-timeout 60)))
+)
