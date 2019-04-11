@@ -90,9 +90,7 @@
     (desig:desig-prop ?designator (:width ?width))
     (desig:desig-prop ?designator (:height ?height))
     (desig:desig-prop ?designator (:depth ?depth))
-    (desig:desig-prop ?designator (:top ?top))
-    (desig:desig-prop ?designator (:side_right ?side_right))
-    (desig:desig-prop ?designator (:side_left ?side_left)))
+    (desig:desig-prop ?designator (:modus ?modus)))
   
   ;;;;;;;;;;;;;;;;;;;; SPEECH ;;;;;;;;;;;;;;;;;;;;;;;;
   (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))

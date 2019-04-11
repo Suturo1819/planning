@@ -33,3 +33,5 @@
   (chll::init-giskard-joints-action-client)
   (print "init move-torso client")
   (chll::init-move-torso-action-client))
+
+

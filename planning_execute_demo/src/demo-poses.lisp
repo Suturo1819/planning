@@ -153,7 +153,7 @@
    "map"
    (roslisp:ros-time)
    (cl-tf:make-3d-vector -0.270028978586 -0.0241730213165 0.0)
-   (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az 0.0)))
+   (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az 1.0)))
 
 (defparameter *test-pose2*
   (cl-tf::make-pose-stamped

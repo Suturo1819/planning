@@ -36,14 +36,15 @@ euler-z gives the rotation around the z axis."
     (roslisp:start-ros-node "nav-action-lisp-client"))
 
   (multiple-value-bind (result status)
-      (let ((actionlib:*action-server-timeout* 10.0)
+      (let* ((actionlib:*action-server-timeout* 10.0)
             (the-goal (cl-tf:to-msg
                        (cl-tf:make-pose-stamped
                         frame-id
                         (roslisp::ros-time)
                         (cl-tf:make-3d-vector x y 0.0)
                         (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))))
-        (actionlib:call-goal
+
+        (actionlib:call-goal 
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
@@ -54,12 +55,12 @@ euler-z gives the rotation around the z axis."
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "nav-action-lisp-client"))
   (format t "Pose: ~a " pose-stamped)
-  
   (multiple-value-bind (result status)
       (let ((actionlib:*action-server-timeout* 20.0)
             (the-goal (cl-tf:to-msg
                        pose-stamped)))
         (format t "my POSE: ~a" the-goal)
+
         (actionlib:call-goal
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))

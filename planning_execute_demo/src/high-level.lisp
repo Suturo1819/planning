@@ -15,7 +15,7 @@
     ;;(plc::grasp-object)
     ;;(plc::look :safe)
     ;;(plc::say "hello")
-    (plc::perceive-table)
+    ;;(plc::perceive-table)
     ))
 
 

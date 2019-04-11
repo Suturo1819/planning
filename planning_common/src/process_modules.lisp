@@ -62,9 +62,7 @@
                        ?width
                        ?height
                        ?depth
-                       ?top
-                       ?side_right
-                       ?side_left)
+                       ?modus)
       (desig:reference motion-designator)
     (ecase command
       (grasping
@@ -76,9 +74,7 @@
         ?height
         "grip" ;;obj pose /text
         ?depth
-        ?top
-        ?side_right
-        ?side_left))
+        ?modus))
       
       (place
        (print "place"))

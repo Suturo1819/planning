@@ -20,9 +20,7 @@
                                                (width NIL)      ;;float64
                                                (height NIL)     ;;float64
                                                (depth NIL)      ;;float64
-                                               (top NIL)        ;;bool
-                                               (side_right NIL) ;;bool
-                                               (side_left NIL)  ;;bool
+                                               (modus NIL)      ;;string FRONT TOP SIDE_LEFT SIDE_RIGHT
                                                (desired-joint-values NIL))
   ;; TODO: desired_joints_values are ignored for now, so moving is not possible
   desired-joint-values
@@ -35,9 +33,7 @@
     width width
     height height
     depth depth
-    top top
-    side_right
-    side_left))
+    modus modus))
 
 (defun ensure-giskard-joints-grasping-input (object-pose
                                              object-pose-to-odom
@@ -45,9 +41,7 @@
                                              width
                                              height
                                              depth
-                                             top
-                                             side_right
-                                             side_left)
+                                             modus)
   ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
   (and object-pose
        object-pose-to-odom
@@ -67,9 +61,7 @@
                                                     width
                                                     height
                                                     depth
-                                                    top
-                                                    side_right
-                                                    side_left)
+                                                    modus)
   ;; TODO: check status if given object-pose is reached
   (roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
   ;; TODO: log everything
@@ -79,9 +71,7 @@
   width
   height
   depth
-  top
-  side_right
-  side_left
+  modus
   T
 )
 
@@ -100,9 +90,7 @@
                                             height
                                             pose
                                             depth
-                                            top
-                                            side_right
-                                            side_left)
+                                            modus)
   (when (ensure-giskard-joints-grasping-input
          object-pose
          object-pose-to-odom
@@ -110,9 +98,7 @@
          width
          height
          depth
-         top
-         side_right
-         side_left)
+         modus)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
@@ -123,9 +109,7 @@
                                                      :width width
                                                      :height height
                                                      :depth depth
-                                                     :top top
-                                                     :side_right side_right
-                                                     :side_left side_left)
+                                                     :modus modus)
        :action-timeout *giskard-joints-action-timeout*)
       (roslisp:ros-info (move-joints-action) "do_move_joints grasp action finished.")
       (ensure-giskard-joints-grasping-goal-reached status
@@ -135,9 +119,7 @@
                                                    width
                                                    height
                                                    depth
-                                                   top
-                                                   side_right
-                                                   side_left)
+                                                   modus) 
       (values result status))))
 
 (defun call-giskard-joints-move-action (desired-values desired-velocities)

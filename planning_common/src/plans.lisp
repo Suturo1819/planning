@@ -79,14 +79,12 @@
 (cpl:def-cram-function grasp-object ()
   "grasp object"
   (cpl:seq
-    (let* ((?pose (pexe::grasp-obj-from-floor-2))
+    (let* ((?pose 'pose) ; (pexe::grasp-obj-from-floor-2))
            (?weight 0.4)
            (?width 0.055)
            (?height 0.195)
            (?depth 0.2)
-           (?top '())
-           (?side_right '())
-           (?side_left '())
+           (?modus "FRONT")
            (grasp (desig:a motion
                               (:type :grasping)
                               (:pose ?pose)
@@ -94,9 +92,7 @@
                               (:width ?width)
                               (:height ?height)
                               (:depth ?depth)
-                              (:top ?top)
-                              (:side_right ?side_right)
-                              (:side_left ?side_left))))
+                              (:modus ?modus))))
       
       (cram-executive:perform grasp))))
 
