@@ -72,6 +72,7 @@
       (cram-executive:perform say-move-head)
       (cram-executive:perform move-head)
       (cram-executive:perform say-reached)
+      (chll:call-robosherlock-pipeline '("robocup_table"))
       (cram-executive:perform say-safe)
       (cram-executive:perform move-head-safe))))
 

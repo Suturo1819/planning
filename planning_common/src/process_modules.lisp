@@ -36,8 +36,7 @@
                     "hsr-torso called with motion designator `~a'."
                     motion-designator)
   (destructuring-bind (command ?height) (desig:reference motion-designator)
-    (chll::call-move-torso-action (vector ?height -0.1 1.5 -1.5 0.0)
-                                  (vector 0.0 0.0 0.0 0.0 0.0))))
+    (chll::call-giskard-joints-move-action (vector ?height))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-say (motion-designator)

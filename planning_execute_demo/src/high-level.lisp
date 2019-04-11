@@ -11,12 +11,18 @@
 
 (defun execute-demo()
   (plc::with-hsr-process-modules
-    ;;(plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
-    ;;(plc::grasp-object "FRONT")
-    ;;(plc::look :safe)
-    ;;(plc::say "hello")
+    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
+    (plc::say "Now Perceiving")
+    (plc::move-head :perceive)
+    (chll:call-robosherlock-pipeline (vector "robocup_table"))
+    (sleep 10.0)
+    (plc::say "done Perceiving")
+    (plc::go-to (plc::pose-infront-table :manipulation T) "table")
+    (plc::grasp-object "FRONT")
+    (plc::move-head :safe)
     ;;(plc::perceive-table)
-    (plc::place-object "FRONT" "0")
+    (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+    (plc::place-object "FRONT" "1")
     ))
 
 
