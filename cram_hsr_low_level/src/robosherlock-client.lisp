@@ -18,13 +18,17 @@
     (init-robosherlock-action-client))
   *robosherlock-action-client*)
 
-(defun call-robosherlock-pipeline (&optional (regions-value '("robocup_table")) (visualisation-value 'False))
-  (roslisp:ros-info (robosherlock-client) "Calling pipeline for regions ~{~a~^, ~}." regions-value)
+(defun call-robosherlock-pipeline (&optional
+                                     (regions-value (vector "robocup_table"))
+                                     (visualisation-value 'False))
+  (roslisp:ros-info (robosherlock-client) "Calling pipeline for regions ~a." regions-value)
   ;; actual call
-  (actionlib:call-goal (get-robosherlock-client)
-                       (actionlib:make-action-goal (get-robosherlock-client)
-                         visualize visualisation-value
-                         regions regions-value)
+  (format t "vector: ~a" regions-value)
+  (actionlib:call-goal (chll::get-robosherlock-client)
+                       (roslisp:make-message
+                        "suturo_perception_msgs/ExtractObjectInfoGoal"
+                        visualize visualisation-value
+                        regions regions-value)
                        :timeout *robosherlock-action-timeout*
                        :result-timeout *robosherlock-action-timeout*))
 

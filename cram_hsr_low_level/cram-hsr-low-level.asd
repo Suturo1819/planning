@@ -16,7 +16,8 @@
                cram-simple-actionlib-client
                trajectory_msgs-msg
                controller_manager_msgs-msg
-               sensor_msgs-msg)
+               sensor_msgs-msg
+               suturo_perception_msgs-msg)
   
   :components
   ((:module "src"
