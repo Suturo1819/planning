@@ -14,6 +14,7 @@
   (chll::init-giskard-joints-action-client)
   (chll:init-robosherlock-action-client)
   (chll::init-move-torso-action-client)
+  
 
   ;; (chll:make-giskard-poses-action-client)
   ;; (pc:init-perception-subscriber)

@@ -80,10 +80,24 @@
                                                                 ?width
                                                                 ?height
                                                                 ?depth
-                                                                ?top
-                                                                ?side_right
-                                                                ?side_left))
+                                                                ?modus))
     (desig:desig-prop ?designator (:type :grasping))
+    (desig:desig-prop ?designator (:pose ?pose))
+   ;; (desig:desig-prop ?designator (:pose-odom ?pose-odom))
+    (desig:desig-prop ?designator (:weight ?weight))
+    (desig:desig-prop ?designator (:width ?width))
+    (desig:desig-prop ?designator (:height ?height))
+    (desig:desig-prop ?designator (:depth ?depth))
+    (desig:desig-prop ?designator (:modus ?modus)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (placing ?pose
+                                                              ;;  ?pose-odom
+                                                                ?weight
+                                                                ?width
+                                                                ?height
+                                                                ?depth
+                                                                ?modus))
+    (desig:desig-prop ?designator (:type :placing))
     (desig:desig-prop ?designator (:pose ?pose))
    ;; (desig:desig-prop ?designator (:pose-odom ?pose-odom))
     (desig:desig-prop ?designator (:weight ?weight))

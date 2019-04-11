@@ -76,15 +76,21 @@
       (cram-executive:perform move-head-safe))))
 
 ;; -----
-(cpl:def-cram-function grasp-object ()
+(cpl:def-cram-function grasp-object (?modus)
   "grasp object"
   (cpl:seq
-    (let* ((?pose 'pose) ; (pexe::grasp-obj-from-floor-2))
+    (let* ((all-table-objects (chll:prolog-table-objects))
+           (closest-object (plc:frame-closest-to-robot all-table-objects))
+           (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
+                                                         "map" closest-object :timeout 5))
+           (object-class (chll:object-name->class closest-object))
+           (?pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
+                                       (cl-tf:rotation closest-object-pose)))
+
            (?weight 0.4)
            (?width 0.055)
            (?height 0.195)
            (?depth 0.2)
-           (?modus "FRONT")
            (grasp (desig:a motion
                               (:type :grasping)
                               (:pose ?pose)
@@ -92,9 +98,55 @@
                               (:width ?width)
                               (:height ?height)
                               (:depth ?depth)
-                              (:modus ?modus))))
+                              (:modus ?modus)))
+           (say-move-arm (desig:a motion
+                                (:type :say)
+                                (:text "I am going to grasp the object now.")))
+           (done (desig:a motion
+                                (:type :say)
+                                (:text "Done grasping."))))
       
-      (cram-executive:perform grasp))))
+      (cram-executive:perform say-move-arm)
+      (cram-executive:perform grasp)
+      (cram-executive:perform done))))
+
+;; FRONT TOP
+(cpl:def-cram-function place-object (?modus ?shelf_floor)
+  "grasp object"
+  (cpl:seq
+    (let* (
+           (pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
+                                                   "map" (concatenate
+                                                          'String
+                                                          "environment/shelf_floor_"
+                                                          ?shelf_floor "_piece") :timeout 5))
+           (?pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
+                                       (cl-tf:rotation pose-in-shelf)))
+
+           (?weight 0.4)
+           (?width 0.055)
+           (?height 0.195)
+           (?depth 0.2)
+           (grasp (desig:a motion
+                              (:type :placing)
+                              (:pose ?pose)
+                              (:weight ?weight)
+                              (:width ?width)
+                              (:height ?height)
+                              (:depth ?depth)
+                              (:modus ?modus)))
+           (say-move-arm (desig:a motion
+                                (:type :say)
+                                (:text "I am going to place the object now.")))
+           (done (desig:a motion
+                                (:type :say)
+                                (:text "Done placing."))))
+      
+      (cram-executive:perform say-move-arm)
+      (cram-executive:perform grasp)
+      (cram-executive:perform done))))
+
+
 
 
 ;; minor plans /very basic ones

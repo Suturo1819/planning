@@ -84,8 +84,12 @@
 (defun map-T-odom (pose)
   "transfrom the given transform/pose from being relative to map to being
 relative to odom"
-  (cl-tf:transform->pose 
-        (cl-tf:transform*
-         (cl-tf:transform-inv
-          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         pose)))
+  (let* ((lookup-pose (cl-tf2::lookup-transform (plc::get-tf-listener) "map" "odom"))
+         (make-pose (cl-tf2:make-transform
+                     (cl-tf2:translation lookup-pose)
+                     (cl-tf2:rotation lookup-pose))))
+    
+    (cl-tf2:transform*
+     (cl-tf2:transform-inv
+      make-pose)
+     (cl-tf2:pose->transform pose))))

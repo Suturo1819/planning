@@ -27,6 +27,9 @@
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-arm-motion)
     (desig:desig-prop ?desig (:type :grasping)))
   
+  (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-arm-motion)
+    (desig:desig-prop ?desig (:type :placing)))
+  
   ;; (cram-prolog:<- (matching-process-module ?desig  hsr-say-process-modules)
   ;;   (desig:desig-prop ?desig (:type :say)))
 

@@ -76,8 +76,16 @@
         ?depth
         ?modus))
       
-      (place
-       (print "place"))
+      (placing
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        (plc::map-T-odom ?pose) ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "place" ;;obj pose /text
+        ?depth
+        ?modus))
       )))
 
 

@@ -12,10 +12,11 @@
 (defun execute-demo()
   (plc::with-hsr-process-modules
     ;;(plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
-    ;;(plc::grasp-object)
+    ;;(plc::grasp-object "FRONT")
     ;;(plc::look :safe)
     ;;(plc::say "hello")
     ;;(plc::perceive-table)
+    (plc::place-object "FRONT" "0")
     ))
 
 
