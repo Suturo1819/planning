@@ -88,10 +88,11 @@
            (?pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
                                        (cl-tf:rotation closest-object-pose)))
 
-           (?weight 0.4)
+           (?weight 0.7)
            (?width 0.055)
-           (?height 0.195)
+           (?height 0.16)
            (?depth 0.2)
+          
            (grasp (desig:a motion
                               (:type :grasping)
                               (:pose ?pose)
@@ -124,9 +125,9 @@
            (?pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
                                        (cl-tf:rotation pose-in-shelf)))
 
-           (?weight 0.4)
+           (?weight 0.7)
            (?width 0.055)
-           (?height 0.195)
+           (?height 0.50)
            (?depth 0.2)
            (grasp (desig:a motion
                               (:type :placing)

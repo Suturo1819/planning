@@ -1,3 +1,4 @@
+
 (in-package :chll)
 
 (defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
@@ -21,9 +22,9 @@
                                                (height NIL)     ;;float64
                                                (depth NIL)      ;;float64
                                                (modus NIL)      ;;string FRONT TOP SIDE_LEFT SIDE_RIGHT
-                                               (desired-joints-values NIL))
+                                               (desired-joint-values NIL))
   ;; TODO: desired_joints_values are ignored for now, so moving is not possible
-  desired-joints-values
+  desired-joint-values
   (actionlib:make-action-goal
       (cram-simple-actionlib-client::get-simple-action-client 'move-joints-action)
     goal_msg text
@@ -33,8 +34,7 @@
     width width
     height height
     depth depth
-    modus modus
-    desired_joints_values desired-joints-values))
+    modus modus))
 
 (defun ensure-giskard-joints-grasping-input (object-pose
                                              object-pose-to-odom
@@ -50,9 +50,9 @@
        (<= 0 width 0.2)
        (<= 0 height)))
 
-(defun ensure-giskard-joints-move-input (desired-joints-values)
+(defun ensure-giskard-joints-move-input (desired-joint-values)
   ;; TODO: check if desired-joint-values are possible to reach, e.g. check if they are to high...
-  desired-joints-values
+  desired-joint-values
   T)
 
 (defun ensure-giskard-joints-grasping-goal-reached (status
@@ -76,11 +76,11 @@
   T
 )
 
-(defun ensure-giskard-joints-move-goal-reached (status desired-joints-values)
+(defun ensure-giskard-joints-move-goal-reached (status desired-joint-values)
   ;; TODO: check status if given desired-joint-valuesare reached
   (roslisp:ros-warn (move-joints-action) "Status: ~a" status)
   status
-  desired-joints-values  
+  desired-joint-values  
   T
 )
 
@@ -123,32 +123,38 @@
                                                    modus) 
       (values result status))))
 
-(defun call-giskard-joints-move-action (desired-values)
+
+
+
+     (defun call-giskard-joints-move-action (desired-values desired-velocities)
   (when (ensure-giskard-joints-move-input desired-values)
-  (multiple-value-bind (result status)
+    (multiple-value-bind (result status)
+        (let ((tmp  (roslisp:make-message
+                       "control_msgs/JointTrajectoryControllerState"
+                       joint_names (vector "arm_lift_joint")
+                       desired (roslisp:make-message
+                                "trajectory_msgs/JointTrajectoryPoint"
+                                ;; TODO make generic
+                                positions desired-values
+                                velocities desired-velocities
+                                accelerations (vector 0.1)
+                                effort (vector 0.1)
+                                time_from_start 3.0))))
       (cram-simple-actionlib-client::call-simple-action-client
        'move-joints-action
        :action-goal
-       ; (make-giskard-joints-action-goal
-       ;              "move"
-       ;              :desired-joints-values
-                     (roslisp:make-message
-                      "suturo_manipulation_msgs/DoMoveJointsGoal"
-                      desired_joints_values (roslisp:make-message
-                                             "control_msgs/JointTrajectoryControllerState"
-                                             :joint_names  (vector "arm_lift_joint")
-                                             :desired
-                                             (roslisp:make-message
-                                                      "trajectory_msgs/JointTrajectoryPoint"
-                                                      ;; TODO make generic
-                                                      :positions desired-values
-                                                      :velocities '()
-                                                      :accelerations '()
-                                                      :effort '()
-                                                      :time_from_start 3))))
-       :action-timeout *giskard-joints-action-timeout*) 
+       (actionlib:make-action-goal
+           (cram-simple-actionlib-client::get-simple-action-client 'move-joints-action)
+                      goal_msg "move"
+                      object_pose nil
+                      object_pose_to_odom nil
+                      weight nil
+                      width nil
+                      height nil
+                      depth nil
+                      modus nil
+                      disired_joints_value tmp)
+                     
+        :action-timeout *giskard-joints-action-timeout*)
       (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
-      ));)
-      ;;(ensure-giskard-joints-move-goal-reached status desired-values)
-      ;;(values result status)))
-
+     ))))
