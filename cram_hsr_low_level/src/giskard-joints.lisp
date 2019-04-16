@@ -126,35 +126,29 @@
 
 
 
-     (defun call-giskard-joints-move-action (desired-values desired-velocities)
+;;E.G
+;;(cram-hsr-low-level::call-giskard-joints-move-action (vector 0.6) (vector 0.0))
+;;TODO this only works for the torso atm. maybe rename to torso-action?
+(defun call-giskard-joints-move-action (desired-values desired-velocities)
   (when (ensure-giskard-joints-move-input desired-values)
     (multiple-value-bind (result status)
-        (let ((tmp  (roslisp:make-message
-                       "control_msgs/JointTrajectoryControllerState"
-                       joint_names (vector "arm_lift_joint")
-                       desired (roslisp:make-message
-                                "trajectory_msgs/JointTrajectoryPoint"
-                                ;; TODO make generic
-                                positions desired-values
-                                velocities desired-velocities
-                                accelerations (vector 0.1)
-                                effort (vector 0.1)
-                                time_from_start 3.0))))
-      (cram-simple-actionlib-client::call-simple-action-client
-       'move-joints-action
-       :action-goal
-       (actionlib:make-action-goal
-           (cram-simple-actionlib-client::get-simple-action-client 'move-joints-action)
-                      goal_msg "move"
-                      object_pose nil
-                      object_pose_to_odom nil
-                      weight nil
-                      width nil
-                      height nil
-                      depth nil
-                      modus nil
-                      disired_joints_value tmp)
-                     
-        :action-timeout *giskard-joints-action-timeout*)
-      (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
-     ))))
+        (cram-simple-actionlib-client::call-simple-action-client
+         'move-joints-action
+         :action-goal
+         (actionlib:make-action-goal
+             (cram-simple-actionlib-client::get-simple-action-client 'move-joints-action)
+           :goal_msg "move"
+           :modus "move"
+           :desired_joints_values
+           (roslisp:make-message
+            "control_msgs/JointTrajectoryControllerState"
+            :joint_names (vector "arm_lift_joint")
+            :desired 
+            (roslisp:make-message
+             "trajectory_msgs/JointTrajectoryPoint"
+             :positions desired-values
+             :velocities desired-velocities
+             ))))
+                                       
+      :action-timeout *giskard-joints-action-timeout*)
+    (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")))
