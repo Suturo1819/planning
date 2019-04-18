@@ -22,6 +22,7 @@
    #:prolog-table-objects
    #:prolog-object-goal
    #:prolog-all-objects-in-shelf
+   #:prolog-object-dimensions
 
    ;; joint state client
    #:get-current-joint-state
