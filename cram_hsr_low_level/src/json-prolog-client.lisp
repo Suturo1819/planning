@@ -70,6 +70,17 @@
         (mapcar #'knowrob-symbol->string instances)
         (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
 
+(defun prolog-object-dimensions (object-name)
+  ;; returns the dimensions of an object as list with '(depth width height)
+  (roslisp:ros-info (json-prolog-client) "Getting dimensions for object ~a." object-name)
+  (let* ((knowrob-name (format nil "~a~a" +hsr-objects-prefix+ object-name))
+         (dimension-term (format nil "~aboundingBoxSize" +knowrob-prefix+))
+         (raw-response (with-safe-prolog
+                         (json-prolog:prolog `("rdf_has_prolog" ,knowrob-name ,dimension-term ?dim)
+                                             :package :chll)))
+         (dimensions (if (eq raw-response 1) NIL (cdr (assoc '?dim (cut:lazy-car raw-response))))))
+    (or dimensions
+        (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
 
 #+not-used
 (defun prolog-objects-around-pose (pose &optional (threshold 0.3))
