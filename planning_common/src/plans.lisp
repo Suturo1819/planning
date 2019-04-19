@@ -1,5 +1,7 @@
 (in-package :plc)
 
+(defvar *object-dimensions* NIL)
+
 (cpl:def-cram-function go-to (?pose ?text)
   "go to a predefined location"
   (cpl:seq
@@ -72,9 +74,25 @@
       (cram-executive:perform say-move-head)
       (cram-executive:perform move-head)
       (cram-executive:perform say-reached)
-      (chll:call-robosherlock-pipeline '("robocup_table"))
+      (chll:call-robosherlock-pipeline (vector "robocup_table"))
       (cram-executive:perform say-safe)
       (cram-executive:perform move-head-safe))))
+
+;;assuming robot is already standing infront of the shelf
+(cpl:def-cram-function perceive-shelf ()
+  "move head, torso and perceive"
+  (cpl:seq
+    (let* ((say-before "I'm going to move my torso up now")
+           (perceive-up (desig:a motion
+                                 (:type :perceive-up)))
+           
+      
+           )
+      ;;(cram-executive:perform stuff)
+      )))
+
+
+
 
 ;; -----
 (cpl:def-cram-function grasp-object (?modus)
@@ -86,12 +104,14 @@
                                                          "map" closest-object :timeout 5))
            (object-class (chll:object-name->class closest-object))
            (?pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
-                                       (cl-tf:rotation closest-object-pose)))
+                                   (cl-tf:rotation closest-object-pose)))
+           (dimensions (chll::prolog-object-dimensions closest-object))
 
-           (?weight 0.7)
-           (?width 0.055)
-           (?height 0.16)
-           (?depth 0.2)
+           (?weight 0.8)
+           (?width (first dimensions))
+           (?depth (second dimensions))
+           (?height (third dimensions))
+           
           
            (grasp (desig:a motion
                               (:type :grasping)
@@ -103,7 +123,8 @@
                               (:modus ?modus)))
            (say-before "I am going to grasp the object now.")
            (say-after "done grasping"))
-
+      
+      (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
       (plc::say say-before)
       (plc::move-head :safe)
@@ -114,20 +135,20 @@
 (cpl:def-cram-function place-object (?modus ?shelf_floor)
   "place object"
   (cpl:seq
-    (let* (
-           (pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                   "map" (concatenate
+    (let* ((pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)                                                   "map" (concatenate
                                                           'String
                                                           "environment/shelf_floor_"
                                                           ?shelf_floor "_piece") :timeout 5))
            (?pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
                                        (cl-tf:rotation pose-in-shelf)))
 
+
            (?weight 0.7)
-           (?width 0.055)
-           (?height 0.50)
-           (?depth 0.2)
-           (grasp (desig:a motion
+           (?width (first *object-dimensions*))
+           (?depth NIL)
+           (?height NIL)
+           
+           (place (desig:a motion
                               (:type :placing)
                               (:pose ?pose)
                               (:weight ?weight)
@@ -141,9 +162,18 @@
            (done (desig:a motion
                                 (:type :say)
                                 (:text "Done placing."))))
+
+      (if (>= (third *object-dimensions*)
+                            (second *object-dimensions*))
+                        (progn
+                          (setq ?height (third *object-dimensions*))
+                          (setq ?depth (second *object-dimensions*)))
+                        (progn
+                          (setq ?height (second *object-dimensions*))
+                          (setq ?depth (third *object-dimensions*))))
       
       (cram-executive:perform say-move-arm)
-      (cram-executive:perform grasp)
+      (cram-executive:perform place)
       (cram-executive:perform done))))
 
 
@@ -194,4 +224,37 @@ or one of the following: :perceive :safe :front"
     (cram-executive:perform perceive-desig)
     (say say-after)))
     
+(cpl:def-cram-function base-pose ()
+  (let* ((?pose (pexe::grasp-from-shelf-low))
+         (?nil NIL)
+         (?zero 0.0)
+         (perceive (desig:a motion
+                         (:type :perceiving)
+                         (:pose ?pose)
+                         (:weight ?zero)
+                         (:width ?zero)
+                         (:height ?zero)
+                         (:depth ?zero)
+                         (:modus ?nil))))
 
+    (plc::say "moving into base pose")
+    (cram-executive:perform perceive)
+    (plc::say "done moving into base pose")))
+
+(cpl:def-cram-function perceive-high ()
+  (let* ((?pose (pexe::grasp-from-shelf-low))
+         (?nil NIL)
+         (?zero 0.0)
+         (perceive (desig:a motion
+                         (:type :perceiving-high)
+                         (:pose ?pose)
+                         (:weight ?zero)
+                         (:width ?zero)
+                         (:height ?zero)
+                         (:depth ?zero)
+                         (:modus ?nil))))
+
+    (plc::say "moving into perceive high pose.")
+    (cram-executive:perform perceive)
+    (plc::say "done moving into perceive high pose.")))
+         

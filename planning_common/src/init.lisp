@@ -14,7 +14,7 @@
   (chll::init-move-head-action-client)
   (chll::init-giskard-joints-action-client)
   (chll:init-robosherlock-action-client)
-  (chll::init-move-torso-action-client)
+;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
   
 
   ;; (chll:make-giskard-poses-action-client)

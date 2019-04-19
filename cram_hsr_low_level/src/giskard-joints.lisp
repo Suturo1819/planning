@@ -44,11 +44,13 @@
                                              depth
                                              modus)
   ;; TODO: check if object-pose is possible to grasp, e.g. check if it is to wide
-  (and object-pose
-       object-pose-to-odom
-       (<= 0 weight)
-       (<= 0 width 0.2)
-       (<= 0 height)))
+  ;; (and object-pose
+  ;;      object-pose-to-odom
+  ;;      (<= 0 weight)
+  ;;      (<= 0 width 0.2)
+  ;;      (<= 0 height))
+  (print "done")
+  )
 
 (defun ensure-giskard-joints-move-input (desired-joint-values)
   ;; TODO: check if desired-joint-values are possible to reach, e.g. check if they are to high...

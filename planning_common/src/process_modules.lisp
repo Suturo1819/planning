@@ -67,7 +67,6 @@
                     motion-designator)
   (destructuring-bind (command
                        ?pose
-                      ;; ?pose-odom
                        ?weight
                        ?width
                        ?height
@@ -96,7 +95,28 @@
         "place" ;;obj pose /text
         ?depth
         ?modus))
-      )))
+       
+       (perceiving
+        (chll::call-giskard-joints-grasping-action
+         ?pose
+         ?pose ;;?pose-odom
+         ?weight
+         ?width
+         ?height
+         "perceive" ;;obj pose /text
+         ?depth
+         ?modus))
+
+      (perceiving-high
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        ?pose ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "perceive_up" ;;obj pose /text
+        ?depth
+        ?modus)))))
 
 
   ;;;;;;;;;;;;;;;;;;;; TESTS FOR DEBUGGING ;;;;;;;;;;;;;;;;;;;;;;;;
