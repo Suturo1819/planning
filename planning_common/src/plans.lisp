@@ -82,14 +82,30 @@
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (cpl:seq
-    (let* ((say-before "I'm going to move my torso up now")
-           (perceive-up (desig:a motion
-                                 (:type :perceive-up)))
-           
-      
-           )
-      ;;(cram-executive:perform stuff)
-      )))
+    ;;(cram-executive:perform stuff)
+    ;;EXE
+    ;;highest
+    (plc::perceive-high)
+    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
+    (plc::move-torso (plc::shelf-head-difference "3"))
+    (plc::move-head :perceive)
+    (plc::perceive (vector "shelf"))
+    (plc::move-head :safe)
+    
+    ;;middle
+    (plc::move-torso (plc::shelf-head-difference "2"))
+    (plc::move-head :perceive)
+    (plc::perceive (vector "shelf"))
+    (plc::move-head :safe)
+
+    ;;low
+    (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+    (plc::base-pose)
+    (plc::move-torso (plc::shelf-head-difference "1"))
+    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
+    (plc::move-head :perceive)
+    (plc::perceive (vector "shelf"))
+    (plc::move-head :safe)))
 
 
 

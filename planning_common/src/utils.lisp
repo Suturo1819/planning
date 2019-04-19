@@ -93,3 +93,10 @@ relative to odom"
      (cl-tf2:transform-inv
       make-pose)
      (cl-tf2:pose->transform pose))))
+
+(defun pose-in-shelf (shelf)
+  (cl-tf2:lookup-transform (plc:get-tf-listener)
+                           "map" (concatenate
+                                  'String
+                                  "environment/shelf_floor_"
+                                  shelf "_piece") :timeout 5))
