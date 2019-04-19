@@ -14,7 +14,7 @@
 ;; TODO check if this is needed.
 ;; (roslisp-utilities:register-ros-init-function make-giskard-joints-action-client)
 
-(defun make-giskard-joints-action-goal (text &key
+(defun make-giskard-joints-action-goal (text &key 
                                                (object-pose NIL) ; object pose in map
                                                (object-pose-to-odom NIL) ; object-pose in odom
                                                (weight NIL)     ;;float64
@@ -55,13 +55,10 @@
   desired-joint-values
   T)
 
-(defun ensure-giskard-joints-grasping-goal-reached (status
-                                                    object-pose
+(defun ensure-giskard-joints-grasping-goal-reached (status object-pose
                                                     object-pose-to-odom
-                                                    weight
-                                                    width
-                                                    height
-                                                    depth
+                                                    weight width
+                                                    height depth
                                                     modus)
   ;; TODO: check status if given object-pose is reached
   (roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
@@ -84,21 +81,14 @@
   T
 )
 
-(defun call-giskard-joints-grasping-action (object-pose
-                                            object-pose-to-odom
-                                            weight
-                                            width
-                                            height
-                                            pose
-                                            depth
-                                            modus)
+(defun call-giskard-joints-grasping-action (object-pose object-pose-to-odom
+                                            weight width
+                                            height pose
+                                            depth modus)
   (when (ensure-giskard-joints-grasping-input
-         object-pose
-         object-pose-to-odom
-         weight
-         width
-         height
-         depth
+         object-pose object-pose-to-odom
+         weight width
+         height depth
          modus)
     (multiple-value-bind (result status)
       (cram-simple-actionlib-client::call-simple-action-client

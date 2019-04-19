@@ -48,7 +48,9 @@
          0.4    ;; 0.4    ;;  0.4
          0.08    ;;  0.085  ;; 0.10   ;;  0.08
          0.26   ;; 0.085  ;; 0.21   ;;  0.26
-       "grip"))
+         "grip"
+         0.2
+         "FRONT"))
 
 
 (defun place-test ()
@@ -62,7 +64,9 @@
    0.4
    0.07
    0.26
-   "place"))
+   "place"
+   0.2
+   "FRONT"))
 
 (defun grasp-test-top ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
