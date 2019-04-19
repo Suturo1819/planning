@@ -12,22 +12,12 @@
 (defun execute-demo()
   (plc::with-hsr-process-modules
     (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
-    (plc::say "Now, Perceiving")
-    (plc::move-head :perceive)
-    (chll:call-robosherlock-pipeline (vector "robocup_table"))
+    
+    (plc::perceive (vector "robocup_table"))
     (sleep 10.0)
-    (plc::say "done, Perceiving")
+    
     (plc::go-to (plc::pose-infront-table :manipulation T) "table")
     
-    ;;TODO DO THIS SOMWHERE ELSE QUCIK HACK VANESSA
-    (let* ((all-table-objects (chll:prolog-table-objects))
-           (closest-object (plc:frame-closest-to-robot all-table-objects))
-           (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                         "map" closest-object :timeout 5))
-           (object-class (chll:object-name->class closest-object))
-           (pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
-                                   (cl-tf:rotation closest-object-pose))))
-      (planning-communication::publish-marker-pose pose))
     (plc::grasp-object "FRONT")
     (plc::move-head :safe)
     ;;(plc::perceive-table)

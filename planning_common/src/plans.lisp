@@ -101,20 +101,18 @@
                               (:height ?height)
                               (:depth ?depth)
                               (:modus ?modus)))
-           (say-move-arm (desig:a motion
-                                (:type :say)
-                                (:text "I am going to grasp the object now.")))
-           (done (desig:a motion
-                                (:type :say)
-                                (:text "Done grasping."))))
-      
-      (cram-executive:perform say-move-arm)
+           (say-before "I am going to grasp the object now.")
+           (say-after "done grasping"))
+
+      (planning-communication::publish-marker-pose ?pose)
+      (plc::say say-before)
+      (plc::move-head :safe)
       (cram-executive:perform grasp)
-      (cram-executive:perform done))))
+      (plc::say say-after))))
 
 ;; FRONT TOP
 (cpl:def-cram-function place-object (?modus ?shelf_floor)
-  "grasp object"
+  "place object"
   (cpl:seq
     (let* (
            (pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
@@ -182,6 +180,8 @@ or one of the following: :perceive :safe :front"
       (move-head :safe)
       (cram-executive:perform move-torso))))
 
+
+;; for table call
 (cpl:def-cram-function perceive (?surface)
   (let* ((perceive-desig (desig:a motion
                                   (:type :perceive)
@@ -189,6 +189,7 @@ or one of the following: :perceive :safe :front"
          (say-before "Now, perceiving.")
          (say-after "Done, perceiving."))
     
+    (plc::move-head :perceive)
     (say say-before)
     (cram-executive:perform perceive-desig)
     (say say-after)))
