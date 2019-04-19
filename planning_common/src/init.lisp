@@ -8,6 +8,7 @@
   ;; (cram-tf::init-tf)
   
   ;;Init all the action servers
+;;  (cpl:with-failure-handling
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
   (chll::init-move-head-action-client)

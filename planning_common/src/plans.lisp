@@ -182,3 +182,15 @@ or one of the following: :perceive :safe :front"
       (move-head :safe)
       (cram-executive:perform move-torso))))
 
+(cpl:def-cram-function perceive (?surface)
+  (let* ((perceive-desig (desig:a motion
+                                  (:type :perceive)
+                                  (:surface ?surface)))
+         (say-before "Now, perceiving.")
+         (say-after "Done, perceiving."))
+    
+    (say say-before)
+    (cram-executive:perform perceive-desig)
+    (say say-after)))
+    
+

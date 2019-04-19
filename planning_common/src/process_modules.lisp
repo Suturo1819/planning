@@ -36,7 +36,7 @@
                     "hsr-torso called with motion designator `~a'."
                     motion-designator)
   (destructuring-bind (command ?height) (desig:reference motion-designator)
-    (chll::call-giskard-joints-move-action (vector ?height))))
+    (chll::call-giskard-joints-move-action (vector ?height) (vector 0.0))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-say (motion-designator)
@@ -48,6 +48,17 @@
     (ecase command
       (say
        (pc::call-text-to-speech-action text)))))
+
+  ;;;;;;;;;;;;;;;;;;;; PERCEIVE ;;;;;;;;;;;;;;;;;;;;;;;;
+(cram-process-modules:def-process-module hsr-perception (motion-designator)
+  (roslisp:ros-info (hsr-perception-process-modules)
+                    "hsr-say-action called with motion designator `~a'."
+                    motion-designator)
+  (destructuring-bind (command list) (desig:reference motion-designator)
+    ;(format t "command: ~a  text: ~a"command text)
+    (ecase command
+      (perceive
+       (chll::call-robosherlock-pipeline list)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
@@ -140,7 +151,8 @@
         plc::hsr-motion
         plc::hsr-say
         plc::hsr-arm-motion
-        plc::hsr-torso)
+        plc::hsr-torso
+        plc::hsr-perception)
      (cpl-impl::named-top-level (:name :top-level)
        ,@body)))
 

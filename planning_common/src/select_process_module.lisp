@@ -8,6 +8,7 @@
   (cram-prolog:<- (cpm:available-process-module hsr-say))
   (cram-prolog:<- (cpm:available-process-module hsr-arm-motion))
   (cram-prolog:<- (cpm:available-process-module hsr-torso))
+  (cram-prolog:<- (cpm:available-process-module hsr-perception))
  
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-navigation)
     (desig:desig-prop ?desig (:type :going)))
@@ -35,4 +36,7 @@
 
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-say)
     (desig:desig-prop ?desig (:type :say)))
+
+  (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-perception)
+    (desig:desig-prop ?desig (:type :perceive)))
   )

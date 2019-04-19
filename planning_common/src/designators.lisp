@@ -110,4 +110,9 @@
   (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
     (desig:desig-prop ?designator (:type :say))
     (desig:desig-prop ?designator (:text ?text)))
+
+  ;;;;;;;;;;;;;;;;;;;; PERCEPTION ;;;;;;;;;;;;;;;;;;;;;;;;
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceive ?surface-list))
+    (desig:desig-prop ?designator (:type :perceive))
+    (desig:desig-prop ?designator (:surface ?surface-list)))
 )
