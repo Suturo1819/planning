@@ -22,9 +22,9 @@
 
 
 (defun knowrob-symbol->string (knowrob-symbol) 
-  (subseq (write-to-string knowrob-symbol)
-          (1+ (position #\# (write-to-string knowrob-symbol)))
-          (- (length (write-to-string knowrob-symbol)) 2)))
+  (string-trim "'" (subseq (write-to-string knowrob-symbol)
+                           (1+ (position #\# (write-to-string knowrob-symbol)))
+                           (- (length (write-to-string knowrob-symbol)) 2))))
 
 
 (defun object-name->class (object-name)
@@ -58,6 +58,17 @@
         (format nil "environment/~a" (string-trim "'" surface))
         (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
 
+(defun prolog-object-goal-pose (object-name)
+  ;; gives the goal shelf (tf-frame) for an object name
+  (roslisp:ros-info (json-prolog-client) "Getting goal floor for object ~a." object-name)
+  (let* ((knowrob-name (format nil "~a~a" +hsr-objects-prefix+ object-name))
+         (raw-response (with-safe-prolog
+                         (json-prolog:prolog-1 `("object_goal_pose" ,knowrob-name ?pose)
+                                             :package :chll)))
+         (goal-pose (if (eq raw-response 1) NIL (cdr (assoc '?pose (cut:lazy-car raw-response))))))
+    (or goal-pose
+        (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
+
 (defun prolog-all-objects-in-shelf ()
   ;; gives the goal shelf (tf-frame) for an object name
   (roslisp:ros-info (json-prolog-client) "Getting all objects in shelf.")
@@ -81,6 +92,21 @@
          (dimensions (if (eq raw-response 1) NIL (cdr (assoc '?dim (cut:lazy-car raw-response))))))
     (or dimensions
         (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
+
+(defun prolog-object-in-gripper ()
+  ;; returns the dimensions of an object as list with '(depth width height)
+  (roslisp:ros-info (json-prolog-client) "Getting object in gripper.")
+  (let* ((raw-response (with-safe-prolog
+                         (json-prolog:prolog-1 `(and ("gripper" ?gripper)
+                                                     ("objects_on_surface" ?instances ?gripper)
+                                                     ("member" ?instance ?instances))
+                                               :package :chll)))
+         (instance (if (eq raw-response 1) NIL (cdr (assoc '?instance (cut:lazy-car raw-response))))))
+    (if instance
+        (knowrob-symbol->string instance)
+        (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
+
+
 
 #+not-used
 (defun prolog-objects-around-pose (pose &optional (threshold 0.3))

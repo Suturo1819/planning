@@ -23,6 +23,8 @@
    #:prolog-object-goal
    #:prolog-all-objects-in-shelf
    #:prolog-object-dimensions
+   #:prolog-object-in-gripper
+   #:prolog-object-goal-pose
 
    ;; joint state client
    #:get-current-joint-state
