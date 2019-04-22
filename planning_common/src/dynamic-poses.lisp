@@ -105,9 +105,12 @@ So that the robot can move his arm safely."
                        (cl-tf2:translation head-pos)))
          (result (/ (- shelf-height *height-offset*) 1.5)))
          ;; abs ensures number stays positive
-        ;; (diff (- shelf-height head-height)))
+    ;; (diff (- shelf-height head-height)))
+    (format t "pre result: ~a" result)
     (if (> result 0.65)
-        (setq result  0.65))
+        (setq result  0.65)
+        (if (< result 0.35)
+            (setq result 0.0)))
     
     ;;(format t "diff: ~a" (+ diff *height-offset*))
     (format t "HEIGHT of shelf: ~a" shelf-height)

@@ -95,8 +95,10 @@
     (plc::move-head :safe)
     
     ;;middle
+    (plc::say "moving torso slightly down")
     (plc::move-torso (plc::shelf-head-difference "2"))
     (plc::move-head :perceive)
+    (plc::say "done moving")
     (plc::perceive (vector "robocup_shelf_2"))
     (plc::move-head :safe)
 
@@ -104,7 +106,7 @@
     (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
     (plc::base-pose)
     (plc::move-torso (plc::shelf-head-difference "1"))
-    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
+    ;;(plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
     (plc::move-head :perceive)
     (plc::perceive (vector "robocup_shelf_1"))
     (plc::move-head :safe)))
