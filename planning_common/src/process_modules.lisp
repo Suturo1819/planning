@@ -26,6 +26,8 @@
           (:front
            (chll::call-move-head-action (vector 0.0 0.0)))
           (:perceive
+           (chll::call-move-head-action (vector 0.0 -0.2)))
+          (:perceive-down
            (chll::call-move-head-action (vector 0.0 -0.4)))
           (:safe
            (chll::call-move-head-action (vector 0.0 0.1)))))))

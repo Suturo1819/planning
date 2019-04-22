@@ -1,6 +1,10 @@
 (in-package :plc)
 
 (defvar *object-dimensions* NIL)
+(defvar *width-offset* 0.05)
+;; TODO move this to knowledge:
+(defvar *height-obj-in-gripper* NIL)
+
 
 (cpl:def-cram-function go-to (?pose ?text)
   "go to a predefined location"
@@ -59,7 +63,7 @@
              
            (say-reached (desig:a motion
                                  (:type :say)
-                                 (:text "Move head complete. Perceiving...")))
+                                 (:text "Move head complete.")))
       ;; TODO add perception call here
            (say-safe (desig:a motion
                                  (:type :say)
@@ -74,8 +78,9 @@
       (cram-executive:perform say-move-head)
       (cram-executive:perform move-head)
       (cram-executive:perform say-reached)
-      (chll:call-robosherlock-pipeline (vector "robocup_table"))
+      (plc::perceive (vector "robocup_table"))
       (cram-executive:perform say-safe)
+      (plc::base-pose)
       (cram-executive:perform move-head-safe))))
 
 ;;assuming robot is already standing infront of the shelf
@@ -97,7 +102,7 @@
     ;;middle
     (plc::say "moving torso slightly down")
     (plc::move-torso (plc::shelf-head-difference "2"))
-    (plc::move-head :perceive)
+    (plc::move-head :perceive-down)
     (plc::say "done moving")
     (plc::perceive (vector "robocup_shelf_2"))
     (plc::move-head :safe)
@@ -107,7 +112,7 @@
     (plc::base-pose)
     (plc::move-torso (plc::shelf-head-difference "1"))
     ;;(plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
-    (plc::move-head :perceive)
+    (plc::move-head :perceive-down)
     (plc::perceive (vector "robocup_shelf_1"))
     (plc::move-head :safe)))
 
@@ -115,7 +120,7 @@
 
 
 ;; -----
-(cpl:def-cram-function grasp-object (?modus)
+(cpl:def-cram-function grasp-object (&optional ?modus)
   "grasp object"
   (cpl:seq
     (let* ((all-table-objects (chll:prolog-table-objects))
@@ -127,28 +132,35 @@
                                    (cl-tf:rotation closest-object-pose)))
            (dimensions (chll::prolog-object-dimensions closest-object))
 
-           (?weight 0.8)
-           (?width (first dimensions))
+           (?weight 1.0)
+           (?width (- (first dimensions) *width-offset*))
            (?depth (second dimensions))
            (?height (third dimensions))
-           
-          
+           (?modus (if (equal ?modus NIL)
+                       (if (< (third dimensions) 0.1)
+                           (setq ?modus "TOP")
+                           (setq ?modus "FRONT"))
+                       ?modus))
+
            (grasp (desig:a motion
-                              (:type :grasping)
-                              (:pose ?pose)
-                              (:weight ?weight)
-                              (:width ?width)
-                              (:height ?height)
-                              (:depth ?depth)
-                              (:modus ?modus)))
-           (say-before "I am going to grasp the object now.")
+                           (:type :grasping)
+                           (:pose ?pose)
+                           (:weight ?weight)
+                           (:width ?width)
+                           (:height ?height)
+                           (:depth ?depth)
+                           (:modus ?modus)))
+           (say-before (concatenate 'String "I am going to grasp the" object-class "now."))
            (say-after "done grasping"))
-      
+
+      (setq *height-obj-in-gripper* ?height)
+      (format t "Object Class: ~a" object-class)
       (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
       (plc::say say-before)
       (plc::move-head :safe)
       (cram-executive:perform grasp)
+      (plc::move-head :safe)
       (plc::say say-after))))
 
 ;; FRONT TOP
@@ -165,8 +177,8 @@
 
            (?weight 0.7)
            (?width (first *object-dimensions*))
-           (?depth NIL)
-           (?height NIL)
+           (?depth 0.0)
+           (?height *height-obj-in-gripper*)
            
            (place (desig:a motion
                               (:type :placing)
@@ -242,6 +254,7 @@ or one of the following: :perceive :safe :front"
     (plc::move-head :perceive)
     (say say-before)
     (cram-executive:perform perceive-desig)
+    (sleep 10.0)
     (say say-after)))
     
 (cpl:def-cram-function base-pose ()

@@ -40,6 +40,10 @@
     (desig:desig-prop ?designator (:type :looking))
     (desig:desig-prop ?designator (:direction :perceive)))
 
+  (cram-prolog:<- (desig:motion-grounding ?designator (look :perceive))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:direction :perceive-down)))
+
   (cram-prolog:<- (desig:motion-grounding ?designator (look :safe))
     (desig:desig-prop ?designator (:type :looking))
     (desig:desig-prop ?designator (:direction :safe)))
