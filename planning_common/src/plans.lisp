@@ -79,6 +79,7 @@
       (cram-executive:perform move-head-safe))))
 
 ;;assuming robot is already standing infront of the shelf
+;;TODO
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (cpl:seq
@@ -86,16 +87,17 @@
     ;;EXE
     ;;highest
     (plc::perceive-high)
-    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
+    (plc::say "moving torso up")
     (plc::move-torso (plc::shelf-head-difference "3"))
+    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
     (plc::move-head :perceive)
-    (plc::perceive (vector "shelf"))
+    (plc::perceive (vector "robocup_shelf_3"))
     (plc::move-head :safe)
     
     ;;middle
     (plc::move-torso (plc::shelf-head-difference "2"))
     (plc::move-head :perceive)
-    (plc::perceive (vector "shelf"))
+    (plc::perceive (vector "robocup_shelf_2"))
     (plc::move-head :safe)
 
     ;;low
@@ -104,7 +106,7 @@
     (plc::move-torso (plc::shelf-head-difference "1"))
     (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
     (plc::move-head :perceive)
-    (plc::perceive (vector "shelf"))
+    (plc::perceive (vector "robocup_shelf_1"))
     (plc::move-head :safe)))
 
 
@@ -241,7 +243,7 @@ or one of the following: :perceive :safe :front"
     (say say-after)))
     
 (cpl:def-cram-function base-pose ()
-  (let* ((?pose (pexe::grasp-from-shelf-low))
+  (let* ((?pose (cl-tf:make-identity-transform))
          (?nil NIL)
          (?zero 0.0)
          (perceive (desig:a motion
@@ -258,7 +260,7 @@ or one of the following: :perceive :safe :front"
     (plc::say "done moving into base pose")))
 
 (cpl:def-cram-function perceive-high ()
-  (let* ((?pose (pexe::grasp-from-shelf-low))
+  (let* ((?pose (cl-tf:make-identity-transform))
          (?nil NIL)
          (?zero 0.0)
          (perceive (desig:a motion

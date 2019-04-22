@@ -8,6 +8,8 @@
 (defparameter *x-offset-manipulation* -0.8)
 (defparameter *y-offset-manipulation* 1.0)
 
+(defparameter *height-offset* 0.2)
+
 (defun pose-infront-shelf(&key (manipulation NIL))
   "Calculates the pose for navigation to go to infront of the shelf.
 If the manipulation parameter is set, the distance offset is higher
@@ -57,7 +59,6 @@ So that the robot can move his arm safely."
                              (cl-tf:origin result-pose)
                              (cl-tf:orientation result-pose))))
 
-(defparameter *height-offset* 0.15)
 
 (defun table-head-difference()
   (let* ((table-pos (cl-tf2:lookup-transform
@@ -83,7 +84,7 @@ So that the robot can move his arm safely."
 
 
 (defun shelf-head-difference ( shelf-level )
-  (let* ((table-pos (cl-tf2:lookup-transform
+  (let* ((shelf-pos (cl-tf2:lookup-transform
                       (plc:get-tf-listener)
                       "map"
                       (concatenate
@@ -92,8 +93,8 @@ So that the robot can move his arm safely."
                        shelf-level
                        "_piece")
                       :timeout 5))
-         (table-height (cl-tf2:z
-                        (cl-tf2:translation table-pos)))
+         (shelf-height (cl-tf2:z
+                        (cl-tf2:translation shelf-pos)))
          
          (head-pos (cl-tf2:lookup-transform
                       (plc:get-tf-listener)
@@ -102,8 +103,12 @@ So that the robot can move his arm safely."
                       :timeout 5))
          (head-height (cl-tf2:z
                        (cl-tf2:translation head-pos)))
+         (result (/ (- shelf-height *height-offset*) 1.5)))
          ;; abs ensures number stays positive
-         (diff (- table-height head-height)))
+        ;; (diff (- shelf-height head-height)))
+    (if (> result 0.65)
+        (setq result  0.65))
     
-    (format t "diff: ~a" (+ diff *height-offset*))
-    (+ diff *height-offset*)))
+    ;;(format t "diff: ~a" (+ diff *height-offset*))
+    (format t "HEIGHT of shelf: ~a" shelf-height)
+    result))
