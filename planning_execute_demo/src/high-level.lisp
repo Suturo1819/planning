@@ -18,16 +18,16 @@
     ;; GO and PERCEIVE the TABLE
     (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")    
     (plc::perceive-table)   
-    (plc::go-to (plc::pose-infront-table :manipulation T) "table")
-
-
+    
     ;; GRASPING OBJECT
     ;; TODO LOOP this for all available objects on the table
-    (plc::grasp-object )
+    (loop while (not (eq (chll::prolog-table-objects) 1)) do
+      (plc::go-to (plc::pose-infront-table :manipulation T) "table")
+      (plc::grasp-object)
 
     ;; PLACING OBJECT
-    (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
-    (plc::place-object "FRONT" "2")))
+      (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+      (plc::place-object "FRONT" "2"))))
 
 
 (defun execute-demo-proj()

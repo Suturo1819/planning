@@ -92,16 +92,17 @@
     ;;EXE
     ;;highest
     (plc::perceive-high)
-    (plc::say "moving torso up")
-    (plc::move-torso (plc::shelf-head-difference "3"))
-    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
-    (plc::move-head :perceive)
-    (plc::perceive (vector "robocup_shelf_3"))
-    (plc::move-head :safe)
+    ;; (plc::say "moving torso up")
+    ;; (plc::move-torso (plc::shelf-head-difference "3"))
+    ;; (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
+    ;; (plc::move-head :perceive)
+    ;; (plc::perceive (vector "robocup_shelf_3"))
+    ;; (plc::move-head :safe)
     
     ;;middle
-    (plc::say "moving torso slightly down")
+    (plc::say "moving torso slightly up")
     (plc::move-torso (plc::shelf-head-difference "2"))
+    (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
     (plc::move-head :perceive-down)
     (plc::say "done moving")
     (plc::perceive (vector "robocup_shelf_2"))
@@ -171,10 +172,22 @@
                                                           'String
                                                           "environment/shelf_floor_"
                                                           ?shelf_floor "_piece") :timeout 5))
-           (?pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
-                                       (cl-tf:rotation pose-in-shelf)))
+           (pose-from-prolog (chll::prolog-object-goal-pose (chll::prolog-object-in-gripper)))
 
+           (?pose (cl-tf:make-pose
+                  ;; "map"
+                  ;; (roslisp:ros-time)
+                   (cl-tf:make-3d-vector (first (car pose-from-prolog))
+                                         (second (car pose-from-prolog))
+                                         (third (car pose-from-prolog)))
+                   (cl-tf:make-quaternion (first (second pose-from-prolog))
+                                          (second (second pose-from-prolog))
+                                          (third (second pose-from-prolog))
+                                          (fourth (second pose-from-prolog)))))
+           ;; (?pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
+           ;;                         (cl-tf:rotation pose-in-shelf)))
 
+                   
            (?weight 0.7)
            (?width (first *object-dimensions*))
            (?depth 0.0)
@@ -203,10 +216,12 @@
                         (progn
                           (setq ?height (second *object-dimensions*))
                           (setq ?depth (third *object-dimensions*))))
-      
+
+      (format t "POSE FOR PLACING ~a " ?pose)
       (cram-executive:perform say-move-arm)
       (cram-executive:perform place)
-      (cram-executive:perform done))))
+      (cram-executive:perform done)
+      (format t "DESIG: ~a" place))))
 
 
 
