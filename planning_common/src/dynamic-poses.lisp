@@ -1,12 +1,12 @@
 (in-package :plc)
 
 ;; offset fairly close, for perception
-(defparameter *x-offset-perception* 0.4)
-(defparameter *y-offset-perception* 0.6)
+(defparameter *x-offset-perception* 0.5)
+(defparameter *y-offset-perception* 0.7)
 
 ;; bigger offset allowing for space to move arm
-(defparameter *x-offset-manipulation* 0.8)
-(defparameter *y-offset-manipulation* 1.0)
+(defparameter *x-offset-manipulation* 0.9)
+(defparameter *y-offset-manipulation* 1.1)
 
 (defparameter *height-offset* 0.2)
 
