@@ -5,17 +5,15 @@
 ;; TODO move this to knowledge:
 (defvar *height-obj-in-gripper* NIL)
 (defparameter *placing-z-offset* 0.05)
-(defparameter *placing-x-offset* 0.1)
+(defparameter *placing-x-offset* 0.0)
 (defparameter *placing-y-offset* 0.1)
 
 
 (cpl:def-cram-function go-to (?pose ?text)
   "go to a predefined location"
+  ;;NOTE the publish-callange-step is done in the dynamic-poses.lisp
     (let* ((?to-say (concatenate 'string "I am going to the " ?text))
-           (say-target (desig:a motion
-                                (:type :say)
-                                (:text ?to-say)))
-           
+   
            (?rotation (plc::force-rotation ?pose))
            
            (rotate (desig:a motion
@@ -40,39 +38,30 @@
 ;;; -----
 (cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
-    (let* ((say-move-torso (desig:a motion
-                                (:type :say)
-                                (:text "I am going to perceive the table now. Moving my torso up.")))
-           
-           (?height (plc::table-head-difference))
+  (pc::publish-challenge-step 3)
+    (let* ((?height (plc::table-head-difference))
            
            (move-torso (desig:a motion
                                 (:type :moving-torso)
                                 (:height ?height)))
            
-           (say-move-head (desig:a motion
-                                 (:type :say)
-                                 (:text "Move torso complete. Moving head.")))
            
            (move-head (desig:a motion
                           (:type :looking)
                           (:direction :perceive)))
-             
-           (say-reached (desig:a motion
-                                 (:type :say)
-                                 (:text "Move head complete.")))
+          
            
            (move-head-safe (desig:a motion
                           (:type :looking)
                           (:direction :safe))))
       (cpl:par
-        (cram-executive:perform say-move-torso)
+        (plc::say "I am going to perceive the table now. Moving my torso up.")
         (cram-executive:perform move-torso))
       (cpl:par
-        (cram-executive:perform say-move-head)
+        (plc::say "Move torso complete. Moving head.")
         (cram-executive:perform move-head))
       
-      (cram-executive:perform say-reached)
+      (plc::say "Move head complete")
       (plc::perceive (vector "robocup_table"))
       (plc::base-pose)
       (cram-executive:perform move-head-safe)))
@@ -81,7 +70,8 @@
 ;;TODO
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
-    
+  (pc::publish-challenge-step 1)
+  
   ;;middle
   (plc::perceive-high)
    (cpl:par
@@ -110,6 +100,7 @@
 ;; -----
 (cpl:def-cram-function grasp-object (&optional ?modus)
   "grasp object"
+  (pc::publish-challenge-step 4)
     (let* ((all-table-objects (chll:prolog-table-objects))
            (closest-object (plc:frame-closest-to-robot all-table-objects))
            (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
@@ -155,6 +146,7 @@
 ;; FRONT TOP
 (cpl:def-cram-function place-object (?modus ?shelf_floor)
   "place object"
+  (pc::publish-challenge-step 6)
   (cpl:seq
     (let* ((pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
                                                    "map"
@@ -217,7 +209,7 @@ or one of the following: :perceive :safe :front"
 
 (cpl:def-cram-function say (?text)
   "speaks the given text"
-  
+  (pc::publish-robot-text ?text)
     (let* ((say-text (desig:a motion
                              (:type :say)
                              (:text ?text))))

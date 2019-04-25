@@ -14,6 +14,7 @@
   "Calculates the pose for navigation to go to infront of the shelf.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
+  (pc::publish-challenge-step 5)
   (let* ((shelf (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
@@ -39,6 +40,7 @@ So that the robot can move his arm safely."
   "Calculates the pose for navigation to go to infront of the table.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
+  (pc::publish-challenge-step 2)
   (let* ((shelf (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
