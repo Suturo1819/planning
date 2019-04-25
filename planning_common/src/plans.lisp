@@ -130,7 +130,8 @@
                            (:modus ?modus)))
            (say-before (concatenate 'String "I am going to grasp the" object-class "now."))
            (say-after "done grasping"))
-
+      
+      (pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
       (format t "Object Class: ~a" object-class)
       (setq *object-dimensions* dimensions)
@@ -187,7 +188,8 @@
                         (progn
                           (setq ?height (+ (second *object-dimensions*) *placing-z-offset*))
                           (setq ?depth (third *object-dimensions*))))
-
+      
+      (pc::publish-marker-pose ?pose)
       (plc::say "I am going to place the object now.")
       (cram-executive:perform place)
       (plc::say "Done placing.")
@@ -239,6 +241,8 @@ or one of the following: :perceive :safe :front"
     (plc::say "Done perceiving.")))
     
 (cpl:def-cram-function base-pose ()
+  (pc::publish-challenge-step 0)
+  (pc::publish-operator-text "Toya, please clean up the table")
   (let* ((?pose (cl-tf:make-identity-transform))
          (?nil NIL)
          (?zero 0.0)

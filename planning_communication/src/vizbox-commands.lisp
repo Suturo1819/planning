@@ -9,7 +9,13 @@
   (setf *robot-text* (roslisp:advertise "/robot_text" "std_msgs/String"))
   (setf *operator-text* (roslisp:advertise "/operator_text" "std_msgs/String")))
         
-
+;; 0 Initial pose
+;; 1 Perceiving Shelf
+;; 2 Navigate to table
+;; 3 Perceiving table
+;; 4 Grasp the object
+;; 5 Navigate to shelf
+;; 6 Place the object
 (defun publish-challenge-step (step)
   (roslisp:publish *challenge-step*
                    (roslisp:make-message "std_msgs/UInt32" 

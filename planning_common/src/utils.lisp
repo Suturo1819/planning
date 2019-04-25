@@ -101,3 +101,13 @@ relative to odom"
                                   'String
                                   "environment/shelf_floor_"
                                   shelf "_piece") :timeout 5))
+
+
+(defun normalize-euler (rotation)
+  "normalizes the euler-angle of the Z rotation of a given transform"
+  (let* ((euler-angle (cl-tf:quaternion->euler rotation))
+         (z-rot (car (last euler-angle))))
+    
+    (unless (< (- (/ pi 2)) z-rot (/ pi 2))
+      (setf z-rot (- z-rot (* (signum z-rot) pi))))
+    z-rot))
