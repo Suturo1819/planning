@@ -148,9 +148,7 @@
 
       (plc::go-to (plc::pose-infront-table :manipulation T) "table")
       (plc::grasp-object)
-    )
-
-  )
+    ))
   
 
 (define-condition custom-error (cpl:simple-plan-failure) ((message :initarg :message :initform "" :reader message)))
