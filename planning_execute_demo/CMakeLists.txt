@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   roslisp
   std_msgs
 )
-
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -118,6 +117,10 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
+# Add lisp executable as rosnode
+add_lisp_executable(michel-ist-toll planning-execute-demo planning-execute-demo:michels-grasping-routine-with-perception-and-knowledge-for-testing-which-objects-work-out-booooy-how-long-can-a-function-name-get-oh-my-lord-is-this-huge)
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
