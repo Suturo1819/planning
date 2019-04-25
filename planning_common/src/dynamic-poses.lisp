@@ -6,10 +6,11 @@
 
 ;; bigger offset allowing for space to move arm
 (defparameter *x-offset-manipulation* 0.9)
-(defparameter *y-offset-manipulation* 1.1)
+(defparameter *y-offset-manipulation* 0.9)
 
 (defparameter *height-offset* 0.2)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun pose-infront-shelf(&key (manipulation NIL))
   "Calculates the pose for navigation to go to infront of the shelf.
 If the manipulation parameter is set, the distance offset is higher
@@ -62,7 +63,78 @@ So that the robot can move his arm safely."
                              (cl-tf:orientation result-pose))))
 
 
-(defun table-head-difference()
+(defun pose-infront-object (object-frame)
+  (format t "Object: ~a" object-frame)
+  (let* ((obj-pose (cl-tf2:lookup-transform
+                    (plc:get-tf-listener)
+                    "map"
+                    object-frame
+                    :timeout 5))
+         
+         (pose (cl-tf:make-pose
+                (cl-tf:translation obj-pose)
+                (cl-tf:rotation obj-pose)))
+         
+         ;;obj relative to table
+         (table-T-obj (cl-tf2:lookup-transform
+                       (plc::get-tf-listener)
+                       "environment/table_front_edge_center"
+                       object-frame))
+         
+         (map-T-table-orig (cl-tf2:lookup-transform
+                            (plc::get-tf-listener)
+                            "map"
+                            "environment/table_front_edge_center"))
+         
+         (map-T-table (cl-tf:make-transform
+                       (cl-tf:translation map-T-table-orig)
+                       (cl-tf:rotation map-T-table-orig)))
+
+         (x-diff-obj-table-edge (cl-tf:x (cl-tf:translation table-T-obj)))
+         (y-diff-obj-table-edge (cl-tf:y (cl-tf:translation table-T-obj)))
+        
+         (result-pose (cram-tf:translate-pose pose
+                                              :x-offset (+ *x-offset-manipulation*
+                                                           x-diff-obj-table-edge)
+                                              :y-offset 0.0
+                                              :z-offset 0.0))
+         
+         (z (plc::normalize-euler (cl-tf:rotation table-T-obj)))
+         
+         (normalized-obj-rot (cl-tf:euler->quaternion
+                              :ax 0.0
+                              :ay 0.0
+                              :az z))
+         
+         (robot-rotation-map (cl-tf:transform* map-T-table
+                                               (cl-tf:make-transform
+                                                (cl-tf:make-identity-vector)
+                                                normalized-obj-rot)))
+         (temp (cram-tf:translate-pose pose
+                                       :x-offset 0.0
+                                       :y-offset (+ *x-offset-manipulation*
+                                                     x-diff-obj-table-edge)
+                                       :z-offset 0.0))
+         (diff-y (- (cl-tf:y (cl-tf:origin pose))
+                    (cl-tf:y (cl-tf:origin temp)))))
+    
+    (setq result-pose (cram-tf:translate-pose result-pose
+                                              :x-offset 0.0
+                                              :y-offset diff-y
+                                              :z-offset 0.0)) 
+                             
+  (cl-tf:make-pose-stamped "map"
+                           (roslisp:ros-time)
+                           (cl-tf:make-3d-vector (cl-tf:x (cl-tf:origin result-pose))
+                                                 (if (< (cl-tf:y (cl-tf:origin result-pose)) 0.0)
+                                                     0.0
+                                                     (cl-tf:y (cl-tf:origin result-pose)))
+                                                 0.0)
+                           (cl-tf:rotation robot-rotation-map))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; HEAD ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun table-head-difference( )
   (let* ((table-pos (cl-tf2:lookup-transform
                       (plc:get-tf-listener)
                       "map"
