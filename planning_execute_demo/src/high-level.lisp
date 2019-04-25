@@ -25,6 +25,9 @@
     ;; TODO LOOP this for all available objects on the table
     (loop while (not (eq (chll::prolog-table-objects) 1)) do
       (plc::go-to (plc::pose-infront-table :manipulation T) "table")
+      ;;(plc::go-to (plc::pose-infront-object
+      ;;             (plc:frame-closest-to-robot
+      ;;              (chll:prolog-table-objects))) "table")
       (plc::grasp-object)
 
     ;; PLACING OBJECT
