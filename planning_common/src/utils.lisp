@@ -103,6 +103,7 @@ relative to odom"
                                   shelf "_piece") :timeout 5))
 
 
+<<<<<<< HEAD
 (defun normalize-euler (rotation)
   "normalizes the euler-angle of the Z rotation of a given transform"
   (let* ((euler-angle (cl-tf:quaternion->euler rotation))
@@ -111,3 +112,20 @@ relative to odom"
     (unless (< (- (/ pi 2)) z-rot (/ pi 2))
       (setf z-rot (- z-rot (* (signum z-rot) pi))))
     z-rot))
+=======
+(defun transform->grasp-side (tf-frame)
+  "Takes a transform from an object in base_footprint and returns :LEFT or :RIGHT, recommending for grasping from the left or the right."
+
+  (let* ((transform (cl-tf:lookup-transform (get-tf-listener)
+                                            "environment/table_front_edge_center"
+                                            tf-frame :timeout 5))
+         (euler-angle (cl-tf:quaternion->euler (cl-tf:rotation transform)))
+         (z-rot (nth (1+ (position :AZ euler-angle)) euler-angle))
+         (dimensions (chll:prolog-object-dimensions tf-frame)))
+    (unless (< (- (/ pi 2)) z-rot (/ pi 2))
+      (setf z-rot (- z-rot (* (signum z-rot) pi))))
+    (if (and (< (abs z-rot) (/ pi 6))
+             (< (car dimensions) 0.13))
+        :FRONT
+        :TOP)))
+>>>>>>> 079fc1c8f5d0efae0f80dcc95d94675f8a25f310

@@ -2,6 +2,8 @@
 
 (defvar *robosherlock-action-client* NIL)
 (defparameter *robosherlock-action-timeout* 120.0 "in seconds")
+(defvar *robosherlock-door-client* NIL)
+
 
 (defun init-robosherlock-action-client ()
   (roslisp:ros-info (robosherlock-client)
@@ -33,52 +35,44 @@
                        :result-timeout *robosherlock-action-timeout*))
 
 
-#+old-perception-client-for-2-pipelines
-(
-(defvar *robosherlock-action-clients*
-  (alexandria:alist-hash-table '((:table . NIL) (:shelf . NIL))))
 
-(defun init-robosherlock-action-client (pipeline-name)
-  ;; pipeline-name must be either :table or :shelf
-  (let ((server-name (format nil "hsr_perception_~a"
-                             (string-downcase (string pipeline-name))))
-        (action-name (format nil "suturo_perception_msgs/Perceive~aAction"
-                             (string-capitalize (string pipeline-name)))))
-    (setf (gethash pipeline-name *robosherlock-action-clients*)
-          (actionlib:make-action-client server-name action-name))
-    (loop until
-          (actionlib:wait-for-server (gethash pipeline-name *robosherlock-action-clients*)
-                                     *robosherlock-action-timeout*)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;here the pipeline for door shut/closed starts;;;;;;;;
+
+
+
+(defun init-robosherlock-door-action-client ()
   (roslisp:ros-info (robosherlock-client)
-                    "Robosherlock action client for ~a created." pipeline-name))
+                    "Creating robosherlock action client for server 'analye_shelf_status'.")
+  (setf *robosherlock-action-client*
+        (actionlib:make-action-client "/analyze_shelf_status"
+                                      "suturo_perception_msgs/AnalyzeShelfStatusAction"))
+  (loop until (actionlib:wait-for-server *robosherlock-action-client*
+                                         *robosherlock-action-timeout*))
+  (roslisp:ros-info (robosherlock-client)
+                    "Robosherlock door action client for ~a created." "'analye_shelf_status'"))
 
-(defun init-clients ()
-  (init-robosherlock-action-client :table)
-  (init-robosherlock-action-client :shelf))
+(defun get-robosherlock-door-client ()
+  (unless *robosherlock-action-client*
+    (init-robosherlock-action-client))
+  *robosherlock-action-client*)
 
-(defun kill-robosherlock-clients ()
-  (setf *robosherlock-action-clients*
-        (alexandria:alist-hash-table '((:table . NIL) (:shelf . NIL)))))
+(defun call-robosherlock-door-pipeline ()
+  "returns true=open or nil=false"
+  (pc:publish-operator-text "Toya is the door open?")
+  (roslisp:ros-info (robosherlock-client) "Calling pipeline for door.")
+  ;; actual call
+  (roslisp:with-fields (door_open)
+      (actionlib:call-goal (chll::get-robosherlock-door-client)
+                       (roslisp:make-message
+                        "suturo_perception_msgs/AnalyzeShelfStatusActionGoal")
+                       :timeout *robosherlock-action-timeout*
+                       :result-timeout *robosherlock-action-timeout*)
+    (if door_open
+    (pc:publish-robot-text "The door is open Operator we can continute.")
+    (pc:publish-robot-text "The door is shut Operator i will wait."))
+    door_open))
 
-;; (roslisp-utilities:register-ros-init-function init-clients)
-(roslisp-utilities:register-ros-cleanup-function kill-robosherlock-clients)
 
-(defun get-robosherlock-client (pipeline-name)
-  (unless (gethash pipeline-name *robosherlock-action-clients*)
-    (init-robosherlock-action-client pipeline-name))
-  (gethash pipeline-name *robosherlock-action-clients*))
 
-(defun call-robosherlock-pipeline (&optional (pipeline-name :table) (visualisation-value 'False))
-  ;; key handling stuff
-  (roslisp:ros-info (robosherlock-client) "Calling pipeline: ~a." pipeline-name)
-  (let ((valid-pipelines (alexandria:hash-table-keys *robosherlock-action-clients*)))
-    (unless (member pipeline-name valid-pipelines)
-      (roslisp:ros-error (robosherlock-client)
-                         "No pipeline with name ~a. ~a ~{~a~^, ~}." pipeline-name
-                         "Valid pipelines are " valid-pipelines))
-    ;; actual call
-    (actionlib:call-goal (get-robosherlock-client pipeline-name)
-                         (actionlib:make-action-goal (get-robosherlock-client pipeline-name)
-                           visualisation visualisation-value)
-                         :timeout 60 :result-timeout 60)))
-)

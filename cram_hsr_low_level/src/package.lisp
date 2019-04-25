@@ -15,6 +15,8 @@
    ;; perception client
    #:init-robosherlock-action-client ;; only for init function in main
    #:call-robosherlock-pipeline
+   #:init-robosherlock-door-action-client
+   #:call-robosherlock-door-pipeline
 
    ;; prolog client
    #:with-safe-prolog
