@@ -12,11 +12,13 @@
 (defun execute-demo()
   (plc::with-hsr-process-modules
     ;; GO and PERCEIVE the  SHELF
+    (plc::base-pose)
     (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
     (plc::perceive-shelf)
     
     ;; GO and PERCEIVE the TABLE
-    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")    
+    (plc::base-pose)
+    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
     (plc::perceive-table)   
     
     ;; GRASPING OBJECT
