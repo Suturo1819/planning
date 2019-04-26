@@ -17,8 +17,7 @@
     (plc::perceive-shelf)
     
     ;; GO and PERCEIVE the TABLE
-    (plc::base-pose)
-    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
+    (plc::go-to (plc::pose-infront-table :manipulation T) "table")
     (plc::perceive-table)   
     
     ;; GRASPING OBJECT

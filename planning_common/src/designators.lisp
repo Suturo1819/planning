@@ -122,6 +122,17 @@
     (desig:desig-prop ?designator (:depth ?depth))
     (desig:desig-prop ?designator (:modus ?modus)))
 
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceiving-side ?pose ?weight
+                                                                   ?width ?height
+                                                                   ?depth ?modus))
+    (desig:desig-prop ?designator (:type :perceiving-side))
+    (desig:desig-prop ?designator (:pose ?pose))
+    (desig:desig-prop ?designator (:weight ?weight))
+    (desig:desig-prop ?designator (:width ?width))
+    (desig:desig-prop ?designator (:height ?height))
+    (desig:desig-prop ?designator (:depth ?depth))
+    (desig:desig-prop ?designator (:modus ?modus)))
+
   
 
                                           

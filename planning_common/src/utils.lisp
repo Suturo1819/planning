@@ -129,3 +129,7 @@ relative to odom"
         :FRONT
         :TOP)))
 
+(defun pose-stamped->transform (pose-stamped)
+  (cl-tf:make-transform
+   (cl-tf:translation pose-stamped)
+   (cl-tf:rotation pose-stamped)))

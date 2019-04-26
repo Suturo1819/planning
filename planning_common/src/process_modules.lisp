@@ -30,7 +30,15 @@
           (:perceive-down
            (chll::call-move-head-action (vector 0.0 -0.4)))
           (:safe
-           (chll::call-move-head-action (vector 0.0 0.1)))))))
+           (chll::call-move-head-action (vector 0.0 0.1)))
+          (:left
+           (chll::call-move-head-action (vector 1.5 0.1)))
+          (:left-down
+           (chll::call-move-head-action (vector 1.5 -0.4)))
+          (:right
+           (chll::call-move-head-action (vector -1.5 0.1)))
+          (:right-down
+           (chll::call-move-head-action (vector -1.5 -0.4)))))))
 
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-torso (motion-designator)
@@ -117,6 +125,17 @@
         ?width
         ?height
         "perceive_up" ;;obj pose /text
+        ?depth
+        ?modus))
+
+      (perceiving-side
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        ?pose ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "perceive_side" ;;obj pose /text
         ?depth
         ?modus)))))
 
