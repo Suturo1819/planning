@@ -133,3 +133,16 @@ relative to odom"
   (cl-tf:make-transform
    (cl-tf:translation pose-stamped)
    (cl-tf:rotation pose-stamped)))
+
+(defun transform-stamped->pose-stamped(transform)
+  (cl-tf:make-pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf2:translation transform)
+   (cl-tf2:rotation transform)))
+
+(defun transform->pose-stamped (transform)
+  (cl-tf:pose->pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf:transform->pose transform)))

@@ -74,7 +74,6 @@ So that the robot can move his arm safely."
 
 
 (defun pose-infront-object (object-frame)
-  (format t "Object: ~a" object-frame)
   (let* ((pose (plc::pose-stamped->transform
                 (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
@@ -121,24 +120,33 @@ So that the robot can move his arm safely."
                               :ay 0.0
                               :az z))
          
-         (robot-rotation-map (cl-tf:transform* map-T-table
-                                               (cl-tf:make-transform
-                                                (cl-tf:make-identity-vector)
-                                                normalized-obj-rot)))
-         ;; figure out (wh)y
-         (diff-y (cl-tf:transform*
-                  (plc::pose-stamped->transform
+         ;; (robot-rotation-map (cl-tf:transform* map-T-table
+         ;;                                       (cl-tf:make-transform
+         ;;                                        (cl-tf:make-identity-vector)
+         ;;                                        normalized-obj-rot)))
+
+         ;; map-T-obj = pose
+         ;; map-T-base
+         (map-T-base (plc::pose-stamped->transform
                       (cl-tf2:lookup-transform
                        (plc::get-tf-listener)
                        "map"
-                       "base_footprint"))
+                       "base_footprint")))
+         (robot-rotation-map 
+                              (plc::calculate-look-towards-target
+                               (plc::transform->pose-stamped pose)
+                               (plc::transform->pose-stamped map-T-base)))
+           
+         ;; figure out (wh)y
+         (diff-y (cl-tf:transform*
+                  map-T-base
                   (cl-tf:make-transform
                    (cl-tf:make-3d-vector
                     (cl-tf:x (cl-tf:translation base-T-obj))
                     (cl-tf:y 0.0)
                     (cl-tf:z (cl-tf:translation base-T-obj)))
                    (cl-tf:rotation base-T-obj))))) 
-                             
+
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:make-3d-vector (cl-tf:x (cl-tf:translation result-pose))
@@ -146,7 +154,7 @@ So that the robot can move his arm safely."
                                                        0.0
                                                        (cl-tf:y (cl-tf:translation result-pose)))
                                                    0.0)
-                             (cl-tf:rotation robot-rotation-map))))
+                             (cl-tf:orientation robot-rotation-map))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; HEAD ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -204,3 +212,24 @@ So that the robot can move his arm safely."
     
     (format t "HEIGHT of shelf: ~a" shelf-height)
     result))
+
+;; adapted from  cram/cram_pr2/cram_pr2_fetch_deliver_plans/src/fetch-and-deliver-plans.lisp 
+(defun calculate-look-towards-target (look-pose-stamped robot-pose-stamped)
+  "Given a `look-pose-stamped' and a `robot-pose-stamped',
+calculate table-height new robot-pose-stamped, which is rotated with an angle to point towards
+the `look-pose-stamped'."
+  (let* ((world->robot-transform
+           (cram-tf:pose-stamped->transform-stamped robot-pose-stamped "robot"))
+         (robot->world-transform
+           (cl-transforms:transform-inv world->robot-transform))
+         (world->look-pose-origin
+           (cl-transforms:origin look-pose-stamped))
+         (look-pose-in-robot-frame
+           (cl-transforms:transform-point
+            robot->world-transform
+            world->look-pose-origin))
+         (rotation-angle
+           (atan
+            (cl-transforms:y look-pose-in-robot-frame)
+            (cl-transforms:x look-pose-in-robot-frame))))
+    (cram-tf:rotate-pose robot-pose-stamped :z rotation-angle)))
