@@ -8,7 +8,7 @@
   (unless *tf-listener*
     (setf *tf-listener* (make-instance 'cl-tf2:buffer-client))
     (handler-case
-     (cl-tf2:lookup-transform *tf-listener* "map" "odom" :timeout 20)
+     (cl-tf2:lookup-transform *tf-listener* "map" "odom" :timeout 3)
       (CL-TRANSFORMS-STAMPED:TRANSFORM-STAMPED-ERROR () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))
       (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
        () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))))
@@ -103,7 +103,7 @@ relative to odom"
                                   shelf "_piece") :timeout 5))
 
 
-<<<<<<< HEAD
+
 (defun normalize-euler (rotation)
   "normalizes the euler-angle of the Z rotation of a given transform"
   (let* ((euler-angle (cl-tf:quaternion->euler rotation))
@@ -112,7 +112,7 @@ relative to odom"
     (unless (< (- (/ pi 2)) z-rot (/ pi 2))
       (setf z-rot (- z-rot (* (signum z-rot) pi))))
     z-rot))
-=======
+
 (defun transform->grasp-side (tf-frame)
   "Takes a transform from an object in base_footprint and returns :LEFT or :RIGHT, recommending for grasping from the left or the right."
 
@@ -128,4 +128,4 @@ relative to odom"
              (< (car dimensions) 0.13))
         :FRONT
         :TOP)))
->>>>>>> 079fc1c8f5d0efae0f80dcc95d94675f8a25f310
+

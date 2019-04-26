@@ -1,16 +1,18 @@
 (in-package :pc)
 
 (defvar *text-to-speech-publisher* nil)
+(defparameter *enable-speech* T)
 
 (defun init () 
   (roslisp:start-ros-node "planning_communication")
   (setf *text-to-speech-publisher* (roslisp:advertise "/talk_request" "tmc_msgs/Voice")))
 
-(defun publish-text-to-speech (text) 
-  (publish *text-to-speech-publisher*
-    (make-message "tmc_msgs/Voice"
-      :language 1
-      :sentence text)))
+(defun publish-text-to-speech (text)
+  (when *enable-speech*
+    (publish *text-to-speech-publisher*
+             (make-message "tmc_msgs/Voice"
+                           :language 1
+                           :sentence text))))
 
 ;;action client
 
@@ -39,11 +41,12 @@
       :sentence text)))
 
 (defun call-text-to-speech-action (text)
-  (multiple-value-bind (result status)
-      (let ((actionlib:*action-server-timeout* 10.0))
-        (actionlib:call-goal
-         (get-text-to-speech-action-client)
-         (make-text-action-goal text)))
-    (roslisp:ros-info (text-to-speech-action-client) "Text to speech action finished.")
-    (values result status)))
+  (when *enable-speech*
+    (multiple-value-bind (result status)
+        (let ((actionlib:*action-server-timeout* 10.0))
+          (actionlib:call-goal
+           (get-text-to-speech-action-client)
+           (make-text-action-goal text)))
+      (roslisp:ros-info (text-to-speech-action-client) "Text to speech action finished.")
+      (values result status))))
 

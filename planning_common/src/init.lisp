@@ -9,6 +9,7 @@
   
   ;;Init all the action servers
 ;;  (cpl:with-failure-handling
+  (plc::get-tf-listener)
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
   (chll::init-move-head-action-client)
@@ -34,6 +35,10 @@
   (print "init giskard-joints")
   (chll::init-giskard-joints-action-client)
   (print "init move-torso client")
-  (chll::init-move-torso-action-client))
+  (chll::init-move-torso-action-client)
+  (print "init tf-listener")
+  (plc::get-tf-listener)
+  (print "init viz-box")
+  (pc::viz-box-init))
 
 
