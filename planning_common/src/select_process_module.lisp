@@ -44,5 +44,8 @@
     (desig:desig-prop ?desig (:type :perceiving-high)))
 
   (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-arm-motion)
+    (desig:desig-prop ?desig (:type :perceiving-side)))
+
+  (cram-prolog:<- (cpm:matching-process-module ?desig  hsr-arm-motion)
     (desig:desig-prop ?desig (:type :perceiving)))
   )

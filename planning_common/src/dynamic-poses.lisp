@@ -2,7 +2,7 @@
 
 ;; offset fairly close, for perception
 (defparameter *x-offset-perception* 0.5)
-(defparameter *y-offset-perception* 0.7)
+(defparameter *y-offset-perception* 0.8)
 
 ;; bigger offset allowing for space to move arm
 (defparameter *x-offset-manipulation* 0.9)
@@ -109,7 +109,8 @@ So that the robot can move his arm safely."
                          pose)
                          :x-offset (+ *x-offset-manipulation*
                                       x-diff-obj-table-edge)
-                         :y-offset 0.0
+                         :y-offset (- *x-offset-manipulation*
+                                      y-diff-obj-table-edge)
                          :z-offset 0.0)))
          
          ;; normalize z rotation to prevent getting poses inside of walls
@@ -145,15 +146,17 @@ So that the robot can move his arm safely."
                     (cl-tf:x (cl-tf:translation base-T-obj))
                     (cl-tf:y 0.0)
                     (cl-tf:z (cl-tf:translation base-T-obj)))
-                   (cl-tf:rotation base-T-obj))))) 
+                   (cl-tf:rotation base-T-obj))))
+         ) 
 
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
-                             (cl-tf:make-3d-vector (cl-tf:x (cl-tf:translation result-pose))
-                                                   (if (< (cl-tf:y (cl-tf:translation result-pose)) 0.0)
-                                                       0.0
-                                                       (cl-tf:y (cl-tf:translation result-pose)))
-                                                   0.0)
+                             (cl-tf:make-3d-vector
+                              (cl-tf:x (cl-tf:translation result-pose))
+                              (if (< (cl-tf:y (cl-tf:translation result-pose)) 0.0)
+                                  0.0
+                                  (cl-tf:y (cl-tf:translation result-pose)))
+                              0.0)
                              (cl-tf:orientation robot-rotation-map))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; HEAD ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -233,3 +236,28 @@ the `look-pose-stamped'."
             (cl-transforms:y look-pose-in-robot-frame)
             (cl-transforms:x look-pose-in-robot-frame))))
     (cram-tf:rotate-pose robot-pose-stamped :z rotation-angle)))
+
+(defparameter *arm-offset* 0.8)
+(defparameter *short-dist* 0.2)
+(defun calculate-possible-poses-from-obj (obj-transform)
+  ;;make list of poses
+  (let* ((x (cl-tf:x (cl-tf:translation obj-transform)))
+         (y (cl-tf:y (cl-tf:translation obj-transform)))
+
+         (vector-list '())
+         (map-T-table (plc::pose-stamped->transform
+                       (cl-tf2:lookup-transform
+                        (plc::get-tf-listener)
+                        "map"
+                        "environment/table_front_edge_center")))
+         
+         (xt (cl-tf:x (cl-tf:translation map-T-table)))
+         (yt (cl-tf:y (cl-tf:translation map-T-table))))
+    
+    (push (list (+ x *short-dist*) 0.0 0.0) vector-list)
+    (push (list (- x *short-dist*) 0.0 0.0) vector-list)
+    (push (list 0.0 (+ y *short-dist*) 0.0) vector-list)
+    (push (list 0.0 (- y *short-dist*) 0.0) vector-list)
+
+    vector-list
+    ))

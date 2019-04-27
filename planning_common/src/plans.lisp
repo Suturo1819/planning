@@ -76,28 +76,32 @@
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (pc::publish-challenge-step 1)
+  (plc::perceive-side)
+  
+  ;;high
+  (plc::go-to (plc::pose-infront-shelf :manipulation NIL :rotation T) "close to the shelf")
+  (cpl:par
+    (plc::move-torso (plc::shelf-head-difference "4"))
+    (plc::move-head :left-down))
+  (plc::perceive (vector "robocup_shelf_3"))
   
   ;;middle
-  (plc::perceive-high)
    (cpl:par
-    (plc::say "moving torso slightly up")
-    (plc::move-torso (plc::shelf-head-difference "2")))
-   (plc::go-to (plc::pose-infront-shelf :manipulation NIL) "closer to the shelf")
-   (cpl:par
-     (plc::move-head :perceive-down)
-     (plc::say "done moving"))
-    (plc::perceive (vector "robocup_shelf_2"))
-    (plc::move-head :safe)
+     (plc::move-torso (plc::shelf-head-difference "2"))
+     (plc::move-head :left-down-2))
+  (plc::perceive (vector "robocup_shelf_2"))
 
-    ;;low
-   (plc::go-to (plc::pose-infront-shelf :manipulation T) "step away from the shelf")
-   (plc::base-pose)
-   (cpl:par
-     (plc::move-torso (plc::shelf-head-difference "1"))
-    ;;(plc::go-to (plc::pose-infront-shelf :manipulation NIL) "shelf")
-     (plc::move-head :perceive-down))
-    (plc::perceive (vector "robocup_shelf_1"))
-    (plc::move-head :safe))
+   ;;low
+  (cpl:par
+    (plc::move-torso (plc::shelf-head-difference "0"))
+    (plc::move-head :left-down-3))
+  (plc::perceive (vector "robocup_shelf_1"))
+  (plc::perceive (vector "robocup_shelf_0"))
+
+
+  ;;base pose
+  (plc::move-head :safe)
+  (plc::base-pose))
 
 
 
@@ -229,7 +233,7 @@ or one of the following: :perceive :safe :front"
                              (:type :moving-torso)
                              (:height ?height))))
 
-      (move-head :safe)
+      ;;(move-head :safe)
       (cram-executive:perform move-torso)))
 
 
