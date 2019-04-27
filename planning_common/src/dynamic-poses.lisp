@@ -301,10 +301,7 @@ the `look-pose-stamped'."
                                  (cl-tf:transform-inv
                                   transform)))
                              poses-list))
-    
-
-
-    
+  
     (format t "poses list: ~a" poses-list)
     ;;cut poses which are far away from edge
     ;; list of transforms
@@ -312,26 +309,15 @@ the `look-pose-stamped'."
                         (mapcar (lambda (pose)
                                   (unless temp
                                     (setq temp pose))
-                                  (if (< (cl-tf:x (cl-tf:translation pose))
+                                  
+                                  (if (< (cl-tf:x (cl-tf:translation
+                                                   pose))
                                          (cl-tf:x (cl-tf:translation temp)))
                                       (setq temp pose)))
                                 poses-list)
-                        temp))
-                              
-
-    ;; (setq result-pose (plc::transform->pose-stamped
-    ;;                    (cl-tf:transform*
-    ;;                     map-T-table
-    ;;                     result-pose)))
-                        
-
-    ;;viz
-    ;; (let* ((counter 1))
-    ;;   (mapcar (lambda (pose)
-    ;;             (planning-communication::publish-marker-pose
-    ;;              pose
-    ;;              :id (setq counter (1+ counter))))
-    ;;           poses-list))
+                        (cl-tf:transform*
+                         map-T-table
+                         temp)))
 
     (setq poses-list (mapcar (lambda (pose)
                                (plc::transform->pose-stamped
@@ -339,12 +325,11 @@ the `look-pose-stamped'."
                                  map-T-table
                                 pose)))
                              poses-list))
-    (plc::spawn-4-markers poses-list)
+    
+    ;;(plc::spawn-4-markers poses-list)
 
-    ;; (planning-communication::publish-marker-pose (plc::transform->pose-stamped
-    ;;                                               (cl-tf:transform*
-    ;;                                                map-T-table
-    ;;                                                result-pose)))
+     (planning-communication::publish-marker-pose (plc::transform->pose-stamped                                          
+                                                    result-pose))
     result-pose
    ;; poses-list
    ;; edge-side
