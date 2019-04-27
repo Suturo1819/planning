@@ -130,9 +130,9 @@ relative to odom"
         :TOP)))
 
 (defun pose-stamped->transform (pose-stamped)
-  (cl-tf:make-transform
-   (cl-tf:translation pose-stamped)
-   (cl-tf:rotation pose-stamped)))
+  (cl-tf2:make-transform
+   (cl-tf2:translation pose-stamped)
+   (cl-tf2:rotation pose-stamped)))
 
 (defun transform-stamped->pose-stamped(transform)
   (cl-tf:make-pose-stamped
@@ -142,18 +142,20 @@ relative to odom"
    (cl-tf2:rotation transform)))
 
 (defun transform->pose-stamped (transform)
-  (cl-tf:pose->pose-stamped
+  (cl-tf:make-pose-stamped
    "map"
    (roslisp:ros-time)
-   (cl-tf:transform->pose transform)))
+   (cl-tf:translation transform)
+   (cl-tf:rotation transform)))
 
+;;;;;;;;;;;;;;; TESTING ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun test-rotation()
   (let* ((object (plc::transform-stamped->pose-stamped
                   (cl-tf2:lookup-transform
-                      (plc:get-tf-listener)
-                      "map"
-                      "environment/shelf_origin"
-                      :timeout 5)))
+                   (plc:get-tf-listener)
+                   "map"
+                   "environment/shelf_origin"
+                   :timeout 5)))
          (base (plc::transform-stamped->pose-stamped
                 (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
@@ -161,3 +163,47 @@ relative to odom"
                  "base_footprint"
                  :timeout 5))))
     (plc::calculate-look-towards-target object base)))
+
+(defun test-pose()
+  (plc::pose-stamped->transform
+                  (cl-tf2:lookup-transform
+                   (plc:get-tf-listener)
+                   "environment/table_front_edge_center"
+                   "Rewecremefraichecuplr_KHLMVZBT"
+                   :timeout 5)))
+
+(defun test-obj ()
+  (plc::pose-stamped->transform
+                (cl-tf2:lookup-transform
+                 (plc:get-tf-listener)
+                 "map"
+                 "Other_NZDCRPEI"
+                 :timeout 5)))
+
+(defun vector->pose-stamped (vector &optional quaternion)
+  (cl-tf:make-pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf:make-3d-vector (first vector)
+                         (second vector)
+                         (third vector))
+   (if quaternion
+       quaternion
+   (cl-tf:make-identity-rotation))))
+
+(defun spawn-4-markers (poses-stamped)
+  (let* ((counter 0))
+    (mapcar (lambda (pose)
+              (planning-communication::publish-marker-pose
+               pose
+               :parent "map"
+               :id (setq counter
+                         (+ counter 1))))
+            poses-stamped))) 
+             
+(defun vector->transform (vector quaternion)
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector (first vector)
+                         (second vector)
+                         (third vector))
+   quaternion))

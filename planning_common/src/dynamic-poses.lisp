@@ -6,7 +6,7 @@
 
 ;; bigger offset allowing for space to move arm
 (defparameter *x-offset-manipulation* 0.9)
-(defparameter *y-offset-manipulation* 0.9)
+(defparameter *y-offset-manipulation* 1.0)
 
 (defparameter *height-offset* 0.35)
 
@@ -239,25 +239,113 @@ the `look-pose-stamped'."
 
 (defparameter *arm-offset* 0.8)
 (defparameter *short-dist* 0.2)
-(defun calculate-possible-poses-from-obj (obj-transform)
+;; use transform of tablecenter-T-obj
+(defun calculate-possible-poses-from-obj (object-frame)
   ;;make list of poses
-  (let* ((x (cl-tf:x (cl-tf:translation obj-transform)))
+  (let* ((obj-transform (plc::pose-stamped->transform
+                         (cl-tf2:lookup-transform
+                          (plc::get-tf-listener)
+                          "environment/table_front_edge_center"
+                          object-frame)))
+
+
+         (x (cl-tf:x (cl-tf:translation obj-transform)))
          (y (cl-tf:y (cl-tf:translation obj-transform)))
+         (rotation (cl-tf:rotation obj-transform))
 
          (vector-list '())
+         (poses-list '())
+         (cut-poses '())
+         (result-pose '())
          (map-T-table (plc::pose-stamped->transform
                        (cl-tf2:lookup-transform
                         (plc::get-tf-listener)
                         "map"
                         "environment/table_front_edge_center")))
          
+         ;; the size of the table edge. 
+         (edge-side
+           (plc::pose-stamped->transform
+            (cl-tf2:lookup-transform
+             (plc::get-tf-listener)
+             "environment/table_origin"
+             "environment/table_front_edge_center")))
+         
+         ;; table-T-obj = (inv map-T-table) * map-T-obj
+         (table-T-obj (cl-tf:transform*
+                       (cl-tf:transform-inv
+                        map-T-table)
+                       obj-transform))
+         
          (xt (cl-tf:x (cl-tf:translation map-T-table)))
          (yt (cl-tf:y (cl-tf:translation map-T-table))))
     
-    (push (list (+ x *short-dist*) 0.0 0.0) vector-list)
-    (push (list (- x *short-dist*) 0.0 0.0) vector-list)
-    (push (list 0.0 (+ y *short-dist*) 0.0) vector-list)
-    (push (list 0.0 (- y *short-dist*) 0.0) vector-list)
+    (push (list (* 1.0 *short-dist*) 0.0 0.0) vector-list)
+    (push (list (* -1.0 *short-dist*) 0.0 0.0) vector-list)
+    (push (list 0.0 (* 1.0 *short-dist*) 0.0) vector-list)
+    (push (list 0.0 (* -1.0 *short-dist*) 0.0) vector-list)
 
-    vector-list
+
+    ;; make list of transforms which are the offsets
+    (setq poses-list (mapcar (lambda (vector)
+                               (plc::vector->transform
+                                vector
+                                (cl-tf:make-identity-rotation))) vector-list))
+    
+    ;; multiply offset transform onto original object pose
+    (setq poses-list (mapcar (lambda (transform)
+                               (cl-tf:transform*
+                                ;;map-T-table
+                                ;;(cl-tf:transform-inv
+                                 obj-transform;)
+                                 (cl-tf:transform-inv
+                                  transform)))
+                             poses-list))
+    
+
+
+    
+    (format t "poses list: ~a" poses-list)
+    ;;cut poses which are far away from edge
+    ;; list of transforms
+    (setq result-pose (let* ((temp))
+                        (mapcar (lambda (pose)
+                                  (unless temp
+                                    (setq temp pose))
+                                  (if (< (cl-tf:x (cl-tf:translation pose))
+                                         (cl-tf:x (cl-tf:translation temp)))
+                                      (setq temp pose)))
+                                poses-list)
+                        temp))
+                              
+
+    ;; (setq result-pose (plc::transform->pose-stamped
+    ;;                    (cl-tf:transform*
+    ;;                     map-T-table
+    ;;                     result-pose)))
+                        
+
+    ;;viz
+    ;; (let* ((counter 1))
+    ;;   (mapcar (lambda (pose)
+    ;;             (planning-communication::publish-marker-pose
+    ;;              pose
+    ;;              :id (setq counter (1+ counter))))
+    ;;           poses-list))
+
+    (setq poses-list (mapcar (lambda (pose)
+                               (plc::transform->pose-stamped
+                                (cl-tf:transform*
+                                 map-T-table
+                                pose)))
+                             poses-list))
+    (plc::spawn-4-markers poses-list)
+
+    ;; (planning-communication::publish-marker-pose (plc::transform->pose-stamped
+    ;;                                               (cl-tf:transform*
+    ;;                                                map-T-table
+    ;;                                                result-pose)))
+    result-pose
+   ;; poses-list
+   ;; edge-side
     ))
