@@ -31,7 +31,8 @@
       (cpl:seq
         (plc::say ?to-say)
         ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
-        (cram-executive:perform move)
+        (cram-executive:perform move))
+      (cpl:par
         (cram-executive:perform head-safe)
         (plc::say "I have reached my destination"))))
 
@@ -64,11 +65,11 @@
         (plc::say "Move torso complete. Moving head.")
         (cram-executive:perform move-head))
       
-      (plc::say "Move head complete")
       (plc::perceive (vector "robocup_table"))
       (plc::go-to (plc::pose-infront-table :manipulation T) "step away from the table")
-      (plc::base-pose)
-      (cram-executive:perform move-head-safe)
+      (cpl:par
+        (plc::base-pose)
+        (cram-executive:perform move-head-safe))
       ))
 
 ;;assuming robot is already standing infront of the shelf
@@ -214,8 +215,7 @@
 or one of the following: :perceive :safe :front"  
     (let* ((look-at (desig:a motion
                              (:type :looking)
-                             (:direction ?position))))
-      
+                             (:direction ?position))))      
       (cram-executive:perform look-at)))
 
 (cpl:def-cram-function say (?text)
@@ -223,8 +223,7 @@ or one of the following: :perceive :safe :front"
   (pc::publish-robot-text ?text)
     (let* ((say-text (desig:a motion
                              (:type :say)
-                             (:text ?text))))
-      
+                             (:text ?text))))     
       (cram-executive:perform say-text)))
 
 (cpl:def-cram-function move-torso (?height)
@@ -232,8 +231,6 @@ or one of the following: :perceive :safe :front"
     (let* ((move-torso (desig:a motion
                              (:type :moving-torso)
                              (:height ?height))))
-
-      ;;(move-head :safe)
       (cram-executive:perform move-torso)))
 
 
@@ -243,10 +240,9 @@ or one of the following: :perceive :safe :front"
                                   (:type :perceive)
                                   (:surface ?surface))))
     
-    ;;(plc::move-head :perceive)
-    (cpl:par (plc::say "Now, perceiving.")
+    (cpl:par
+      (plc::say "Now, perceiving.")
       (cram-executive:perform perceive-desig))
-;;    (sleep 10.0)
     (plc::say "Done perceiving.")))
     
 (cpl:def-cram-function base-pose ()
@@ -265,8 +261,7 @@ or one of the following: :perceive :safe :front"
                          (:modus ?nil))))
     (cpl:par
       (plc::say "moving into base pose")
-      (cram-executive:perform perceive))
-    (plc::say "done moving into base pose")))
+      (cram-executive:perform perceive))))
 
 (cpl:def-cram-function perceive-high ()
   (let* ((?pose (cl-tf:make-identity-transform))
@@ -282,8 +277,7 @@ or one of the following: :perceive :safe :front"
                          (:modus ?nil))))
     (cpl:par
       (plc::say "moving into perceive high pose.")
-      (cram-executive:perform perceive))
-    (plc::say "done moving into perceive high pose.")))
+      (cram-executive:perform perceive))))
 
 (cpl:def-cram-function perceive-side ()
   (let* ((?pose (cl-tf:make-identity-transform))
@@ -299,6 +293,5 @@ or one of the following: :perceive :safe :front"
                          (:modus ?nil))))
     (cpl:par
       (plc::say "moving into perceive side pose.")
-      (cram-executive:perform perceive))
-    (plc::say "done moving into perceive side pose.")))
+      (cram-executive:perform perceive))))
          

@@ -28,7 +28,7 @@
                                            ns "goal_locations"
                                            id (or id (incf current-index))
                                            type (roslisp:symbol-code
-                                                 'visualization_msgs-msg:<marker> :cylinder)
+                                                 'visualization_msgs-msg:<marker> :arrow)
                                            action (roslisp:symbol-code
                                                    'visualization_msgs-msg:<marker> :add)
                                            (x position pose) (cl-transforms:x point)

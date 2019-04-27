@@ -146,3 +146,18 @@ relative to odom"
    "map"
    (roslisp:ros-time)
    (cl-tf:transform->pose transform)))
+
+(defun test-rotation()
+  (let* ((object (plc::transform-stamped->pose-stamped
+                  (cl-tf2:lookup-transform
+                      (plc:get-tf-listener)
+                      "map"
+                      "environment/shelf_origin"
+                      :timeout 5)))
+         (base (plc::transform-stamped->pose-stamped
+                (cl-tf2:lookup-transform
+                 (plc:get-tf-listener)
+                 "map"
+                 "base_footprint"
+                 :timeout 5))))
+    (plc::calculate-look-towards-target object base)))
