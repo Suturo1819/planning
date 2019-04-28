@@ -57,10 +57,10 @@
       (plc::perceive-side)    
       (cpl:par
         (plc::say "I am going to perceive the table now..")
-        (cram-executive:perform move-torso)
-        (plc::move-head :right-down))
+        (cram-executive:perform move-torso))
       
       (plc::go-to (plc::pose-infront-table :manipulation NIL :rotation T) "table")
+      (plc::move-head :right-down)
       (plc::perceive (vector "robocup_table"))
       (plc::go-to (plc::pose-infront-table :manipulation T) "step away from the table")))
 
