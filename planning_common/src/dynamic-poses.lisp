@@ -255,10 +255,7 @@ the `look-pose-stamped'."
                           "map"
                           object-frame)))
 
-
          (x (cl-tf:x (cl-tf:translation obj-transform)))
-         (y (cl-tf:y (cl-tf:translation obj-transform)))
-         (rotation (cl-tf:rotation obj-transform))
 
          (vector-list '())
          (poses-list '())
@@ -268,24 +265,7 @@ the `look-pose-stamped'."
                        (cl-tf2:lookup-transform
                         (plc::get-tf-listener)
                         "map"
-                        "environment/table_front_edge_center")))
-         
-         ;; the size of the table edge. 
-         (edge-side
-           (plc::pose-stamped->transform
-            (cl-tf2:lookup-transform
-             (plc::get-tf-listener)
-             "environment/table_origin"
-             "environment/table_front_edge_center")))
-         
-         ;; table-T-obj = (inv map-T-table) * map-T-obj
-         (table-T-obj (cl-tf:transform*
-                       (cl-tf:transform-inv
-                        map-T-table)
-                       obj-transform))
-         
-         (xt (cl-tf:x (cl-tf:translation map-T-table)))
-         (yt (cl-tf:y (cl-tf:translation map-T-table))))
+                        "environment/table_front_edge_center"))))
     
     (push (list (list (* 1.0 *short-dist*) 0.0 0.0) :x+) vector-list)
     (push (list (list (* -1.0 *short-dist*) 0.0 0.0) :x-) vector-list)
