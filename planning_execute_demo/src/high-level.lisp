@@ -11,71 +11,24 @@
 
 (defun execute-demo()
   (plc::with-hsr-process-modules
-    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
-    (plc::say "Now, Perceiving")
-    (plc::move-head :perceive)
-    (chll:call-robosherlock-pipeline (vector "robocup_table"))
-    (sleep 10.0)
-    (plc::say "done, Perceiving")
-    (plc::go-to (plc::pose-infront-table :manipulation T) "table")
-    
-    ;;TODO DO THIS SOMWHERE ELSE QUCIK HACK VANESSA
-    (let* ((all-table-objects (chll:prolog-table-objects))
-           (closest-object (plc:frame-closest-to-robot all-table-objects))
-           (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                         "map" closest-object :timeout 5))
-           (object-class (chll:object-name->class closest-object))
-           (pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
-                                   (cl-tf:rotation closest-object-pose))))
-      (planning-communication::publish-marker-pose pose))
-    (plc::grasp-object "FRONT")
-    (plc::move-head :safe)
-    ;;(plc::perceive-table)
+    ;; GO and PERCEIVE the  SHELF
+    (plc::base-pose)
     (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+    (plc::perceive-shelf)
     
-     ;;TODO DO THIS SOMWHERE ELSE QUCIK HACK VANESSA
-     (let* ((pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                   "map" (concatenate
-                                                          'String
-                                                          "environment/shelf_floor_"
-                                                          "1" "_piece") :timeout 5))
-           (pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
-                                  (cl-tf:rotation pose-in-shelf))))
-       (planning-communication::publish-marker-pose pose))
+    ;; GO and PERCEIVE the TABLE
+    (plc::go-to (plc::pose-infront-table :manipulation T :rotation T) "table")
+    (plc::perceive-table)   
     
-    (plc::place-object "FRONT" "1"))
-   (plc::with-hsr-process-modules
-    (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
-    (plc::say "Now, Perceiving")
-    (plc::move-head :perceive)
-    (chll:call-robosherlock-pipeline (vector "robocup_table"))
-    (sleep 10.0)
-    (plc::say "done, Perceiving")
-     (plc::go-to (plc::pose-infront-table :manipulation T) "table")
-     ;;TODO DO THIS SOMWHERE ELSE QUCIK HACK VANESSA
-    (let* ((all-table-objects (chll:prolog-table-objects))
-           (closest-object (plc:frame-closest-to-robot all-table-objects))
-           (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                         "map" closest-object :timeout 5))
-           (object-class (chll:object-name->class closest-object))
-           (pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
-                                   (cl-tf:rotation closest-object-pose))))
-      (planning-communication::publish-marker-pose pose))
-    (plc::grasp-object "FRONT")
-    (plc::move-head :safe)
-    ;;(plc::perceive-table)
-     (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
-       ;;TODO DO THIS SOMWHERE ELSE QUCIK HACK VANESSA
-     (let* ((pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                   "map" (concatenate
-                                                          'String
-                                                          "environment/shelf_floor_"
-                                                          "1" "_piece") :timeout 5))
-           (pose (cl-tf:make-pose (cl-tf:translation pose-in-shelf)
-                                  (cl-tf:rotation pose-in-shelf))))
-       (planning-communication::publish-marker-pose pose))
-    (plc::place-object "FRONT" "2")
-    ))
+    ;; GRASPING OBJECT
+    ;; TODO LOOP this for all available objects on the table
+    (loop while (not (eq (chll::prolog-table-objects) 1)) do
+      ;; NOTE goto is now included in the plan
+      (plc::grasp-object)
+
+    ;; PLACING OBJECT
+      (plc::go-to (plc::pose-infront-shelf :manipulation T) "shelf")
+      (plc::place-object "FRONT" "2"))))
 
 
 (defun execute-demo-proj()

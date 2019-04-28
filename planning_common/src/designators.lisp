@@ -40,6 +40,10 @@
     (desig:desig-prop ?designator (:type :looking))
     (desig:desig-prop ?designator (:direction :perceive)))
 
+  (cram-prolog:<- (desig:motion-grounding ?designator (look :perceive))
+    (desig:desig-prop ?designator (:type :looking))
+    (desig:desig-prop ?designator (:direction :perceive-down)))
+
   (cram-prolog:<- (desig:motion-grounding ?designator (look :safe))
     (desig:desig-prop ?designator (:type :looking))
     (desig:desig-prop ?designator (:direction :safe)))
@@ -74,40 +78,71 @@
                  (desig:desig-prop ?motion-designator (:type :closing))))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
-  (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?pose
-                                                              ;;  ?pose-odom
-                                                                ?weight
-                                                                ?width
-                                                                ?height
-                                                                ?depth
-                                                                ?modus))
+  (cram-prolog:<- (desig:motion-grounding ?designator (grasping ?pose ?weight
+                                                                ?width ?height
+                                                                ?depth ?modus))
     (desig:desig-prop ?designator (:type :grasping))
     (desig:desig-prop ?designator (:pose ?pose))
-   ;; (desig:desig-prop ?designator (:pose-odom ?pose-odom))
     (desig:desig-prop ?designator (:weight ?weight))
     (desig:desig-prop ?designator (:width ?width))
     (desig:desig-prop ?designator (:height ?height))
     (desig:desig-prop ?designator (:depth ?depth))
     (desig:desig-prop ?designator (:modus ?modus)))
 
-  (cram-prolog:<- (desig:motion-grounding ?designator (placing ?pose
-                                                              ;;  ?pose-odom
-                                                                ?weight
-                                                                ?width
-                                                                ?height
-                                                                ?depth
-                                                                ?modus))
+  (cram-prolog:<- (desig:motion-grounding ?designator (placing ?pose ?weight
+                                                               ?width ?height
+                                                               ?depth ?modus))
     (desig:desig-prop ?designator (:type :placing))
     (desig:desig-prop ?designator (:pose ?pose))
-   ;; (desig:desig-prop ?designator (:pose-odom ?pose-odom))
     (desig:desig-prop ?designator (:weight ?weight))
     (desig:desig-prop ?designator (:width ?width))
     (desig:desig-prop ?designator (:height ?height))
     (desig:desig-prop ?designator (:depth ?depth))
     (desig:desig-prop ?designator (:modus ?modus)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceiving ?pose ?weight
+                                                                 ?width ?height
+                                                                 ?depth ?modus))
+      (desig:desig-prop ?designator (:type :perceiving))
+      (desig:desig-prop ?designator (:pose ?pose))
+      (desig:desig-prop ?designator (:weight ?weight))
+      (desig:desig-prop ?designator (:width ?width))
+      (desig:desig-prop ?designator (:height ?height))
+      (desig:desig-prop ?designator (:depth ?depth))
+      (desig:desig-prop ?designator (:modus ?modus)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceiving-high ?pose ?weight
+                                                                   ?width ?height
+                                                                   ?depth ?modus))
+    (desig:desig-prop ?designator (:type :perceiving-high))
+    (desig:desig-prop ?designator (:pose ?pose))
+    (desig:desig-prop ?designator (:weight ?weight))
+    (desig:desig-prop ?designator (:width ?width))
+    (desig:desig-prop ?designator (:height ?height))
+    (desig:desig-prop ?designator (:depth ?depth))
+    (desig:desig-prop ?designator (:modus ?modus)))
+
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceiving-side ?pose ?weight
+                                                                   ?width ?height
+                                                                   ?depth ?modus))
+    (desig:desig-prop ?designator (:type :perceiving-side))
+    (desig:desig-prop ?designator (:pose ?pose))
+    (desig:desig-prop ?designator (:weight ?weight))
+    (desig:desig-prop ?designator (:width ?width))
+    (desig:desig-prop ?designator (:height ?height))
+    (desig:desig-prop ?designator (:depth ?depth))
+    (desig:desig-prop ?designator (:modus ?modus)))
+
   
+
+                                          
   ;;;;;;;;;;;;;;;;;;;; SPEECH ;;;;;;;;;;;;;;;;;;;;;;;;
   (cram-prolog:<- (desig:motion-grounding ?designator (say ?text))
     (desig:desig-prop ?designator (:type :say))
     (desig:desig-prop ?designator (:text ?text)))
+
+  ;;;;;;;;;;;;;;;;;;;; PERCEPTION ;;;;;;;;;;;;;;;;;;;;;;;;
+  (cram-prolog:<- (desig:motion-grounding ?designator (perceive ?surface-list))
+    (desig:desig-prop ?designator (:type :perceive))
+    (desig:desig-prop ?designator (:surface ?surface-list)))
 )

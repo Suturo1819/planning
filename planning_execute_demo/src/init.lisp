@@ -21,11 +21,11 @@
     ;; shelf perception ;;
     (go-to-perceive-middle-shelf)
     (pc::call-text-to-speech-action "Let me see what we have in the shelf.")
-    (chll:call-robosherlock-pipeline '("robocup_shelf_0"
-                                       "robocup_shelf_1"
-                                       "robocup_shelf_2"
-                                       "robocup_shelf_3"
-                                       "robocup_shelf_4"))
+    (chll:call-robosherlock-pipeline (vector "robocup_shelf_0"
+                                             "robocup_shelf_1"
+                                             "robocup_shelf_2"
+                                             "robocup_shelf_3"
+                                             "robocup_shelf_4"))
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-all-objects-in-shelf))
            (text (if perceived-objects
@@ -41,7 +41,7 @@
     (go-closer-to-table) ;; if not greeting, go to table at least
     (chll::call-move-head-action (vector 0.0 -0.4))
     (pc::call-text-to-speech-action "Let's see what's on the table.")
-    (chll:call-robosherlock-pipeline '("robocup_table"))
+    (chll:call-robosherlock-pipeline (vector "robocup_table"))
     (sleep 2)
     (let* ((perceived-objects (chll:prolog-table-objects))
           (text (if perceived-objects
@@ -132,7 +132,24 @@
   (go-closer-to-table)
   (pc::call-text-to-speech-action "Now i can finally identify."))
 
+(defun michels-grasping-routine-with-perception-and-knowledge-for-testing-which-objects-work-out-booooy-how-long-can-a-function-name-get-oh-my-lord-is-this-huge()
+  (unless (eq (roslisp:node-status) :RUNNING)
+    (roslisp-utilities:startup-ros :name "planning" :anonymous NIL))
 
+  (chll::init-move-head-action-client)
+  (chll::init-giskard-joints-action-client)
+  (chll::init-move-torso-action-client)
+
+  (sleep 5)
+  (plc::with-hsr-process-modules
+      (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")    
+      (plc::perceive-table)
+      
+
+      (plc::go-to (plc::pose-infront-table :manipulation T) "table")
+      (plc::grasp-object)
+    ))
+  
 
 (define-condition custom-error (cpl:simple-plan-failure) ((message :initarg :message :initform "" :reader message)))
 

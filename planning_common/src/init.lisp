@@ -8,12 +8,15 @@
   ;; (cram-tf::init-tf)
   
   ;;Init all the action servers
+;;  (cpl:with-failure-handling
+  (plc::get-tf-listener)
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (chll:init-nav-client)
   (chll::init-move-head-action-client)
   (chll::init-giskard-joints-action-client)
   (chll:init-robosherlock-action-client)
-  (chll::init-move-torso-action-client)
+  (pc::viz-box-init)
+;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
   
 
   ;; (chll:make-giskard-poses-action-client)
@@ -32,6 +35,10 @@
   (print "init giskard-joints")
   (chll::init-giskard-joints-action-client)
   (print "init move-torso client")
-  (chll::init-move-torso-action-client))
+  (chll::init-move-torso-action-client)
+  (print "init tf-listener")
+  (plc::get-tf-listener)
+  (print "init viz-box")
+  (pc::viz-box-init))
 
 
