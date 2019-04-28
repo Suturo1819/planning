@@ -47,7 +47,7 @@ So that the robot can move his arm safely."
                              (cl-tf:orientation result-pose))))
 
 
-(defun pose-infront-table(&key (manipulation NIL))
+(defun pose-infront-table(&optional &key (manipulation NIL) (rotation NIL) )
   "Calculates the pose for navigation to go to infront of the table.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
@@ -67,6 +67,12 @@ So that the robot can move his arm safely."
                                                             *x-offset-perception*)
                                               :y-offset 0.0
                                               :z-offset 0.0)))
+    (if rotation
+        (setq result-pose (cram-tf:rotate-pose (cl-tf:pose->pose-stamped
+                                                "map"
+                                                (roslisp::ros-time)
+                                                result-pose)
+                                               :z (/ pi -2))))
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
@@ -86,19 +92,6 @@ So that the robot can move his arm safely."
                        (plc::get-tf-listener)
                        "environment/table_front_edge_center"
                        object-frame))
-         
-         (map-T-table (plc::pose-stamped->transform
-                       (cl-tf2:lookup-transform
-                        (plc::get-tf-listener)
-                        "map"
-                        "environment/table_front_edge_center")))
-
-         (base-T-obj (plc::pose-stamped->transform
-                      (cl-tf2:lookup-transform
-                       (plc::get-tf-listener)
-                       "base_footprint"
-                       object-frame)))
-         
 
          (x-diff-obj-table-edge (cl-tf:x (cl-tf:translation table-T-obj)))
          (y-diff-obj-table-edge (cl-tf:y (cl-tf:translation table-T-obj)))
@@ -112,19 +105,6 @@ So that the robot can move his arm safely."
                          :y-offset (- *x-offset-manipulation*
                                       y-diff-obj-table-edge)
                          :z-offset 0.0)))
-         
-         ;; normalize z rotation to prevent getting poses inside of walls
-         (z (plc::normalize-euler (cl-tf:rotation table-T-obj)))
-         
-         (normalized-obj-rot (cl-tf:euler->quaternion
-                              :ax 0.0
-                              :ay 0.0
-                              :az z))
-         
-         ;; (robot-rotation-map (cl-tf:transform* map-T-table
-         ;;                                       (cl-tf:make-transform
-         ;;                                        (cl-tf:make-identity-vector)
-         ;;                                        normalized-obj-rot)))
 
          ;; map-T-obj = pose
          ;; map-T-base
@@ -136,18 +116,7 @@ So that the robot can move his arm safely."
          (robot-rotation-map 
                               (plc::calculate-look-towards-target
                                (plc::transform->pose-stamped pose)
-                               (plc::transform->pose-stamped map-T-base)))
-           
-         ;; figure out (wh)y
-         (diff-y (cl-tf:transform*
-                  map-T-base
-                  (cl-tf:make-transform
-                   (cl-tf:make-3d-vector
-                    (cl-tf:x (cl-tf:translation base-T-obj))
-                    (cl-tf:y 0.0)
-                    (cl-tf:z (cl-tf:translation base-T-obj)))
-                   (cl-tf:rotation base-T-obj))))
-         ) 
+                               (plc::transform->pose-stamped map-T-base)))) 
 
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
