@@ -48,5 +48,6 @@
            (get-text-to-speech-action-client)
            (make-text-action-goal text)))
       (roslisp:ros-info (text-to-speech-action-client) "Text to speech action finished.")
-      (values result status))))
+      (values result status)
+      result)))
 

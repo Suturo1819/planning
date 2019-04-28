@@ -42,7 +42,11 @@
           (:right
            (chll::call-move-head-action (vector -1.5 0.1)))
           (:right-down
-           (chll::call-move-head-action (vector -1.5 -0.3)))))))
+           (chll::call-move-head-action (vector -1.5 -0.3)))
+          (:right-down-2
+           (chll::call-move-head-action (vector -1.5 -0.4)))
+          (:right-down-3
+           (chll::call-move-head-action (vector -1.5 -0.7)))))))
 
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-torso (motion-designator)

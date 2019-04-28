@@ -142,5 +142,7 @@
              :velocities desired-velocities
              ))))
                                        
-      :action-timeout *giskard-joints-action-timeout*)
-    (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")))
+      :action-timeout *giskard-joints-action-timeout*
+      (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
+      (values result status)
+      (roslisp:msg-slot-value result :result_msg))))

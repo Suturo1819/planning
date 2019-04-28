@@ -72,7 +72,7 @@ So that the robot can move his arm safely."
                                                 "map"
                                                 (roslisp::ros-time)
                                                 result-pose)
-                                               :z (/ pi -2))))
+                                               :z (/ pi 2))))
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)

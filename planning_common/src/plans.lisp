@@ -31,10 +31,7 @@
       (cpl:seq
         (plc::say ?to-say)
         ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
-        (cram-executive:perform move))
-      (cpl:par
-        (cram-executive:perform head-safe)
-        (plc::say "I have reached my destination"))))
+        (cram-executive:perform move))))
 
 ;;; -----
 (cpl:def-cram-function perceive-table ()
@@ -56,21 +53,16 @@
                           (:type :looking)
                           (:direction :safe))))
       
-      (plc::perceive-high)
+
+      (plc::perceive-side)    
       (cpl:par
-        (plc::say "I am going to perceive the table now. Moving my torso up.")
-        (cram-executive:perform move-torso))
-      (plc::go-to (plc::pose-infront-table :manipulation NIL) "table")
-      (cpl:par
-        (plc::say "Move torso complete. Moving head.")
-        (cram-executive:perform move-head))
+        (plc::say "I am going to perceive the table now..")
+        (cram-executive:perform move-torso)
+        (plc::move-head :right-down))
       
+      (plc::go-to (plc::pose-infront-table :manipulation NIL :rotation T) "table")
       (plc::perceive (vector "robocup_table"))
-      (plc::go-to (plc::pose-infront-table :manipulation T) "step away from the table")
-      (cpl:par
-        (plc::base-pose)
-        (cram-executive:perform move-head-safe))
-      ))
+      (plc::go-to (plc::pose-infront-table :manipulation T) "step away from the table")))
 
 ;;assuming robot is already standing infront of the shelf
 ;;TODO
@@ -138,12 +130,12 @@
                            (:height ?height)
                            (:depth ?depth)
                            (:modus ?modus)))
-           (say-before (concatenate 'String "I am going to grasp the" object-class "now."))
+           (say-before (concatenate 'String "I am going to grasp the " object-class " now."))
            (say-after "done grasping"))
       ;;vars
       (pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
-      (format t "Object Class: ~a" object-class)
+      (format t "Object Class: ~a " object-class)
 
       (plc::go-to (plc::calculate-possible-poses-from-obj closest-object)  "table")
       ;; movement
@@ -178,7 +170,7 @@
                                           (third (second pose-from-prolog))
                                           (fourth (second pose-from-prolog)))))
         
-           (?weight 0.7)
+           (?weight 1.2)
            (?width (first *object-dimensions*))
            (?depth 0.0)
            (?height *height-obj-in-gripper*)
