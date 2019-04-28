@@ -239,6 +239,7 @@ the `look-pose-stamped'."
 
 (defparameter *arm-offset* 0.8)
 (defparameter *short-dist* 0.2)
+(defparameter *long-dist* 0.8)
 ;; use transform of tablecenter-T-obj
 (defun calculate-possible-poses-from-obj (object-frame)
   ;;make list of poses
@@ -246,6 +247,12 @@ the `look-pose-stamped'."
                          (cl-tf2:lookup-transform
                           (plc::get-tf-listener)
                           "environment/table_front_edge_center"
+                          object-frame)))
+         
+         (map-T-obj (plc::pose-stamped->transform
+                         (cl-tf2:lookup-transform
+                          (plc::get-tf-listener)
+                          "map"
                           object-frame)))
 
 
@@ -255,7 +262,7 @@ the `look-pose-stamped'."
 
          (vector-list '())
          (poses-list '())
-         (cut-poses '())
+         (rotation-pose '())
          (result-pose '())
          (map-T-table (plc::pose-stamped->transform
                        (cl-tf2:lookup-transform
@@ -280,57 +287,88 @@ the `look-pose-stamped'."
          (xt (cl-tf:x (cl-tf:translation map-T-table)))
          (yt (cl-tf:y (cl-tf:translation map-T-table))))
     
-    (push (list (* 1.0 *short-dist*) 0.0 0.0) vector-list)
-    (push (list (* -1.0 *short-dist*) 0.0 0.0) vector-list)
-    (push (list 0.0 (* 1.0 *short-dist*) 0.0) vector-list)
-    (push (list 0.0 (* -1.0 *short-dist*) 0.0) vector-list)
-
+    (push (list (list (* 1.0 *short-dist*) 0.0 0.0) :x+) vector-list)
+    (push (list (list (* -1.0 *short-dist*) 0.0 0.0) :x-) vector-list)
+    (push (list (list 0.0 (* 1.0 *short-dist*) 0.0) :y+) vector-list)
+    (push (list (list 0.0 (* -1.0 *short-dist*) 0.0) :y-) vector-list)
 
     ;; make list of transforms which are the offsets
-    (setq poses-list (mapcar (lambda (vector)
-                               (plc::vector->transform
-                                vector
-                                (cl-tf:make-identity-rotation))) vector-list))
+     (mapcar (lambda (vector)
+               (push (list (plc::vector->transform
+                            (car vector)
+                            (cl-tf:make-identity-rotation))
+                           (cdr vector)) poses-list)) vector-list)
     
     ;; multiply offset transform onto original object pose
-    (setq poses-list (mapcar (lambda (transform)
-                               (cl-tf:transform*
-                                ;;map-T-table
-                                ;;(cl-tf:transform-inv
-                                 obj-transform;)
-                                 (cl-tf:transform-inv
-                                  transform)))
-                             poses-list))
+    (mapcar (lambda (transform)
+              (setq poses-list (delete transform poses-list :test #'equal))
+              (push (list
+                     (cl-tf:transform*
+                      obj-transform
+                      (cl-tf:transform-inv
+                       (car transform)))
+                     (cdr transform))
+                    poses-list))
+            poses-list)
   
-    (format t "poses list: ~a" poses-list)
     ;;cut poses which are far away from edge
+    ;;temp is in object frame
     ;; list of transforms
     (setq result-pose (let* ((temp))
                         (mapcar (lambda (pose)
                                   (unless temp
                                     (setq temp pose))
                                   
-                                  (if (< (cl-tf:x (cl-tf:translation
-                                                   pose))
-                                         (cl-tf:x (cl-tf:translation temp)))
+                                  (if (< (cl-tf:x (cl-tf:translation (car pose)))
+                                         (cl-tf:x (cl-tf:translation (car temp))))
                                       (setq temp pose)))
                                 poses-list)
-                        (cl-tf:transform*
-                         map-T-table
-                         temp)))
-
+                        (list                     
+                         (car temp)
+                         (cdr temp))
+                        temp))
+    ;; at this point we have map-T-obj
+    ;; this is just for debugging..?
     (setq poses-list (mapcar (lambda (pose)
-                               (plc::transform->pose-stamped
+                                (plc::transform->pose-stamped
                                 (cl-tf:transform*
                                  map-T-table
-                                pose)))
+                                 (car pose))))
                              poses-list))
-    
-    ;;(plc::spawn-4-markers poses-list)
+    (setq result-pose (list (cl-tf:transform*
+                             map-T-table
+                             (car result-pose))
+                            (cdr result-pose)))
 
-     (planning-communication::publish-marker-pose (plc::transform->pose-stamped                                          
-                                                    result-pose))
+    (format t "POSES:: ~a " poses-list)
+    (format t "RESULT:: ~a " result-pose)
+    
+    (plc::spawn-4-markers poses-list)
+
+    ;; works till here. now elongate result-pose
+
+    ;;calculate rotation for new pose, so that the robot will face the object.
+    (setq rotation-pose
+          (plc::calculate-look-towards-target
+           (plc::transform->pose-stamped map-T-obj)
+
+           (plc::transform-stamped->pose-stamped
+            (car result-pose))))
+    
+
+    ;;building the result pose
+    (setq result-pose
+          (cl-tf:make-pose-stamped
+           "map"
+           (roslisp:ros-time)
+           (cl-tf:make-3d-vector (cl-tf:x (cl-tf:translation (car result-pose)))
+                                 (cl-tf:y (cl-tf:translation (car result-pose)))
+                                 0.0)
+           (cl-tf:orientation rotation-pose)))
+
+;;    (format t "POSES:: ~a " poses-list)
+;;    (format t "result pose: ~a " result-pose)
+    (planning-communication::publish-marker-pose result-pose)
+    ;;(planning-communication::publish-marker-pose rotation-pose :id 6)
     result-pose
-   ;; poses-list
-   ;; edge-side
     ))
