@@ -191,8 +191,8 @@ relative to odom"
        quaternion
    (cl-tf:make-identity-rotation))))
 
-(defun spawn-4-markers (poses-stamped)
-  (let* ((counter 0))
+(defun spawn-4-markers (poses-stamped &optional (id 0))
+  (let* ((counter id))
     (mapcar (lambda (pose)
               (planning-communication::publish-marker-pose
                pose

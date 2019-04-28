@@ -140,16 +140,18 @@
                            (:modus ?modus)))
            (say-before (concatenate 'String "I am going to grasp the" object-class "now."))
            (say-after "done grasping"))
-      
+      ;;vars
       (pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
       (format t "Object Class: ~a" object-class)
+
+      (plc::go-to (plc::calculate-possible-poses-from-obj closest-object)  "table")
+      ;; movement
       (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
       (cpl:par
         (plc::say say-before)
-        (plc::move-head :safe))
-      (cram-executive:perform grasp)
+      (cram-executive:perform grasp))
       (cpl:par
         (plc::move-head :safe)
         (plc::say say-after))))
@@ -193,10 +195,10 @@
       (if (>= (third *object-dimensions*)
                             (second *object-dimensions*))
                         (progn
-                          (setq ?height (+ (third *object-dimensions*) *placing-z-offset*))
+                          (setq ?height (+ (third *object-dimensions*)))
                           (setq ?depth (second *object-dimensions*)))
                         (progn
-                          (setq ?height (+ (second *object-dimensions*) *placing-z-offset*))
+                          (setq ?height (+ (second *object-dimensions*)))
                           (setq ?depth (third *object-dimensions*))))
       
       (pc::publish-marker-pose ?pose)
