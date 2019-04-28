@@ -63,11 +63,12 @@
   (roslisp:ros-info (json-prolog-client) "Getting goal floor for object ~a." object-name)
   (let* ((knowrob-name (format nil "~a~a" +hsr-objects-prefix+ object-name))
          (raw-response (with-safe-prolog
-                         (json-prolog:prolog-1 `("object_goal_pose" ,knowrob-name ?pose)
-                                             :package :chll)))
-         (goal-pose (if (eq raw-response 1) NIL (cdr (assoc '?pose (cut:lazy-car raw-response))))))
-    (or goal-pose
-        (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution."))))
+                         (json-prolog:prolog-1 `("object_goal_pose" ,knowrob-name ?pose ?context)
+                                             :package :chll))))
+    (if (eq raw-response 1)
+        (roslisp:ros-warn (json-prolog-client) "Query didn't reach any solution.")
+        (values-list `(,(cdr (assoc '?pose (cut:lazy-car raw-response)))
+                       ,(string-trim "'" (cdr (assoc '?context (cut:lazy-car raw-response)))))))))
 
 (defun prolog-all-objects-in-shelf ()
   ;; gives the goal shelf (tf-frame) for an object name
