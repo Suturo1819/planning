@@ -237,7 +237,7 @@ the `look-pose-stamped'."
             (cl-transforms:x look-pose-in-robot-frame))))
     (cram-tf:rotate-pose robot-pose-stamped :z rotation-angle)))
 
-(defparameter *arm-offset* 0.8)
+(defparameter *arm-offset* 0.6)
 (defparameter *short-dist* 0.2)
 (defparameter *long-dist* 0.8)
 ;; use transform of tablecenter-T-obj
@@ -335,40 +335,65 @@ the `look-pose-stamped'."
                                  map-T-table
                                  (car pose))))
                              poses-list))
+    ;; transform into map
     (setq result-pose (list (cl-tf:transform*
                              map-T-table
                              (car result-pose))
                             (cdr result-pose)))
 
-    (format t "POSES:: ~a " poses-list)
-    (format t "RESULT:: ~a " result-pose)
+
     
     (plc::spawn-4-markers poses-list)
-
     ;; works till here. now elongate result-pose
+    
+    ;; add big offset
+    ;; find out offset.
+    ;; from table to obj: obj-transform
+    (let* ((large-offset-transform
+             (case (caaaar (cdr result-pose)) ;;TODO make this pretty
+               (:x+ (progn (format t "x+ ")
+                           (list (* 1.0 (+ *long-dist* x)) 0.0 0.0)))
+               (:x- (progn (format t "x- ")
+                           (list (* -1.0 (+ *long-dist* x)) 0.0 0.0)))
+               (:y+ (progn (format t "y+ ")
+                           (list 0.0 (* 1.0 (+ *long-dist* x)) 0.0)))
+               (:y- (progn (format t "y- ")
+                           (list 0.0 (* -1.0 (+ *long-dist* x)) 0.0))))))
+      
+      (setq large-offset-transform (cl-tf:make-transform
+                                    (cl-tf:make-3d-vector (first large-offset-transform)
+                                                          (second large-offset-transform)
+                                                          (third large-offset-transform))
+                                    (cl-tf:make-identity-rotation)))
 
-    ;;calculate rotation for new pose, so that the robot will face the object.
+      (setq result-pose (cl-tf:transform*
+                          (car result-pose)
+                         ;;(cl-tf:transform-inv  map-T-obj)
+                         (cl-tf:transform-inv large-offset-transform)))
+
+      )
+     ;;calculate rotation for new pose, so that the robot will face the object.
     (setq rotation-pose
           (plc::calculate-look-towards-target
            (plc::transform->pose-stamped map-T-obj)
 
            (plc::transform-stamped->pose-stamped
-            (car result-pose))))
+            result-pose)))
     
 
+    
     ;;building the result pose
     (setq result-pose
           (cl-tf:make-pose-stamped
            "map"
            (roslisp:ros-time)
-           (cl-tf:make-3d-vector (cl-tf:x (cl-tf:translation (car result-pose)))
-                                 (cl-tf:y (cl-tf:translation (car result-pose)))
+           (cl-tf:make-3d-vector (cl-tf:x (cl-tf:translation result-pose))
+                                 (cl-tf:y (cl-tf:translation result-pose))
                                  0.0)
            (cl-tf:orientation rotation-pose)))
 
-;;    (format t "POSES:: ~a " poses-list)
-;;    (format t "result pose: ~a " result-pose)
-    (planning-communication::publish-marker-pose result-pose)
+
+    (planning-communication::publish-marker-pose result-pose :id 100)
     ;;(planning-communication::publish-marker-pose rotation-pose :id 6)
     result-pose
     ))
