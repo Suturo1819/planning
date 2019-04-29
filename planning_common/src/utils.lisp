@@ -126,8 +126,8 @@ relative to odom"
       (setf z-rot (- z-rot (* (signum z-rot) pi))))
     (if (and (< (abs z-rot) (/ pi 6))
              (< (car dimensions) 0.13))
-        :FRONT
-        :TOP)))
+        "FRONT"
+        "TOP")))
 
 (defun pose-stamped->transform (pose-stamped)
   (cl-tf2:make-transform

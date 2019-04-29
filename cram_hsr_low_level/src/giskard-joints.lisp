@@ -49,7 +49,7 @@
   ;;      (<= 0 weight)
   ;;      (<= 0 width 0.2)
   ;;      (<= 0 height))
-  (print "done")
+  T
   )
 
 (defun ensure-giskard-joints-move-input (desired-joint-values)
@@ -63,7 +63,7 @@
                                                     height depth
                                                     modus)
   ;; TODO: check status if given object-pose is reached
-  (roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
+  ;;(roslisp:ros-debug (move-joints-action) "Ensure grasping-goal reached.\nStatus: ~a" status)
   ;; TODO: log everything
   object-pose
   object-pose-to-odom
@@ -77,7 +77,7 @@
 
 (defun ensure-giskard-joints-move-goal-reached (status desired-joint-values)
   ;; TODO: check status if given desired-joint-valuesare reached
-  (roslisp:ros-warn (move-joints-action) "Status: ~a" status)
+  ;;(roslisp:ros-warn (move-joints-action) "Status: ~a" status)
   status
   desired-joint-values  
   T
@@ -145,5 +145,6 @@
       :action-timeout *giskard-joints-action-timeout*
       (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
       (values result status)
-      (roslisp:msg-slot-value result :result_msg))))
+      (roslisp:msg-slot-value result :result_msg)
+      )))
 ;;NOTE TODO (equal * "all joints are moved")

@@ -73,7 +73,7 @@
                        :result-timeout *move-head-action-timeout*)
      (roslisp:ros-info (move-head) "move head action finished")
     (ensure-move-head-goal-reached status pos)
-    (values result status))
+     (values result status))
                         
   ;; (multiple-value-bind (result status)
   ;;     (cram-simple-actionlib-client::call-simple-action-client
