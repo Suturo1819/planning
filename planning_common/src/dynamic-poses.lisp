@@ -158,9 +158,9 @@ the `look-pose-stamped'."
             (cl-transforms:x look-pose-in-robot-frame))))
     (cram-tf:rotate-pose robot-pose-stamped :z rotation-angle)))
 
-(defparameter *arm-offset* 0.5)
+(defparameter *arm-offset* 0.4)
 (defparameter *short-dist* 0.2)
-(defparameter *long-dist* 0.4)
+(defparameter *long-dist* 0.5)
 ;; use transform of tablecenter-T-obj
 (defun calculate-possible-poses-from-obj (object-frame &optional &key
                                                                    (facing-direction :OBJECT)

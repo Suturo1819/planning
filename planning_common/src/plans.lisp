@@ -24,7 +24,7 @@
                                                         :relative-to :TABLE
                                                         :manipulation manipulation))
                     (T (plc::calculate-possible-poses-from-obj to
-                                                        :facing-direction to
+                                                        :facing-direction :OBJECT
                                                         :relative-to :TABLE
                                                         :manipulation manipulation))))
                     
@@ -40,12 +40,16 @@
 ;;; -----
 (cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
-  (pc::publish-challenge-step 3)    
+  (pc::publish-challenge-step 3)
+  (plc::perceive-side)
   (cpl:par
     (plc::say "I am going to perceive the table now..")
-    (plc::move-torso (plc::table-head-difference)))
-  
-  (plc::go-to :to :TABLE :facing :SHELF :manipulation NIL) 
+    (plc::move-torso (plc::table-head-difference))
+    (plc::go-to :to :TABLE :facing :SHELF :manipulation NIL))
+
+  ;; TODO this is a hack
+ ;;(plc::turn :RIGHT)
+    
   (plc::move-head :left-down)
   (plc::perceive (vector "robocup_table"))
   (plc::go-to :to :TABLE :facing :SHELF :manipulation T))
@@ -113,8 +117,12 @@
       (pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
       (format t "Object Class: ~a " object-class)
+      (format t "MODUS: ~a " ?modus)
 
-      (plc::go-to :to closest-object :facing :OBJECT :manipulation T)
+      (if (equal ?modus "TOP")
+          (plc::go-to :to :TABLE :facing :TABLE :manipulation T)
+          (plc::go-to :to closest-object :facing :OBJECT :manipulation T))
+
       ;; movement
       (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
@@ -174,9 +182,7 @@
       
       (pc::publish-marker-pose ?pose)
       (plc::say ?context)
-      (cram-executive:perform place)
-      (plc::say "Done placing.")
-      (format t "DESIG: ~a" place))))
+      (cram-executive:perform place))))
 
 
 

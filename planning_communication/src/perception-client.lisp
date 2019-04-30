@@ -48,4 +48,5 @@
 
 ;(roslisp-utilities:register-ros-init-function init-perception-subscriber)
 ;(roslisp-utilities:register-ros-init-function get-marker-publisher)
-;(roslisp-utilities:register-ros-cleanup-function cleanup-perception-subscriber)
+
+                                        ;(roslisp-utilities:register-ros-cleanup-function cleanup-perception-subscriber)

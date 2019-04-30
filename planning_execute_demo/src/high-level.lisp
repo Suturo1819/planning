@@ -4,7 +4,6 @@
   (plc::with-hsr-process-modules
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan
-    (plc::base-pose)
     (plc::perceive-shelf)
     
     ;; GO and PERCEIVE the TABLE
