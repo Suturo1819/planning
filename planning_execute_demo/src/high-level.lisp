@@ -1,6 +1,10 @@
 (in-package :pexe)
 
 (defun execute-demo()
+  ;; GRIPPER START SIGNAL
+  ;; (chll:init-gripper-tilt-fluent)
+  ;; (cpl:wait-for (< chll:*start-signal-fluent* 0.5)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!
+
   (plc::with-hsr-process-modules
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan

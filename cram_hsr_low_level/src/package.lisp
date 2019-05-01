@@ -29,6 +29,8 @@
    #:prolog-object-goal-pose
 
    ;; joint state client
+   :*start-signal-fluent*
+   #:init-gripper-tilt-fluent
    #:get-current-joint-state
 
    ;; torso client
