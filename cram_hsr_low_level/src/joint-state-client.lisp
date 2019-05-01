@@ -7,12 +7,12 @@
 (defparameter *start-signal-sub* NIL)
 
 (defun start-signal-callback (msg)
-  (setf *start-signal-fluent*
+  (setf (cpl:value *start-signal-fluent*)
         (aref
-         (sensor_msgs-msg:position msg)
-         (position "here is the name of the desired joint. get this string via plotjuggler"
-                   (coerce (sensor_msgs-msg:name msg) 'list)
-                   :test #'string=))))
+            (sensor_msgs-msg:position msg)
+            (position "wrist_flex_joint"
+                      (coerce (sensor_msgs-msg:name msg) 'list)
+                      :test #'string=))))
 
 (defun init-gripper-tilt-fluent ()
   (setf *start-signal-sub*
