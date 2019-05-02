@@ -3,7 +3,7 @@
 (defun execute-demo()
   ;; GRIPPER START SIGNAL
   ;; (chll:init-gripper-tilt-fluent)
-  ;; (cpl:wait-for (< chll:*start-signal-fluent* 0.5)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!
+  ;; (cpl:wait-for (cpl:< chll:*start-signal-fluent* -1.7d0)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!
 
   (plc::with-hsr-process-modules
     ;; GO and PERCEIVE the  SHELF
