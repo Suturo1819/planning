@@ -9,20 +9,29 @@
 (defparameter *placing-y-offset* 0.1)
 
 
+
 (cpl:def-cram-function go-to (&key (to NIL) (facing NIL) (manipulation NIL))
   "go to a predefined location"
   ;;NOTE the publish-callange-step is done in the dynamic-poses.lisp
     (let* ((?to-say (concatenate 'string "I am going to the " (write-to-string to)))
            (?pose (case to
-                    (:SHELF (plc::calculate-possible-poses-from-obj "environment/shelf_center"
-                                                        :facing-direction facing
-                                                        :relative-to :SHELF
-                                                        :manipulation manipulation))
+                    (:SHELF
+                     (case facing
+                       (:PERCEIVE (plc::pose-infront-shelf :manipulation manipulation :rotation :RIGHT))
+                       (T (plc::calculate-possible-poses-from-obj "environment/shelf_center"
+                                                                  :facing-direction facing
+                                                                  :relative-to :SHELF
+                                                                  :manipulation manipulation))))
                     
-                    (:TABLE (plc::calculate-possible-poses-from-obj "environment/table_front_edge_center"
-                                                        :facing-direction facing
-                                                        :relative-to :TABLE
-                                                        :manipulation manipulation))
+                    (:TABLE
+                     (case facing
+                       (:PERCEIVE (plc::pose-infront-table :manipulation manipulation :rotation :RIGHT))
+                       
+                       (T (plc::calculate-possible-poses-from-obj "environment/table_front_edge_center"
+                                                                  :facing-direction facing
+                                                                  :relative-to :TABLE
+                                                                  :manipulation manipulation))))
+                    
                     (T (plc::calculate-possible-poses-from-obj to
                                                         :facing-direction :OBJECT
                                                         :relative-to :TABLE
@@ -45,7 +54,7 @@
   (cpl:par
     (plc::say "I am going to perceive the table now..")
     (plc::move-torso (plc::table-head-difference))
-    (plc::go-to :to :TABLE :facing :SHELF :manipulation NIL))
+    (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL))
 
   ;; TODO this is a hack
  ;;(plc::turn :RIGHT)
@@ -55,18 +64,29 @@
   (plc::go-to :to :TABLE :facing :SHELF :manipulation T))
 
 ;;assuming robot is already standing infront of the shelf
-;;TODO
+;;TODO implement the following
+;; (let* ((shelf-T-base (cl-tf2:lookup-transform
+;;                           (plc::get-tf-listener)
+;;                            "base_footprint"
+;;                             "environment/shelf_center"))
+;;              (y (cl-tf:y (cl-tf:translation shelf-T-base)))
+;;              (left-or-right (if (> y 0.0)
+;;                                 "LEFT"
+;;                                 "RIGHT")))
+;;   (intern (concatenate 'string left-or-right "-1") :keyword))
+
+
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (pc::publish-challenge-step 1)
   
   ;;high
   (cpl:par 
-    (plc::go-to :to :SHELF :facing :TABLE :manipulation T)
+    (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
     (plc::perceive-side))
   (cpl:par
     (plc::move-torso (plc::shelf-head-difference "4"))
-    (plc::move-head :right-down))
+    (plc::move-head :left-down))
   (plc::perceive (vector "robocup_shelf_3"))
   
   ;;middle
@@ -78,7 +98,7 @@
    ;;low
   (cpl:par
     (plc::move-torso (plc::shelf-head-difference "0"))
-    (plc::move-head :right-down-3))
+    (plc::move-head :left-down-3))
   (plc::perceive (vector "robocup_shelf_1"))
   (plc::perceive (vector "robocup_shelf_0")))
 

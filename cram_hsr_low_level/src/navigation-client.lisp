@@ -25,6 +25,7 @@
   (roslisp:ros-info (navigation-action-client) "make navigation action goal")
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "navigation-action-lisp-client"))
+
   
   (actionlib:make-action-goal (get-nav-action-client)
     target_pose pose-stamped-goal))
@@ -37,12 +38,15 @@ euler-z gives the rotation around the z axis."
 
   (multiple-value-bind (result status)
       (let* ((actionlib:*action-server-timeout* 10.0)
-            (the-goal (cl-tf:to-msg
-                       (cl-tf:make-pose-stamped
+             (pose-stamped (cl-tf:make-pose-stamped
                         frame-id
                         (roslisp::ros-time)
                         (cl-tf:make-3d-vector x y 0.0)
-                        (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))))
+                        (cl-tf:euler->quaternion :ax 0.0 :ay 0.0 :az euler-z)))
+             
+            (the-goal (cl-tf:to-msg pose-stamped)))
+        
+        (planning-communication::publish-marker-pose pose-stamped :g 1.0)
 
         (actionlib:call-goal 
          (get-nav-action-client)
@@ -60,12 +64,16 @@ euler-z gives the rotation around the z axis."
             (the-goal (cl-tf:to-msg
                        pose-stamped)))
         (format t "my POSE: ~a" the-goal)
+        
+       (planning-communication::publish-marker-pose pose-stamped :g 1.0)
 
         (actionlib:call-goal
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
-    (values result status)))
+    (values result status)
+
+    ))
 
 (defun smash-into-appartment (&optional (lin 100))
   "Function to send velocity commands."
