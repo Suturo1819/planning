@@ -13,7 +13,7 @@
   *marker-publisher*)
 
 
-(defun publish-marker-pose (pose &key (parent "map") id)
+(defun publish-marker-pose (pose &key (parent "map") id (g 0.0))
   (let ((point (cl-transforms:origin pose))
         (rot (cl-transforms:orientation pose))
         (current-index 0))
@@ -42,7 +42,7 @@
                                            (y scale) 0.05
                                            (z scale) 0.05
                                            (r color) 1.0
-                                           (g color) 0.0
+                                           (g color) g
                                            (b color) 0.0
                                            (a color) 1.0))))
 

@@ -25,6 +25,7 @@
   (roslisp:ros-info (navigation-action-client) "make navigation action goal")
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "navigation-action-lisp-client"))
+
   
   (actionlib:make-action-goal (get-nav-action-client)
     target_pose pose-stamped-goal))
@@ -60,7 +61,8 @@ euler-z gives the rotation around the z axis."
             (the-goal (cl-tf:to-msg
                        pose-stamped)))
         (format t "my POSE: ~a" the-goal)
-
+        
+       (planning-communication::publish-marker-pose pose-stamped :g 1.0)
         (actionlib:call-goal
          (get-nav-action-client)
          (make-nav-action-goal the-goal)))
