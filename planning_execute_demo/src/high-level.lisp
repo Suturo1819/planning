@@ -4,7 +4,8 @@
   ;; GRIPPER START SIGNAL
   ;; (chll:init-gripper-tilt-fluent)
   ;; (cpl:wait-for (cpl:< chll:*start-signal-fluent* -1.7d0)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!
-
+  ;; (chll:smash-into-appartment)
+  
   (plc::with-hsr-process-modules
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan

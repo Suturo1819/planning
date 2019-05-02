@@ -67,5 +67,11 @@ euler-z gives the rotation around the z axis."
     (roslisp:ros-info (nav-action-client) "Navigation action finished.")
     (values result status)))
 
-
-
+(defun smash-into-appartment (&optional (lin 100))
+  "Function to send velocity commands."
+  (let ((pub (advertise "/hsrb/command_velocity" "geometry_msgs/Twist"))
+        (vel-msg (make-message "geometry_msgs/Twist" (:x :linear) lin)))
+    (dotimes (i 20) 
+      (publish pub
+               vel-msg)
+      (sleep 0.2))))
