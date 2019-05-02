@@ -64,7 +64,18 @@
   (plc::go-to :to :TABLE :facing :SHELF :manipulation T))
 
 ;;assuming robot is already standing infront of the shelf
-;;TODO
+;;TODO implement the following
+;; (let* ((shelf-T-base (cl-tf2:lookup-transform
+;;                           (plc::get-tf-listener)
+;;                            "base_footprint"
+;;                             "environment/shelf_center"))
+;;              (y (cl-tf:y (cl-tf:translation shelf-T-base)))
+;;              (left-or-right (if (> y 0.0)
+;;                                 "LEFT"
+;;                                 "RIGHT")))
+;;   (intern (concatenate 'string left-or-right "-1") :keyword))
+
+
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (pc::publish-challenge-step 1)

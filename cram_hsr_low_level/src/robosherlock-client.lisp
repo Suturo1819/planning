@@ -61,18 +61,20 @@
 (defun call-robosherlock-door-pipeline ()
   "returns true=open or nil=false"
   (pc:publish-operator-text "Toya is the door open?")
-  (roslisp:ros-info (robosherlock-client) "Calling pipeline for door.")
-  ;; actual call
-  (roslisp:with-fields (door_open)
-      (actionlib:call-goal (chll::get-robosherlock-door-client)
-                       (roslisp:make-message
-                        "suturo_perception_msgs/AnalyzeShelfStatusActionGoal")
-                       :timeout *robosherlock-action-timeout*
-                       :result-timeout *robosherlock-action-timeout*)
-    (if door_open
-    (pc:publish-robot-text "The door is open Operator we can continute.")
-    (pc:publish-robot-text "The door is shut Operator i will wait."))
-    door_open))
+               (roslisp:ros-info (robosherlock-client) "Calling pipeline for door.")
+               ;; actual call
+               (roslisp:with-fields (door_open)
+                   (actionlib:call-goal (chll::get-robosherlock-door-client)
+                                        (roslisp:make-message
+                                         "suturo_perception_msgs/AnalyzeShelfStatusActionGoal")
+                                        :timeout *robosherlock-action-timeout*
+                                        :result-timeout *robosherlock-action-timeout*)
+                 (if door_open
+                     (pc:publish-robot-text "The door is open Operator we can continute.")
+                     (progn
+                       (sleep 0.3)
+                       (call-robosherlock-door-pipeline)))
+                 door_open))
 
 
 
