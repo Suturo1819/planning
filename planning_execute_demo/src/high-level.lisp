@@ -7,13 +7,17 @@
   ;; (chll:smash-into-appartment)
   
   (plc::with-hsr-process-modules
+    ;;go through the door
+    (plc::make-pose-stamped 4.305 0.218 3.0)
+
+    
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan
     (plc::perceive-shelf)
     
     ;; GO and PERCEIVE the TABLE
     ;;(plc::go-to (plc::calculate-possible-poses-from-obj "environment/table_front_edge_center" ) "table")
-   
+    
 
     ;;vanessa gaya hardcoded desperate robocup
      (let* ((?to-say "i am going to the shelf")
