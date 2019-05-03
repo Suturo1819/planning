@@ -17,7 +17,7 @@
            (?pose (case to
                     (:SHELF
                      (case facing
-                       (:PERCEIVE (plc::pose-infront-shelf :manipulation manipulation :rotation :RIGHT))
+                       (:PERCEIVE (plc::pose-infront-shelf :manipulation manipulation :rotation :LEFT))
                        (T (plc::calculate-possible-poses-from-obj "environment/shelf_center"
                                                                   :facing-direction facing
                                                                   :relative-to :SHELF
@@ -92,7 +92,7 @@
   ;;middle
    (cpl:par
      (plc::move-torso (plc::shelf-head-difference "2"))
-     (plc::move-head :right-down-2))
+     (plc::move-head :left-down-2))
   (plc::perceive (vector "robocup_shelf_2"))
 
    ;;low
@@ -223,7 +223,8 @@ or one of the following: :perceive :safe :front"
     (let* ((say-text (desig:a motion
                              (:type :say)
                              (:text ?text))))     
-      (cram-executive:perform say-text)))
+      (cram-executive:perform say-text))
+  )
 
 (cpl:def-cram-function move-torso (?height)
   "moves torso to given height. keeps the arm out of sight." 

@@ -61,10 +61,10 @@ So that the robot can move his arm safely."
                 (cl-tf:rotation shelf)))
          
          (result-pose (cram-tf:translate-pose pose
-                                              :x-offset (if manipulation
-                                                            *x-offset-manipulation*
-                                                            *x-offset-perception*)
-                                              :y-offset 0.0
+                                              :x-offset 0.0
+                                              :y-offset (if manipulation
+                                                            (- *x-offset-manipulation*)
+                                                            (- *x-offset-perception*))
                                               :z-offset 0.0)))
     (if rotation
         (setq result-pose (cram-tf:rotate-pose (cl-tf:pose->pose-stamped
