@@ -26,27 +26,19 @@
 
 
 (defun inspection ()
-  (navigate plc::*poses-list*)
-  (sleep 180.0)
-  (navigate plc::*exit-list*))
-
-(defun navigate (poses)
   (chll::init-nav-client)
-  (mapcar (lambda (pose-stamped)
-            (chll::call-nav-action-ps pose-stamped))
-          poses))
+  (dolist (pose-stamped (subseq *poses-list* 0 5))
+    (chll::call-nav-action-ps pose-stamped))
+  (sleep 180)
+  (dolist (pose-stamped (subseq *poses-list* 5))
+    (chll::call-nav-action-ps pose-stamped)))
 
-(defun viz-inspection (poses)
+(defun viz-inspection ()
   (pc::get-marker-publisher)
   (mapcar (lambda (pose-stamped)
             (planning-communication::publish-marker-pose pose-stamped :g 1.0)
             (sleep 2.0))
-          poses))
-
-(defun full-viz-inspection ()
-  (viz-inspection plc::*poses-list*)
-  (sleep 10.0)
-  (viz-inspection plc::*exit-list*))
+          *poses-list*))
 
 
 (defun make-pose-stamped (x y zeuler)

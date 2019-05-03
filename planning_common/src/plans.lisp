@@ -84,10 +84,10 @@
   (cpl:par 
     (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
     (plc::perceive-side))
-  (cpl:par
-    (plc::move-torso (plc::shelf-head-difference "4"))
-    (plc::move-head :left-down))
-  (plc::perceive (vector "robocup_shelf_3"))
+  ;;(cpl:par 
+  ;;   (plc::move-torso (plc::shelf-head-difference "3"))
+  ;;   (plc::move-head :left-down))
+  ;; (plc::perceive (vector "robocup_shelf_3"))
   
   ;;middle
    (cpl:par
@@ -98,7 +98,7 @@
    ;;low
   (cpl:par
     (plc::move-torso (plc::shelf-head-difference "0"))
-    (plc::move-head :left-down-3))
+    (plc::move-head :right-down-3))
   (plc::perceive (vector "robocup_shelf_1"))
   (plc::perceive (vector "robocup_shelf_0")))
 
