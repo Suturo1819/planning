@@ -77,7 +77,28 @@
     (:infront-kitchen-door :kitchen)
     (:infront-exit-door :exit-door)
     (:infront-kitchen-door-from-bedroom :bedroom)
+    (:infront-livingroom-bookcase :living)
+    (:infront-livingroom-sideboard :living)
+    (:infront-livingroom-lighttable :living)
+    (:infront-livingroom-tv  :living)
+    (:infront-livingroom-tvtable :living)
+    (:infront-livingroom-trashbin :living)
+    (:infront-livingroom-coathanger :living)
+    (:infront-livingroom-leftarmchair :living)
+    (:infront-livingroom-rightarmchair :living)
+    (:infront-livingroom-coffeetable :living)
+    ;;CARE! Couch cannot be navigated to since it is behind the table
+    (:infront-livingroom-couch :living)
     ))
+
+(defun route (start end)
+  (case start
+    (:kitchen (case end
+                (:bedroom "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom")
+                (:hallway "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left")
+                (:living "you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                (:bar "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left on the other, :side you see the, :door for the bedroom, :enter it")))))
+                 
     
   
   
