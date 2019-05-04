@@ -36,7 +36,7 @@
     (roslisp:start-ros-node "sound_play_lisp_client"))
 
   (multiple-value-bind (result status)
-      (let ((actionlib:*action-server-timeout* 10.0))
+      (let ((actionlib:*action-server-timeout* 20.0))
         (actionlib:call-goal
          (get-sound-play-client)
          (make-sound-play-goal say-string)))
