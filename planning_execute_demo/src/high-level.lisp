@@ -1,12 +1,16 @@
 (in-package :pexe)
 
 (defun execute-demo()
+
+  (chll::call-robosherlock-door-pipeline)
   ;; GRIPPER START SIGNAL
   ;; (chll:init-gripper-tilt-fluent)
   ;; (cpl:wait-for (cpl:< chll:*start-signal-fluent* -1.7d0)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!
   ;; (chll:smash-into-appartment)
+
   
   (plc::with-hsr-process-modules
+    (chll::call-nav-action-ps (plc::make-pose-stamped 4.305 0.218 3.0))
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan
     (plc::perceive-shelf)
@@ -16,22 +20,22 @@
    
 
     ;;vanessa gaya hardcoded desperate robocup
-     (let* ((?to-say "i am going to the shelf")
-            (?pose (cl-tf:make-pose-stamped "map" 0 
-                                            (cl-tf:make-3d-vector 0.53 1.1 0)
-                                            (cl-tf:axis-angle->quaternion 
-                                             (cl-tf:make-3d-vector 0 0 1)
-                                             (cl-transforms:make-identity-rotation))))
+     ;; (let* ((?to-say "i am going to the shelf")
+     ;;        (?pose (cl-tf:make-pose-stamped "map" 0 
+     ;;                                        (cl-tf:make-3d-vector 0.53 1.1 0)
+     ;;                                        (cl-tf:axis-angle->quaternion 
+     ;;                                         (cl-tf:make-3d-vector 0 0 1)
+     ;;                                         (cl-transforms:make-identity-rotation))))
                     
-           (move (desig:a motion
-                          (:type :going)
-                          (:target (desig:a location
-                                            (:pose ?pose))))))
-      (cpl:seq
-        (plc::say ?to-say)
-        ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
-        (cram-executive:perform move)))
-
+     ;;       (move (desig:a motion
+     ;;                      (:type :going)
+     ;;                      (:target (desig:a location
+     ;;                                        (:pose ?pose))))))
+     ;;  (cpl:seq
+     ;;    (plc::say ?to-say)
+     ;;    ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
+     ;;    (cram-executive:perform move)))
+    
      (plc::perceive-table)
     
     ;; GRASPING OBJECT

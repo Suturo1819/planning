@@ -3,13 +3,14 @@
 (defparameter *perceived-data* nil)
 (defparameter *perception-subscriber* nil)
 
-
+(defun init-marker-publisher()
+  (setf *marker-publisher*
+          (roslisp:advertise "~location_marker" "visualization_msgs/Marker")))
 
 (defparameter *marker-publisher* nil)
 (defun get-marker-publisher ()
   (unless *marker-publisher*
-    (setf *marker-publisher*
-          (roslisp:advertise "~location_marker" "visualization_msgs/Marker")))
+    (init-marker-publisher))
   *marker-publisher*)
 
 

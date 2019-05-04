@@ -3,8 +3,8 @@
 (defun init-planning ()
   "Initialize all the interfaces from planning to other groups."
   ;;TODO CHECK AUF RUNNING
-  (unless (eq (roslisp:node-status) :RUNNING)
-    (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil))
+  ;;
+    (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil);;)
   ;; (cram-tf::init-tf)
   
   ;;Init all the action servers
@@ -16,6 +16,8 @@
   (chll::init-giskard-joints-action-client)
   (chll:init-robosherlock-action-client)
   (pc::viz-box-init)
+  (pc::init-marker-publisher)
+  (chll::init-robosherlock-door-action-client)
 ;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
   
 

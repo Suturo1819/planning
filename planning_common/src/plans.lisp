@@ -51,17 +51,20 @@
   "move head, torso and perceive"
   (pc::publish-challenge-step 3)
   (plc::perceive-side)
+  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T)
+  
   (cpl:par
     (plc::say "I am going to perceive the table now..")
-    (plc::move-torso (plc::table-head-difference))
+    (plc::move-torso (plc::table-head-difference))    
     (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL))
 
   ;; TODO this is a hack
  ;;(plc::turn :RIGHT)
     
-  (plc::move-head :left-down)
+  (plc::move-head :right-down-2)
   (plc::perceive (vector "robocup_table"))
-  (plc::go-to :to :TABLE :facing :SHELF :manipulation T))
+;;  (plc::go-to :to :TABLE :facing :SHELF :manipulation T)
+  )
 
 ;;assuming robot is already standing infront of the shelf
 ;;TODO implement the following
@@ -79,10 +82,10 @@
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (pc::publish-challenge-step 1)
-  
+  (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
   ;;high
   (cpl:par 
-    (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
+    (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation NIL)
     (plc::perceive-side))
   ;;(cpl:par 
   ;;   (plc::move-torso (plc::shelf-head-difference "3"))
@@ -98,7 +101,7 @@
    ;;low
   (cpl:par
     (plc::move-torso (plc::shelf-head-difference "0"))
-    (plc::move-head :right-down-3))
+    (plc::move-head :left-down-3))
   (plc::perceive (vector "robocup_shelf_1"))
   (plc::perceive (vector "robocup_shelf_0")))
 
