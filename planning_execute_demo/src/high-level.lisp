@@ -3,10 +3,8 @@
 (defun execute-demo()
   ;; check if door is open and then enter
   (chll::call-robosherlock-door-pipeline)
-
   (plc::with-hsr-process-modules
     ;; pose to go through the door
-    (chll::call-nav-action-ps (plc::make-pose-stamped 4.305 0.218 3.0))
 
 
     ))
@@ -17,6 +15,8 @@
   (format t "done. init marker publisher")
   ;;init publisher
   (planning-communication::init-marker-publisher)
+  (chll::init-sound-play-client)
+
 
 
 

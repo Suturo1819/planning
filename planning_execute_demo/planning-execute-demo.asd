@@ -8,7 +8,8 @@
                planning-communication
                cram-hsr-low-level
                planning-common
-               suturo_manipulation_msgs-msg)
+               suturo_manipulation_msgs-msg
+            )
   :components
   ((:module "src"
     :components

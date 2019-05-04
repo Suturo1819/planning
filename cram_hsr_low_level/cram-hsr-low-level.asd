@@ -17,7 +17,8 @@
                trajectory_msgs-msg
                controller_manager_msgs-msg
                sensor_msgs-msg
-               suturo_perception_msgs-msg)
+               suturo_perception_msgs-msg
+               sound_play-msg)
   
   :components
   ((:module "src"
@@ -31,5 +32,6 @@
              (:file "robosherlock-client" :depends-on ("package"))
              (:file "head-client" :depends-on ("package"))
              (:file "torso-client" :depends-on ("package"))
-             (:file "joint-state-client" :depends-on ("package"))))))
+             (:file "joint-state-client" :depends-on ("package"))
+             (:file "ros-speech" :depends-on ("package"))))))
 
