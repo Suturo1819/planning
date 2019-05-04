@@ -65,7 +65,9 @@
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
       (say
-       (pc::call-text-to-speech-action text)))))
+       ;;(pc::call-text-to-speech-action text)
+       (chll::say text)
+       ))))
 
   ;;;;;;;;;;;;;;;;;;;; PERCEIVE ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-perception (motion-designator)

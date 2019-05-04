@@ -36,4 +36,5 @@
 
    ;; torso client
    #:call-move-torso-action
+;;   #:say
    ))

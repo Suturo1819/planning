@@ -37,17 +37,18 @@
    (list :infront-kitchen-whitedrawer (plc::make-pose-stamped -4.025 -0.959 3.2))
 
    ;;objects in LIVINGROOM
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
-   ;; (list :infront- (plc::make-pose-stamped ))
+   (list :infront-livingroom-bookcase (plc::make-pose-stamped 0.459 0.372 4.7))
+   (list :infront-livingroom-sideboard (plc::make-pose-stamped 0.421 1.299 1.5))
+   (list :infront-livingroom-lighttable (plc::make-pose-stamped -3.458 0.340 3.0))
+   (list :infront-livingroom-tv (plc::make-pose-stamped 0.360 3.263 0.0))
+   (list :infront-livingroom-tvtable (plc::make-pose-stamped 0.0269 4.361 0.0))
+   (list :infront-livingroom-trashbin (plc::make-pose-stamped -0.879 5.156 0.0))
+   (list :infront-livingroom-coathanger (plc::make-pose-stamped -1.144 4.992 1.5))
+   (list :infront-livingroom-leftarmchair (plc::make-pose-stamped -1.909 3.969 2.5))
+   (list :infront-livingroom-rightarmchair (plc::make-pose-stamped -3.315 2.38 0.0))
+   (list :infront-livingroom-coffeetable (plc::make-pose-stamped -3.315 2.384 2.5))
+   ;;CARE! Couch cannot be navigated to since it is behind the table
+   (list :infront-livingroom-couch (plc::make-pose-stamped -3.7967 4.367 2.5))
    ))
 
 (defun which-room-i (x)
@@ -102,6 +103,7 @@
       (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
        () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))))
   *tf-listener-tmp*)
+
 
 
 
