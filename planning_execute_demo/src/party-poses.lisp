@@ -50,7 +50,38 @@
    ;; (list :infront- (plc::make-pose-stamped ))
    ))
 
+(defun where-is-person ()
+  (let ((base-pose (cl-tf:lookup-transform (get-tf-listener-tmp) "base_footprint" "map" :timeout 2)))
+    (car (first (sort poses-list #'< :key
+                      (lambda (pose)
+                        (cl-tf:v-norm (cl-tf:origin (cl-tf:transform
+                                                     base-pose
+                                                     (car (cdr pose)))))))))))
+
+
+(defparameter *tf-listener-tmp* nil)
+
+(defun get-tf-listener-tmp ()
+  (unless *tf-listener-tmp*
+    (setf *tf-listener-tmp* (make-instance 'cl-tf2:buffer-client))
+    (handler-case
+     (cl-tf2:lookup-transform *tf-listener-tmp* "map" "odom" :timeout 3)
+      (CL-TRANSFORMS-STAMPED:TRANSFORM-STAMPED-ERROR () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))
+      (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
+       () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))))
+  *tf-listener-tmp*)
+
+
+
+
+
+
 
 ;;access list:
 ;;(planning-communication::publish-marker-pose (cdr (assoc :after-door poses-list)))
                           
+
+
+;;(cl-tf:lookup-transform (get-tf-listener) "map" "base_footprint" :timeout 2)
+
+                     
