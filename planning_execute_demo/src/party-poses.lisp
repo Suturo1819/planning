@@ -50,6 +50,38 @@
    ;; (list :infront- (plc::make-pose-stamped ))
    ))
 
+(defun which-room-i (x)
+  (case x
+    (:infront-kitchen-kitchencabinet :kitchen)
+    (:infront-kitchen-dishwasher :kitchen)
+    (:infront-kitchen-trashcan :kitchen)
+    (:infront-kitchen-kitchentable :kitchen)
+    (:infront-kitchen-cabinet :kitchen) 
+    (:infront-kitchen-whitedrawer :kitchen)
+    (:infront-bedroom-bed :bedroom)
+    (:infront-bedroom-desk :bedroom)
+    (:infront-bedroom-sidetable :bedroom)
+    (:infront-bar-cupboard :bar)
+    (:infront-bar-sofa :bar)
+    (:infront-bar-bartable :bar)
+    (:in-bar :bar)
+    (:in-bedroom :bedroom)
+    (:in-kitchen-from-bedroom :kitchen)
+    (:in-kitchen :kitchen)
+    (:in-living-room :living)
+    (:in-hallway :hallway)
+    (:after-door :hallway)
+    (:infront-bar-door :bar)
+    (:infront-bedroom-door :bedroom)
+    (:infront-kitchen-door :kitchen)
+    (:infront-exit-door :exit-door)
+    (:infront-kitchen-door-from-bedroom :bedroom)
+    ))
+    
+  
+  
+  
+
 (defun where-is-person ()
   (let ((base-pose (cl-tf:lookup-transform (get-tf-listener-tmp) "base_footprint" "map" :timeout 2)))
     (car (first (sort poses-list #'< :key
