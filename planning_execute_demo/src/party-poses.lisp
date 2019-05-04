@@ -51,6 +51,71 @@
    (list :infront-livingroom-couch (plc::make-pose-stamped -3.7967 4.367 2.5))
    ))
 
+(defun which-room-i (x)
+  (case x
+    (:infront-kitchen-kitchencabinet :kitchen)
+    (:infront-kitchen-dishwasher :kitchen)
+    (:infront-kitchen-trashcan :kitchen)
+    (:infront-kitchen-kitchentable :kitchen)
+    (:infront-kitchen-cabinet :kitchen) 
+    (:infront-kitchen-whitedrawer :kitchen)
+    (:infront-bedroom-bed :bedroom)
+    (:infront-bedroom-desk :bedroom)
+    (:infront-bedroom-sidetable :bedroom)
+    (:infront-bar-cupboard :bar)
+    (:infront-bar-sofa :bar)
+    (:infront-bar-bartable :bar)
+    (:in-bar :bar)
+    (:in-bedroom :bedroom)
+    (:in-kitchen-from-bedroom :kitchen)
+    (:in-kitchen :kitchen)
+    (:in-living-room :living)
+    (:in-hallway :hallway)
+    (:after-door :hallway)
+    (:infront-bar-door :bar)
+    (:infront-bedroom-door :bedroom)
+    (:infront-kitchen-door :kitchen)
+    (:infront-exit-door :exit-door)
+    (:infront-kitchen-door-from-bedroom :bedroom)
+    (:infront-livingroom-bookcase :living)
+    (:infront-livingroom-sideboard :living)
+    (:infront-livingroom-lighttable :living)
+    (:infront-livingroom-tv  :living)
+    (:infront-livingroom-tvtable :living)
+    (:infront-livingroom-trashbin :living)
+    (:infront-livingroom-coathanger :living)
+    (:infront-livingroom-leftarmchair :living)
+    (:infront-livingroom-rightarmchair :living)
+    (:infront-livingroom-coffeetable :living)
+    ;;CARE! Couch cannot be navigated to since it is behind the table
+    (:infront-livingroom-couch :living)
+    ))
+
+(defun route (start end)
+  (case start
+    (:kitchen (case end
+                (:bedroom "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom")
+                (:hallway "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left")
+                (:living "you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                (:bar "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left on the other, :side you see the, :door for the bedroom, :enter it")
+                ))
+     (:bedroom (case end
+                 (:living "you are in the :bedroom go to, :the table there is a, :door near by go through it and you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                 (:bar "you are in the :bedroom, the door on the side with the Paper on the wall is a door, enter this to go in the hallway here you can enter the bar on the other side")
+                 (:kitchen "you are in the :bedroom go to, :the table there is a, :door near by go through it and you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                 ))
+     (:bar (case end
+             (:living "go through the one door and then to the right there is the living room you were looking for")
+             (:hallway "go through the door and you are there")
+             (:kitchen "go through the door and through the door on the other side on your right side will be another door and here you can enter the kitchen")
+             (:bedroom "go through the door and go through door on the other side")))
+     (:living (case end
+                (:kitchen "go through the door near the lighttable then you have entered the kitchen")))))
+    
+  
+  
+  
+
 (defun where-is-person ()
   (let ((base-pose (cl-tf:lookup-transform (get-tf-listener-tmp) "base_footprint" "map" :timeout 2)))
     (car (first (sort poses-list #'< :key
