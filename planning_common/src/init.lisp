@@ -44,3 +44,12 @@
   (pc::viz-box-init))
 
 
+(defun init-local()
+  (print "create ros node")
+  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
+  (print "init tf-listener")
+  (plc::get-tf-listener)
+  (print "init viz-box")
+  (pc::viz-box-init)
+  (print "init marker publisher")
+  (planning-communication::init-marker-publisher))
