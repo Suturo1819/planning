@@ -97,8 +97,20 @@
                 (:bedroom "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom")
                 (:hallway "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left")
                 (:living "you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
-                (:bar "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left on the other, :side you see the, :door for the bedroom, :enter it")))))
-                 
+                (:bar "you are in the, :kitchen go to, :trash can then through the, :door to your, :right and then you have entered the, :bedroom and you can go to the, :door on your, :left on the other, :side you see the, :door for the bedroom, :enter it")
+                ))
+     (:bedroom (case end
+                 (:living "you are in the :bedroom go to, :the table there is a, :door near by go through it and you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                 (:bar "you are in the :bedroom, the door on the side with the Paper on the wall is a door, enter this to go in the hallway here you can enter the bar on the other side")
+                 (:kitchen "you are in the :bedroom go to, :the table there is a, :door near by go through it and you are in the, :kitchen look for the, :kitchen-table then you can see the, :doorway, you must enter this.")
+                 ))
+     (:bar (case end
+             (:living "go through the one door and then to the right there is the living room you were looking for")
+             (:hallway "go through the door and you are there")
+             (:kitchen "go through the door and through the door on the other side on your right side will be another door and here you can enter the kitchen")
+             (:bedroom "go through the door and go through door on the other side")))
+     (:living (case end
+                (:kitchen "go through the door near the lighttable then you have entered the kitchen")))))
     
   
   
