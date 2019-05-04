@@ -10,21 +10,14 @@
 
   
   (plc::with-hsr-process-modules
-<<<<<<< HEAD
     (chll::call-nav-action-ps (plc::make-pose-stamped 4.305 0.218 3.0))
-=======
-    ;;go through the door
-    (plc::make-pose-stamped 4.305 0.218 3.0)
-
-    
->>>>>>> 8b7d0151892f3a990cd8b715a68bb02ca62fab6d
     ;; GO and PERCEIVE the  SHELF
     ;; BASE-POSE is nor PERCEIVE SIDE and called in the next plan
     (plc::perceive-shelf)
     
     ;; GO and PERCEIVE the TABLE
     ;;(plc::go-to (plc::calculate-possible-poses-from-obj "environment/table_front_edge_center" ) "table")
-    
+   
 
     ;;vanessa gaya hardcoded desperate robocup
      ;; (let* ((?to-say "i am going to the shelf")
