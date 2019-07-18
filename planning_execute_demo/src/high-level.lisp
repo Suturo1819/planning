@@ -2,7 +2,7 @@
 
 (defun execute-demo()
 
-  (chll::call-robosherlock-door-pipeline)
+  ;;(chll::call-robosherlock-door-pipeline)
   ;; GRIPPER START SIGNAL
   ;; (chll:init-gripper-tilt-fluent)
   ;; (cpl:wait-for (cpl:< chll:*start-signal-fluent* -1.7d0)) ;; CHANGE THIS THRESHOLD BASED ON PLOTJUGGLER DATA!!!

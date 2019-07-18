@@ -123,7 +123,7 @@
            (?weight 1.2)
            (?width (- (first dimensions) *width-offset*))
            (?depth (second dimensions))
-           (?height (third dimensions))
+           (?height (- (third dimensions) 0.08))
            (?modus (if (equal ?modus NIL)
                        (transform->grasp-side closest-object)))
 
