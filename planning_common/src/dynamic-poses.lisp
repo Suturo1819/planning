@@ -51,20 +51,20 @@ So that the robot can move his arm safely."
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
   (pc::publish-challenge-step 2)
-  (let* ((shelf (cl-tf2:lookup-transform
+  (let* ((table (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
                  "environment/table_front_edge_center"
                  :timeout 5))
          (pose (cl-tf:make-pose
-                (cl-tf:translation shelf)
-                (cl-tf:rotation shelf)))
+                (cl-tf:translation table)
+                (cl-tf:rotation table)))
          
          (result-pose (cram-tf:translate-pose pose
-                                              :x-offset 0.0
-                                              :y-offset (if manipulation
-                                                            (- *x-offset-manipulation*)
-                                                            (- *x-offset-perception*))
+                                              :x-offset (if manipulation
+                                                            (+ *x-offset-manipulation*)
+                                                            (+ *x-offset-perception*))
+                                              :y-offset 0.0
                                               :z-offset 0.0)))
     (if rotation
         (setq result-pose (cram-tf:rotate-pose (cl-tf:pose->pose-stamped
@@ -74,6 +74,8 @@ So that the robot can move his arm safely."
                                                :z (case rotation
                                                     (:RIGHT (/ pi 2))
                                                     (:LEFT (/ pi -2))))))
+
+    (pc::publish-marker-pose result-pose)
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
@@ -132,7 +134,8 @@ So that the robot can move his arm safely."
         (setq result  0.65)
         (if (< result 0.35)
             (setq result 0.0)))
-    
+
+    (format t "GOAL POSE ~a" result)
     (format t "HEIGHT of shelf: ~a" shelf-height)
     result))
 

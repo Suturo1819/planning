@@ -9,10 +9,10 @@
   ;; (chll:smash-into-appartment)
  
   (plc::with-hsr-process-modules
-    (chll::call-nav-action-ps (plc::make-pose-stamped 4.305 0.218 3.0))
+    ;;(chll::call-nav-action-ps (plc::make-pose-stamped 4.305 0.218 3.0))
 
     ;;go through the door
-    (plc::make-pose-stamped 4.305 0.218 3.0)
+    ;;(plc::make-pose-stamped 4.305 0.218 3.0)
 
     (plc::perceive-shelf)
     (plc::perceive-table)

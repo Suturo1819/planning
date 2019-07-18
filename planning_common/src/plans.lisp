@@ -9,7 +9,6 @@
 (defparameter *placing-y-offset* 0.1)
 
 
-
 (cpl:def-cram-function go-to (&key (to NIL) (facing NIL) (manipulation NIL))
   "go to a predefined location"
   ;;NOTE the publish-callange-step is done in the dynamic-poses.lisp
@@ -49,8 +48,8 @@
 ;;; -----
 (cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
-  (pc::publish-challenge-step 3)
-  (plc::perceive-side)
+  ;;(pc::publish-challenge-step 3)
+  ;;(plc::perceive-side)
   (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T)
   
   (cpl:par
@@ -146,6 +145,7 @@
           (plc::go-to :to :TABLE :facing :TABLE :manipulation T)
           (plc::go-to :to closest-object :facing :OBJECT :manipulation T))
 
+      (format t "grasp mode: ~a" ?modus)
       ;; movement
       (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
