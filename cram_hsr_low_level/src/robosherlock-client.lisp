@@ -1,4 +1,4 @@
-(in-package chll)
+(in-package :chll)
 
 (defvar *robosherlock-action-client* NIL)
 (defparameter *robosherlock-action-timeout* 120.0 "in seconds")

@@ -1,4 +1,3 @@
-
 (in-package :chll)
 
 (defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
