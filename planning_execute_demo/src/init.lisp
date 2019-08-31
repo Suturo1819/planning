@@ -132,7 +132,7 @@
   (go-closer-to-table)
   (pc::call-text-to-speech-action "Now i can finally identify."))
 
-(defun michels-grasping-routine-with-perception-and-knowledge-for-testing-which-objects-work-out-booooy-how-long-can-a-function-name-get-oh-my-lord-is-this-huge()
+(defun roslaunch-execute-demo()
   (unless (eq (roslisp:node-status) :RUNNING)
     (roslisp-utilities:startup-ros :name "planning" :anonymous NIL))
 

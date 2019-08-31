@@ -7,7 +7,8 @@
    #:get-nav-action-client
    #:make-nav-action-goal
    #:call-nav-action
-
+   #:smash-into-appartment
+   
    ;; move client 
    #:make-giskard-joints-action-client
    #:make-giskard-poses-action-client
@@ -29,6 +30,8 @@
    #:prolog-object-goal-pose
 
    ;; joint state client
+   :*start-signal-fluent*
+   #:init-gripper-tilt-fluent
    #:get-current-joint-state
 
    ;; torso client

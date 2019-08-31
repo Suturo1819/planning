@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   tmc_msgs
   std_msgs
   move_base_msgs
+  control_msgs
+  suturo_perception_msgs
   suturo_manipulation_msgs
 )
 

@@ -3,9 +3,9 @@
 ;; TODO still in progress
 (cram-process-modules:def-process-module hsr-navigation (motion-designator)
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
-  (roslisp:ros-info (hsr-navigation-process-modules)
-                    "hsr-navigation called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-navigation-process-modules)
+  ;;                   "hsr-navigation called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command target) (desig:reference motion-designator)
     (ecase command
       ;;TODO differentiate types
@@ -16,9 +16,9 @@
 
   ;;;;;;;;;;;;;;;;;;;; BODY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-motion (motion-designator)
-  (roslisp:ros-info (hsr-motion-process-modules)
-                    "hsr-motion called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-motion-process-modules)
+  ;;                   "hsr-motion called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command pos) (desig:reference motion-designator)
     (if (typep pos 'sequence)
         (chll::call-move-head-action pos)
@@ -50,9 +50,9 @@
 
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-torso (motion-designator)
-  (roslisp:ros-info (hsr-torso-process-modules)
-                    "hsr-torso called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-torso-process-modules)
+  ;;                   "hsr-torso called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command ?height) (desig:reference motion-designator)
     (chll::call-giskard-joints-move-action (vector ?height) (vector 0.0))))
 
@@ -69,9 +69,9 @@
 
   ;;;;;;;;;;;;;;;;;;;; PERCEIVE ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-perception (motion-designator)
-  (roslisp:ros-info (hsr-perception-process-modules)
-                    "hsr-say-action called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-perception-process-modules)
+  ;;                   "hsr-say-action called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command list) (desig:reference motion-designator)
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
@@ -80,9 +80,9 @@
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
-  (roslisp:ros-info (hsr-arm-motion-process-modules)
-                    "hsr-arm-motion called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-arm-motion-process-modules)
+  ;;                   "hsr-arm-motion called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command
                        ?pose
                        ?weight

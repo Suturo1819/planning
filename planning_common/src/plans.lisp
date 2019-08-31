@@ -9,25 +9,37 @@
 (defparameter *placing-y-offset* 0.1)
 
 
-(cpl:def-cram-function go-to (?pose ?text)
+(cpl:def-cram-function go-to (&key (to NIL) (facing NIL) (manipulation NIL))
   "go to a predefined location"
   ;;NOTE the publish-callange-step is done in the dynamic-poses.lisp
-    (let* ((?to-say (concatenate 'string "I am going to the " ?text))
-   
-           (?rotation (plc::force-rotation ?pose))
-           
-           (rotate (desig:a motion
-                            (:type :going)
-                            (:target (desig:a location
-                                              (:pose ?rotation)))))
-           
+    (let* ((?to-say (concatenate 'string "I am going to the " (write-to-string to)))
+           (?pose (case to
+                    (:SHELF
+                     (case facing
+                       (:PERCEIVE (plc::pose-infront-shelf :manipulation manipulation :rotation :LEFT))
+                       (T (plc::calculate-possible-poses-from-obj "environment/shelf_center"
+                                                                  :facing-direction facing
+                                                                  :relative-to :SHELF
+                                                                  :manipulation manipulation))))
+                    
+                    (:TABLE
+                     (case facing
+                       (:PERCEIVE (plc::pose-infront-table :manipulation manipulation :rotation :RIGHT))
+                       
+                       (T (plc::calculate-possible-poses-from-obj "environment/table_front_edge_center"
+                                                                  :facing-direction facing
+                                                                  :relative-to :TABLE
+                                                                  :manipulation manipulation))))
+                    
+                    (T (plc::calculate-possible-poses-from-obj to
+                                                        :facing-direction :OBJECT
+                                                        :relative-to :TABLE
+                                                        :manipulation manipulation))))
+                    
            (move (desig:a motion
                           (:type :going)
                           (:target (desig:a location
-                                            (:pose ?pose)))))
-           (head-safe (desig:a motion
-                               (:type :looking)
-                               (:direction :safe))))
+                                            (:pose ?pose))))))
       (cpl:seq
         (plc::say ?to-say)
         ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
@@ -36,47 +48,48 @@
 ;;; -----
 (cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
-  (pc::publish-challenge-step 3)
-    (let* ((?height (plc::table-head-difference))
-           
-           (move-torso (desig:a motion
-                                (:type :moving-torso)
-                                (:height ?height)))
-           
-           
-           (move-head (desig:a motion
-                          (:type :looking)
-                          (:direction :perceive-down)))
-          
-           
-           (move-head-safe (desig:a motion
-                          (:type :looking)
-                          (:direction :safe))))
-      
+  ;;(pc::publish-challenge-step 3)
+  ;;(plc::perceive-side)
+  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T)
+  
+  (cpl:par
+    (plc::say "I am going to perceive the table now..")
+    (plc::move-torso (plc::table-head-difference))    
+    (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL))
 
-      (plc::perceive-side)    
-      (cpl:par
-        (plc::say "I am going to perceive the table now..")
-        (cram-executive:perform move-torso))
-      
-      (plc::go-to (plc::pose-infront-table :manipulation NIL :rotation T) "table")
-      (plc::move-head :right-down)
-      (plc::perceive (vector "robocup_table"))
-      (plc::go-to (plc::pose-infront-table :manipulation T) "step away from the table")))
+  ;; TODO this is a hack
+ ;;(plc::turn :RIGHT)
+    
+  (plc::move-head :right-down-2)
+  (plc::perceive (vector "robocup_table"))
+;;  (plc::go-to :to :TABLE :facing :SHELF :manipulation T)
+  )
 
 ;;assuming robot is already standing infront of the shelf
-;;TODO
+;;TODO implement the following
+;; (let* ((shelf-T-base (cl-tf2:lookup-transform
+;;                           (plc::get-tf-listener)
+;;                            "base_footprint"
+;;                             "environment/shelf_center"))
+;;              (y (cl-tf:y (cl-tf:translation shelf-T-base)))
+;;              (left-or-right (if (> y 0.0)
+;;                                 "LEFT"
+;;                                 "RIGHT")))
+;;   (intern (concatenate 'string left-or-right "-1") :keyword))
+
+
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
   (pc::publish-challenge-step 1)
-  (plc::perceive-side)
-  
+  (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
   ;;high
-  (plc::go-to (plc::pose-infront-shelf :manipulation NIL :rotation T) "close to the shelf")
-  (cpl:par
-    (plc::move-torso (plc::shelf-head-difference "4"))
-    (plc::move-head :left-down))
-  (plc::perceive (vector "robocup_shelf_3"))
+  (cpl:par 
+    (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation NIL)
+    (plc::perceive-side))
+  ;;(cpl:par 
+  ;;   (plc::move-torso (plc::shelf-head-difference "3"))
+  ;;   (plc::move-head :left-down))
+  ;; (plc::perceive (vector "robocup_shelf_3"))
   
   ;;middle
    (cpl:par
@@ -89,18 +102,13 @@
     (plc::move-torso (plc::shelf-head-difference "0"))
     (plc::move-head :left-down-3))
   (plc::perceive (vector "robocup_shelf_1"))
-  (plc::perceive (vector "robocup_shelf_0"))
-
-
-  ;;base pose
-  (plc::move-head :safe)
-  (plc::base-pose))
+  (plc::perceive (vector "robocup_shelf_0")))
 
 
 
 
 ;; -----
-(cpl:def-cram-function grasp-object (&optional ?modus)
+(cpl:def-cram-function grasp-object (&optional (?modus NIL))
   "grasp object"
   (pc::publish-challenge-step 4)
     (let* ((all-table-objects (chll:prolog-table-objects))
@@ -112,15 +120,12 @@
                                    (cl-tf:rotation closest-object-pose)))
            (dimensions (chll::prolog-object-dimensions closest-object))
 
-           (?weight 0.8)
+           (?weight 1.2)
            (?width (- (first dimensions) *width-offset*))
            (?depth (second dimensions))
-           (?height (third dimensions))
+           (?height (- (third dimensions) 0.08))
            (?modus (if (equal ?modus NIL)
-                       (if (< (third dimensions) 0.1)
-                           (setq ?modus "TOP")
-                           (setq ?modus "FRONT"))
-                       ?modus))
+                       (transform->grasp-side closest-object)))
 
            (grasp (desig:a motion
                            (:type :grasping)
@@ -129,37 +134,42 @@
                            (:width ?width)
                            (:height ?height)
                            (:depth ?depth)
-                           (:modus ?modus)))
-           (say-before (concatenate 'String "I am going to grasp the " object-class " now."))
-           (say-after "done grasping"))
+                           (:modus ?modus))))
       ;;vars
       (pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
       (format t "Object Class: ~a " object-class)
+      (format t "MODUS: ~a " ?modus)
 
-      (plc::go-to (plc::calculate-possible-poses-from-obj closest-object)  "table")
+      (if (equal ?modus "TOP")
+          (plc::go-to :to :TABLE :facing :TABLE :manipulation T)
+          (plc::go-to :to closest-object :facing :OBJECT :manipulation T))
+
+      (format t "grasp mode: ~a" ?modus)
       ;; movement
       (setq *object-dimensions* dimensions)
       (planning-communication::publish-marker-pose ?pose)
       (cpl:par
-        (plc::say say-before)
-      (cram-executive:perform grasp))
-      (cpl:par
         (plc::move-head :safe)
-        (plc::say say-after))))
+        (plc::say (concatenate 'String "I am going to grasp the " object-class " now."))
+        (cram-executive:perform grasp))
+      
+      (cpl:par
+        (plc::say "done grasping")
+        (plc::perceive-side)
+        (plc::go-to :to :SHELF :facing :SHELF :manipulation T))))
 
 ;; FRONT TOP
-(cpl:def-cram-function place-object (?modus ?shelf_floor)
+(cpl:def-cram-function place-object (?modus)
   "place object"
   (pc::publish-challenge-step 6)
   (cpl:seq
-    (let* ((pose-in-shelf (cl-tf2:lookup-transform (plc:get-tf-listener)
-                                                   "map"
-                                                   (concatenate
-                                                    'String
-                                                    "environment/shelf_floor_"
-                                                    ?shelf_floor "_piece") :timeout 5))
-           (pose-from-prolog (chll::prolog-object-goal-pose (chll::prolog-object-in-gripper)))
+    (let* ((?context NIL)
+           (pose-from-prolog (multiple-value-bind (pose context)
+                                 (chll::prolog-object-goal-pose (chll::prolog-object-in-gripper))
+                               (setq ?context context)
+                               pose))
+           
 
            (?pose (cl-tf:make-pose
                    (cl-tf:make-3d-vector (+ (first (car pose-from-prolog)) *placing-x-offset*)
@@ -194,10 +204,8 @@
                           (setq ?depth (third *object-dimensions*))))
       
       (pc::publish-marker-pose ?pose)
-      (plc::say "I am going to place the object now.")
-      (cram-executive:perform place)
-      (plc::say "Done placing.")
-      (format t "DESIG: ~a" place))))
+      (plc::say ?context)
+      (cram-executive:perform place))))
 
 
 
@@ -218,7 +226,8 @@ or one of the following: :perceive :safe :front"
     (let* ((say-text (desig:a motion
                              (:type :say)
                              (:text ?text))))     
-      (cram-executive:perform say-text)))
+      (cram-executive:perform say-text))
+  )
 
 (cpl:def-cram-function move-torso (?height)
   "moves torso to given height. keeps the arm out of sight." 
@@ -289,3 +298,21 @@ or one of the following: :perceive :safe :front"
       (plc::say "moving into perceive side pose.")
       (cram-executive:perform perceive))))
          
+
+(cpl:def-cram-function turn (direction)
+  "turns 90 degrees LEFT or RIGHT"
+  (let* ((?rotation (cram-tf:rotate-pose
+                    (plc::transform-stamped->pose-stamped
+                      (cl-tf2:lookup-transform
+                       (plc::get-tf-listener)
+                       "map"
+                       "base_footprint"))
+                    :z (case direction
+                         (:LEFT (/ pi 2))
+                         (:RIGHT (/ pi -2)))))
+         
+         (move (desig:a motion
+                          (:type :going)
+                          (:target (desig:a location
+                                            (:pose ?rotation))))))
+    (cram-executive:perform move)))

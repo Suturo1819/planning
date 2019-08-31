@@ -124,10 +124,12 @@ relative to odom"
          (dimensions (chll:prolog-object-dimensions tf-frame)))
     (unless (< (- (/ pi 2)) z-rot (/ pi 2))
       (setf z-rot (- z-rot (* (signum z-rot) pi))))
-    (if (and (< (abs z-rot) (/ pi 6))
-             (< (car dimensions) 0.13))
-        :FRONT
-        :TOP)))
+    (if (> (car (last dimensions)) 0.15)
+        "FRONT"
+        (if (and (< (abs z-rot) (/ pi 6))
+                 (< (car dimensions) 0.13))
+            "FRONT"
+            "TOP"))))
 
 (defun pose-stamped->transform (pose-stamped)
   (cl-tf2:make-transform

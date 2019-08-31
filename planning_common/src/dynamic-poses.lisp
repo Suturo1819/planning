@@ -37,34 +37,33 @@ So that the robot can move his arm safely."
                                                 "map"
                                                 (roslisp::ros-time)
                                                 result-pose)
-                                               :z (/ pi -2))))
-    
-    (format t "result: ~a" result-pose)
-                                           
+                                               :z (case rotation
+                                                    (:RIGHT (/ pi 2))
+                                                    (:LEFT (/ pi -2))))))                                        
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
                              (cl-tf:orientation result-pose))))
 
 
-(defun pose-infront-table(&optional &key (manipulation NIL) (rotation NIL) )
+(defun pose-infront-table(&optional &key (manipulation NIL) (rotation NIL))
   "Calculates the pose for navigation to go to infront of the table.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
   (pc::publish-challenge-step 2)
-  (let* ((shelf (cl-tf2:lookup-transform
+  (let* ((table (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
                  "environment/table_front_edge_center"
                  :timeout 5))
          (pose (cl-tf:make-pose
-                (cl-tf:translation shelf)
-                (cl-tf:rotation shelf)))
+                (cl-tf:translation table)
+                (cl-tf:rotation table)))
          
          (result-pose (cram-tf:translate-pose pose
                                               :x-offset (if manipulation
-                                                            *x-offset-manipulation*
-                                                            *x-offset-perception*)
+                                                            (+ *x-offset-manipulation*)
+                                                            (+ *x-offset-perception*))
                                               :y-offset 0.0
                                               :z-offset 0.0)))
     (if rotation
@@ -72,61 +71,15 @@ So that the robot can move his arm safely."
                                                 "map"
                                                 (roslisp::ros-time)
                                                 result-pose)
-                                               :z (/ pi 2))))
+                                               :z (case rotation
+                                                    (:RIGHT (/ pi 2))
+                                                    (:LEFT (/ pi -2))))))
+
+    (pc::publish-marker-pose result-pose)
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
                              (cl-tf:orientation result-pose))))
-
-
-(defun pose-infront-object (object-frame)
-  (let* ((pose (plc::pose-stamped->transform
-                (cl-tf2:lookup-transform
-                 (plc:get-tf-listener)
-                 "map"
-                 object-frame
-                 :timeout 5)))
-         
-         ;;obj relative to table
-         (table-T-obj (cl-tf2:lookup-transform
-                       (plc::get-tf-listener)
-                       "environment/table_front_edge_center"
-                       object-frame))
-
-         (x-diff-obj-table-edge (cl-tf:x (cl-tf:translation table-T-obj)))
-         (y-diff-obj-table-edge (cl-tf:y (cl-tf:translation table-T-obj)))
-        
-         (result-pose (cl-tf:pose->transform
-                       (cram-tf:translate-pose
-                        (cl-tf:transform->pose
-                         pose)
-                         :x-offset (+ *x-offset-manipulation*
-                                      x-diff-obj-table-edge)
-                         :y-offset (- *x-offset-manipulation*
-                                      y-diff-obj-table-edge)
-                         :z-offset 0.0)))
-
-         ;; map-T-obj = pose
-         ;; map-T-base
-         (map-T-base (plc::pose-stamped->transform
-                      (cl-tf2:lookup-transform
-                       (plc::get-tf-listener)
-                       "map"
-                       "base_footprint")))
-         (robot-rotation-map 
-                              (plc::calculate-look-towards-target
-                               (plc::transform->pose-stamped pose)
-                               (plc::transform->pose-stamped map-T-base)))) 
-
-    (cl-tf:make-pose-stamped "map"
-                             (roslisp:ros-time)
-                             (cl-tf:make-3d-vector
-                              (cl-tf:x (cl-tf:translation result-pose))
-                              (if (< (cl-tf:y (cl-tf:translation result-pose)) 0.0)
-                                  0.0
-                                  (cl-tf:y (cl-tf:translation result-pose)))
-                              0.0)
-                             (cl-tf:orientation robot-rotation-map))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; HEAD ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -181,10 +134,12 @@ So that the robot can move his arm safely."
         (setq result  0.65)
         (if (< result 0.35)
             (setq result 0.0)))
-    
+
+    (format t "GOAL POSE ~a" result)
     (format t "HEIGHT of shelf: ~a" shelf-height)
     result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;; NAVIGATION ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; adapted from  cram/cram_pr2/cram_pr2_fetch_deliver_plans/src/fetch-and-deliver-plans.lisp 
 (defun calculate-look-towards-target (look-pose-stamped robot-pose-stamped)
   "Given a `look-pose-stamped' and a `robot-pose-stamped',
@@ -206,22 +161,24 @@ the `look-pose-stamped'."
             (cl-transforms:x look-pose-in-robot-frame))))
     (cram-tf:rotate-pose robot-pose-stamped :z rotation-angle)))
 
-(defparameter *arm-offset* 0.6)
+(defparameter *arm-offset* 0.4)
 (defparameter *short-dist* 0.2)
-(defparameter *long-dist* 0.8)
+(defparameter *long-dist* 0.5)
 ;; use transform of tablecenter-T-obj
-(defun calculate-possible-poses-from-obj (object-frame)
+(defun calculate-possible-poses-from-obj (object-frame &optional &key
+                                                                   (facing-direction :OBJECT)
+                                                                   (relative-to :TABLE)
+                                                                   (manipulation NIL))
+"facing-direction: can be SHELF or TABLE or OBJECT. Determines what the robot will look at.
+ relative-to: determines relative to what the calculations are made.
+if you want to stand infront of the table and look at an object, this parameter has to be TABLE."
   ;;make list of poses
   (let* ((obj-transform (plc::pose-stamped->transform
                          (cl-tf2:lookup-transform
                           (plc::get-tf-listener)
-                          "environment/table_front_edge_center"
-                          object-frame)))
-         
-         (map-T-obj (plc::pose-stamped->transform
-                         (cl-tf2:lookup-transform
-                          (plc::get-tf-listener)
-                          "map"
+                          (case relative-to
+                            (:TABLE "environment/table_front_edge_center")
+                            (:SHELF "environment/shelf_center"))
                           object-frame)))
 
          (x (cl-tf:x (cl-tf:translation obj-transform)))
@@ -234,7 +191,9 @@ the `look-pose-stamped'."
                        (cl-tf2:lookup-transform
                         (plc::get-tf-listener)
                         "map"
-                        "environment/table_front_edge_center"))))
+                        (case relative-to
+                            (:TABLE "environment/table_front_edge_center")
+                            (:SHELF "environment/shelf_center"))))))
     
     (push (list (list (* 1.0 *short-dist*) 0.0 0.0) :x+) vector-list)
     (push (list (list (* -1.0 *short-dist*) 0.0 0.0) :x-) vector-list)
@@ -298,16 +257,19 @@ the `look-pose-stamped'."
     ;; add big offset
     ;; find out offset.
     ;; from table to obj: obj-transform
-    (let* ((large-offset-transform
+    (let* ((offset (if manipulation
+                       (+ *long-dist* *arm-offset*)
+                       *long-dist*))
+           (large-offset-transform
              (case (caaaar (cdr result-pose)) ;;TODO make this pretty
                (:x+ (progn (format t "x+ ")
-                           (list (* 1.0 (+ *long-dist* x)) 0.0 0.0)))
+                           (list (* 1.0 (+ offset x)) 0.0 0.0)))
                (:x- (progn (format t "x- ")
-                           (list (* -1.0 (+ *long-dist* x)) 0.0 0.0)))
+                           (list (* -1.0 (+ offset x)) 0.0 0.0)))
                (:y+ (progn (format t "y+ ")
-                           (list 0.0 (* 1.0 (+ *long-dist* x)) 0.0)))
+                           (list 0.0 (* 1.0 (+ offset x)) 0.0)))
                (:y- (progn (format t "y- ")
-                           (list 0.0 (* -1.0 (+ *long-dist* x)) 0.0))))))
+                           (list 0.0 (* -1.0 (+ offset x)) 0.0))))))
       
       (setq large-offset-transform (cl-tf:make-transform
                                     (cl-tf:make-3d-vector (first large-offset-transform)
@@ -323,11 +285,19 @@ the `look-pose-stamped'."
       )
      ;;calculate rotation for new pose, so that the robot will face the object.
     (setq rotation-pose
-          (plc::calculate-look-towards-target
-           (plc::transform->pose-stamped map-T-obj)
+          (let* ((direction (case facing-direction
+                              (:TABLE "environment/table_front_edge_center")
+                              (:SHELF "environment/shelf_center")
+                              (:OBJECT object-frame))))
+            (plc::calculate-look-towards-target (plc::transform->pose-stamped
+                                                 (plc::pose-stamped->transform
+                                                  (cl-tf2:lookup-transform
+                                                   (plc::get-tf-listener)
+                                                   "map"
+                                                   direction)))
 
-           (plc::transform-stamped->pose-stamped
-            result-pose)))
+             (plc::transform-stamped->pose-stamped
+            result-pose))))
     
 
     
