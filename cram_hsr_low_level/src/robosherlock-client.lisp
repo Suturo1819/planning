@@ -9,7 +9,8 @@
   (roslisp:ros-info (robosherlock-client)
                     "Creating robosherlock action client for server 'extract_object_infos'.")
   (setf *robosherlock-action-client*
-        (actionlib:make-action-client "extract_object_infos" "suturo_perception_msgs/ExtractObjectInfoAction"))
+        (actionlib:make-action-client "extract_object_infos"
+                                      "suturo_perception_msgs/ExtractObjectInfoAction"))
   (loop until (actionlib:wait-for-server *robosherlock-action-client*
                                          *robosherlock-action-timeout*))
   (roslisp:ros-info (robosherlock-client)

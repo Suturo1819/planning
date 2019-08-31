@@ -7,16 +7,6 @@
   (or *move-head-client*
       (init-move-head-action-client)))
 
-#+old
-(defun init-move-head-action-client ()
-  (cram-simple-actionlib-client:make-simple-action-client
-   'move-head-action
-   "hsrb/head_trajectory_controller/follow_joint_trajectory"
-   "control_msgs/FollowJointTrajectoryAction"
-   *move-head-action-timeout*
-   :initialize-now T)
-  (roslisp:ros-info (head-action) "head action client created"))
-
 (defun init-move-head-action-client ()
   (setf *move-head-client*
         (actionlib:make-action-client "hsrb/head_trajectory_controller/follow_joint_trajectory"
@@ -24,13 +14,6 @@
   (loop until (actionlib:wait-for-server *move-head-client*
                                          *move-head-action-timeout*))
 
-  
-  ;; (cram-simple-actionlib-client:make-simple-action-client
-  ;;  'move-head-action
-  ;;  "hsrb/head_trajectory_controller/follow_joint_trajectory"
-  ;;  "control_msgs/FollowJointTrajectoryAction"
-  ;;  *move-head-action-timeout*
-  ;;  :initialize-now T)
   (roslisp:ros-info (head-action) "head action client created"))
 
 ;; NOTE most of these params have to be (vector ...)s 
@@ -73,23 +56,7 @@
                        :result-timeout *move-head-action-timeout*)
      (roslisp:ros-info (move-head) "move head action finished")
     (ensure-move-head-goal-reached status pos)
-     (values result status))
-                        
-  ;; (multiple-value-bind (result status)
-  ;;     (cram-simple-actionlib-client::call-simple-action-client
-  ;;      'move-head-action
-  ;;      :action-goal (make-move-head-action-goal
-  ;;                    :pos pos
-  ;;                    :vel (vector 0.0 0.0)
-  ;;                    :acc (vector 0.1 0.1) ;; acceleration
-  ;;                    :eff (vector 0.1) ;; effort
-  ;;                    :time 3.0) ;; time
-  ;;      :action-timeout *move-head-action-timeout*)
-  ;;   (roslisp:ros-info (move-head) "move head action finished")
-  ;;   (ensure-move-head-goal-reached status pos)
-  ;;   (values result status)
-  ;;   )
-  )
+     (values result status)))
 
 ;;NOTE 0 0 is the deafault lookig straight position.
 (defun test-move-head ()

@@ -2,45 +2,47 @@
 
 (defun init-planning ()
   "Initialize all the interfaces from planning to other groups."
-  ;;TODO CHECK AUF RUNNING
-  ;;
-    (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil);;)
+  (print "init ros node..")
+  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil);;)
   ;; (cram-tf::init-tf)
   
-  ;;Init all the action servers
-;;  (cpl:with-failure-handling
+  ;;Init all the action clients
+  (roslisp:ros-info (init-clients) "init tf listener")
   (plc::get-tf-listener)
+  (roslisp:ros-info (init-clients) "init text to speech client")
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
+  (roslisp:ros-info (init-clients) "init navigation client")
   (chll:init-nav-client)
+  (roslisp:ros-info (init-clients) "init move head action  client")
   (chll::init-move-head-action-client)
+  (roslisp:ros-info (init-clients) "init giskard joints action client")
   (chll::init-giskard-joints-action-client)
+  (roslisp:ros-info (init-clients) "init robosherlock action client")
   (chll:init-robosherlock-action-client)
+  (roslisp:ros-info (init-clients) "init vizbox publisher")
   (pc::viz-box-init)
-  (pc::init-marker-publisher)
-  (chll::init-robosherlock-door-action-client)
+  (roslisp:ros-info (init-clients) "init visualization marker publisher")
+  (chll::init-marker-publisher)
 ;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
-  
-
   ;; (chll:make-giskard-poses-action-client)
   ;; (pc:init-perception-subscriber)
-  ;; TODO knowledge interface
-  (roslisp:ros-info (init-planning-common) "All action clients are set up.")) ;; for navigation
+  (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
 (defun init-integration()
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
-  (print "init speech client")
+  (roslisp:ros-info (init-clients) "init speech client")
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
-  (print "init navigation client")
+  (roslisp:ros-info (init-clients) "init navigation client")
   (chll:init-nav-client)
-  (print "init moce-head client")
+  (roslisp:ros-info (init-clients) "init moce-head client")
   (chll::init-move-head-action-client)
-  (print "init giskard-joints")
+  (roslisp:ros-info (init-clients) "init giskard-joints")
   (chll::init-giskard-joints-action-client)
-  (print "init move-torso client")
+  (roslisp:ros-info (init-clients) "init move-torso client")
   (chll::init-move-torso-action-client)
-  (print "init tf-listener")
+  (roslisp:ros-info (init-clients) "init tf-listener")
   (plc::get-tf-listener)
-  (print "init viz-box")
+  (roslisp:ros-info (init-clients) "init viz-box")
   (pc::viz-box-init))
 
 
@@ -52,4 +54,4 @@
   (print "init viz-box")
   (pc::viz-box-init)
   (print "init marker publisher")
-  (planning-communication::init-marker-publisher))
+  (chll::init-marker-publisher))
