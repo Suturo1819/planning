@@ -47,6 +47,7 @@
 
 
 (defun init-local()
+  "Initialize only local nodes for working without the real robot."
   (print "create ros node")
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
   (print "init tf-listener")
