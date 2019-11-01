@@ -9,8 +9,9 @@
     (setf *tf-listener* (make-instance 'cl-tf2:buffer-client))
     (handler-case
      (cl-tf2:lookup-transform *tf-listener* "map" "odom" :timeout 3)
-     (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
-      () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 3 seconds to get odom in map."))))
+      (CL-TRANSFORMS-STAMPED:TRANSFORM-STAMPED-ERROR () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))
+      (CL-TRANSFORMS-STAMPED:TIMEOUT-ERROR
+       () (roslisp:ros-warn (get-tf-listener) "tf-listener takes longer than 20 seconds to get odom in map."))))
   *tf-listener*)
 
 (defun kill-tf-listener ()
@@ -84,8 +85,127 @@
 (defun map-T-odom (pose)
   "transfrom the given transform/pose from being relative to map to being
 relative to odom"
-  (cl-tf:transform->pose 
-        (cl-tf:transform*
-         (cl-tf:transform-inv
-          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         pose)))
+  (let* ((lookup-pose (cl-tf2::lookup-transform (plc::get-tf-listener) "map" "odom"))
+         (make-pose (cl-tf2:make-transform
+                     (cl-tf2:translation lookup-pose)
+                     (cl-tf2:rotation lookup-pose))))
+    
+    (cl-tf2:transform*
+     (cl-tf2:transform-inv
+      make-pose)
+     (cl-tf2:pose->transform pose))))
+
+(defun pose-in-shelf (shelf)
+  (cl-tf2:lookup-transform (plc:get-tf-listener)
+                           "map" (concatenate
+                                  'String
+                                  "environment/shelf_floor_"
+                                  shelf "_piece") :timeout 5))
+
+
+
+(defun normalize-euler (rotation)
+  "normalizes the euler-angle of the Z rotation of a given transform"
+  (let* ((euler-angle (cl-tf:quaternion->euler rotation))
+         (z-rot (car (last euler-angle))))
+    
+    (unless (< (- (/ pi 2)) z-rot (/ pi 2))
+      (setf z-rot (- z-rot (* (signum z-rot) pi))))
+    z-rot))
+
+(defun transform->grasp-side (tf-frame)
+  "Takes a transform from an object in base_footprint and returns :LEFT or :RIGHT, recommending for grasping from the left or the right."
+
+  (let* ((transform (cl-tf:lookup-transform (get-tf-listener)
+                                            "environment/table_front_edge_center"
+                                            tf-frame :timeout 5))
+         (euler-angle (cl-tf:quaternion->euler (cl-tf:rotation transform)))
+         (z-rot (nth (1+ (position :AZ euler-angle)) euler-angle))
+         (dimensions (chll:prolog-object-dimensions tf-frame)))
+    (unless (< (- (/ pi 2)) z-rot (/ pi 2))
+      (setf z-rot (- z-rot (* (signum z-rot) pi))))
+    (if (> (car (last dimensions)) 0.15)
+        "FRONT"
+        (if (and (< (abs z-rot) (/ pi 6))
+                 (< (car dimensions) 0.13))
+            "FRONT"
+            "TOP"))))
+
+(defun pose-stamped->transform (pose-stamped)
+  (cl-tf2:make-transform
+   (cl-tf2:translation pose-stamped)
+   (cl-tf2:rotation pose-stamped)))
+
+(defun transform-stamped->pose-stamped(transform)
+  (cl-tf:make-pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf2:translation transform)
+   (cl-tf2:rotation transform)))
+
+(defun transform->pose-stamped (transform)
+  (cl-tf:make-pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf:translation transform)
+   (cl-tf:rotation transform)))
+
+;;;;;;;;;;;;;;; TESTING ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun test-rotation()
+  (let* ((object (plc::transform-stamped->pose-stamped
+                  (cl-tf2:lookup-transform
+                   (plc:get-tf-listener)
+                   "map"
+                   "environment/shelf_origin"
+                   :timeout 5)))
+         (base (plc::transform-stamped->pose-stamped
+                (cl-tf2:lookup-transform
+                 (plc:get-tf-listener)
+                 "map"
+                 "base_footprint"
+                 :timeout 5))))
+    (plc::calculate-look-towards-target object base)))
+
+(defun test-pose()
+  (plc::pose-stamped->transform
+                  (cl-tf2:lookup-transform
+                   (plc:get-tf-listener)
+                   "environment/table_front_edge_center"
+                   "Rewecremefraichecuplr_KHLMVZBT"
+                   :timeout 5)))
+
+(defun test-obj ()
+  (plc::pose-stamped->transform
+                (cl-tf2:lookup-transform
+                 (plc:get-tf-listener)
+                 "map"
+                 "Other_NZDCRPEI"
+                 :timeout 5)))
+
+(defun vector->pose-stamped (vector &optional quaternion)
+  (cl-tf:make-pose-stamped
+   "map"
+   (roslisp:ros-time)
+   (cl-tf:make-3d-vector (first vector)
+                         (second vector)
+                         (third vector))
+   (if quaternion
+       quaternion
+   (cl-tf:make-identity-rotation))))
+
+(defun spawn-4-markers (poses-stamped &optional (id 0))
+  (let* ((counter id))
+    (mapcar (lambda (pose)
+              (planning-communication::publish-marker-pose
+               pose
+               :parent "map"
+               :id (setq counter
+                         (+ counter 1))))
+            poses-stamped))) 
+             
+(defun vector->transform (vector quaternion)
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector (first vector)
+                         (second vector)
+                         (third vector))
+   quaternion))

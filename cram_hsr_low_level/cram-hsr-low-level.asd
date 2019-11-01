@@ -16,7 +16,8 @@
                cram-simple-actionlib-client
                trajectory_msgs-msg
                controller_manager_msgs-msg
-               sensor_msgs-msg)
+               sensor_msgs-msg
+               suturo_perception_msgs-msg)
   
   :components
   ((:module "src"
@@ -24,10 +25,11 @@
             ((:file "package")
              (:file "navigation-client" :depends-on ("package"))
              (:file "giskard-poses" :depends-on ("package"))
-             (:file "giskard-joints" :depends-on ("package"))
              (:file "test-giskard" :depends-on ("package"))
              (:file "json-prolog-client" :depends-on ("package"))
+             (:file "giskard-joints" :depends-on ("package"))
              (:file "robosherlock-client" :depends-on ("package"))
+             (:file "marker-publisher" :depends-on ("package"))
              (:file "head-client" :depends-on ("package"))
              (:file "torso-client" :depends-on ("package"))
              (:file "joint-state-client" :depends-on ("package"))))))

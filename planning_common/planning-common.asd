@@ -29,5 +29,6 @@
                                             "designators"))
      (:file "plans" :depends-on ("package"))
      (:file "dynamic-poses" :depends-on ("package"))
-     (:file "utils" :depends-on ("package"))))))
+     (:file "utils" :depends-on ("package"))
+     (:file "inspection" :depends-on ("package"))))))
 

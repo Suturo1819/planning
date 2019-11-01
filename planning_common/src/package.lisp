@@ -8,4 +8,5 @@
    #:map-T-odom-pose
    #:make-pose-stamped
    #:frame-closest-to-robot
+   #:transform->grasp-side
    ))

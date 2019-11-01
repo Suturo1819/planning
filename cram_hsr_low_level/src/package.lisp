@@ -7,7 +7,8 @@
    #:get-nav-action-client
    #:make-nav-action-goal
    #:call-nav-action
-
+   #:smash-into-appartment
+   
    ;; move client 
    #:make-giskard-joints-action-client
    #:make-giskard-poses-action-client
@@ -15,6 +16,8 @@
    ;; perception client
    #:init-robosherlock-action-client ;; only for init function in main
    #:call-robosherlock-pipeline
+   #:init-robosherlock-door-action-client
+   #:call-robosherlock-door-pipeline
 
    ;; prolog client
    #:with-safe-prolog
@@ -22,8 +25,13 @@
    #:prolog-table-objects
    #:prolog-object-goal
    #:prolog-all-objects-in-shelf
+   #:prolog-object-dimensions
+   #:prolog-object-in-gripper
+   #:prolog-object-goal-pose
 
    ;; joint state client
+   :*start-signal-fluent*
+   #:init-gripper-tilt-fluent
    #:get-current-joint-state
 
    ;; torso client

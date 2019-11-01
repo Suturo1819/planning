@@ -3,9 +3,9 @@
 ;; TODO still in progress
 (cram-process-modules:def-process-module hsr-navigation (motion-designator)
   ;;;;;;;;;;;;;;;;;;;; BASE ;;;;;;;;;;;;;;;;;;;;;;;;
-  (roslisp:ros-info (hsr-navigation-process-modules)
-                    "hsr-navigation called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-navigation-process-modules)
+  ;;                   "hsr-navigation called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command target) (desig:reference motion-designator)
     (ecase command
       ;;TODO differentiate types
@@ -16,9 +16,9 @@
 
   ;;;;;;;;;;;;;;;;;;;; BODY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-motion (motion-designator)
-  (roslisp:ros-info (hsr-motion-process-modules)
-                    "hsr-motion called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-motion-process-modules)
+  ;;                   "hsr-motion called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command pos) (desig:reference motion-designator)
     (if (typep pos 'sequence)
         (chll::call-move-head-action pos)
@@ -26,18 +26,35 @@
           (:front
            (chll::call-move-head-action (vector 0.0 0.0)))
           (:perceive
+           (chll::call-move-head-action (vector 0.0 -0.2)))
+          (:perceive-down
            (chll::call-move-head-action (vector 0.0 -0.4)))
           (:safe
-           (chll::call-move-head-action (vector 0.0 0.1)))))))
+           (chll::call-move-head-action (vector 0.0 0.1)))
+          (:left
+           (chll::call-move-head-action (vector 1.5 0.1)))
+          (:left-down
+           (chll::call-move-head-action (vector 1.5 -0.3)))
+          (:left-down-2
+           (chll::call-move-head-action (vector 1.5 -0.4)))
+          (:left-down-3
+           (chll::call-move-head-action (vector 1.5 -0.7)))
+          (:right
+           (chll::call-move-head-action (vector -1.5 0.1)))
+          (:right-down
+           (chll::call-move-head-action (vector -1.5 -0.3)))
+          (:right-down-2
+           (chll::call-move-head-action (vector -1.5 -0.4)))
+          (:right-down-3
+           (chll::call-move-head-action (vector -1.5 -0.7)))))))
 
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-torso (motion-designator)
-  (roslisp:ros-info (hsr-torso-process-modules)
-                    "hsr-torso called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-torso-process-modules)
+  ;;                   "hsr-torso called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command ?height) (desig:reference motion-designator)
-    (chll::call-move-torso-action (vector ?height -0.1 1.5 -1.5 0.0)
-                                  (vector 0.0 0.0 0.0 0.0 0.0))))
+    (chll::call-giskard-joints-move-action (vector ?height) (vector 0.0))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-say (motion-designator)
@@ -50,14 +67,24 @@
       (say
        (pc::call-text-to-speech-action text)))))
 
+  ;;;;;;;;;;;;;;;;;;;; PERCEIVE ;;;;;;;;;;;;;;;;;;;;;;;;
+(cram-process-modules:def-process-module hsr-perception (motion-designator)
+  ;; (roslisp:ros-info (hsr-perception-process-modules)
+  ;;                   "hsr-say-action called with motion designator `~a'."
+  ;;                   motion-designator)
+  (destructuring-bind (command list) (desig:reference motion-designator)
+    ;(format t "command: ~a  text: ~a"command text)
+    (ecase command
+      (perceive
+       (chll::call-robosherlock-pipeline list)))))
+
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
-  (roslisp:ros-info (hsr-arm-motion-process-modules)
-                    "hsr-arm-motion called with motion designator `~a'."
-                    motion-designator)
+  ;; (roslisp:ros-info (hsr-arm-motion-process-modules)
+  ;;                   "hsr-arm-motion called with motion designator `~a'."
+  ;;                   motion-designator)
   (destructuring-bind (command
                        ?pose
-                      ;; ?pose-odom
                        ?weight
                        ?width
                        ?height
@@ -76,9 +103,49 @@
         ?depth
         ?modus))
       
-      (place
-       (print "place"))
-      )))
+      (placing
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        (plc::map-T-odom ?pose) ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "place" ;;obj pose /text
+        ?depth
+        ?modus))
+       
+       (perceiving
+        (chll::call-giskard-joints-grasping-action
+         ?pose
+         ?pose ;;?pose-odom
+         ?weight
+         ?width
+         ?height
+         "perceive" ;;obj pose /text
+         ?depth
+         ?modus))
+
+      (perceiving-high
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        ?pose ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "perceive_up" ;;obj pose /text
+        ?depth
+        ?modus))
+
+      (perceiving-side
+       (chll::call-giskard-joints-grasping-action
+        ?pose
+        ?pose ;;?pose-odom
+        ?weight
+        ?width
+        ?height
+        "perceive_side" ;;obj pose /text
+        ?depth
+        ?modus)))))
 
 
   ;;;;;;;;;;;;;;;;;;;; TESTS FOR DEBUGGING ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -133,7 +200,8 @@
         plc::hsr-motion
         plc::hsr-say
         plc::hsr-arm-motion
-        plc::hsr-torso)
+        plc::hsr-torso
+        plc::hsr-perception)
      (cpl-impl::named-top-level (:name :top-level)
        ,@body)))
 

@@ -7,7 +7,7 @@
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="corinna@todo.todo">corinna</maintainer>
+  <maintainer email="hawkin@uni-bremen.de">Alina Hawkin</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -56,11 +56,13 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>tmc_msgs</build_depend>
   <build_depend>roslisp</build_depend>
+  
   <build_export_depend>actionlib</build_export_depend>
   <build_export_depend>cl_tf</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>tmc_msgs</build_export_depend>
   <build_export_depend>roslisp</build_export_depend>
+  
   <exec_depend>actionlib</exec_depend>
   <exec_depend>cl_tf</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>

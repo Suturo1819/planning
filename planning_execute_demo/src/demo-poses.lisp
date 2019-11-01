@@ -39,16 +39,18 @@
 ;; test new pose
 (defun grasp-test ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
-   (grasp-obj-from-table)
-       (cl-tf:transform->pose 
-        (cl-tf:transform*
-         (cl-tf:transform-inv
-          (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-table)))
-         0.4    ;; 0.4    ;;  0.4
-         0.08    ;;  0.085  ;; 0.10   ;;  0.08
-         0.26   ;; 0.085  ;; 0.21   ;;  0.26
-       "grip"))
+   (top-grasp-table)
+   (cl-tf:transform->pose 
+    (cl-tf:transform*
+     (cl-tf:transform-inv
+      (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
+     (top-grasp-table)))
+   0.4    ;; 0.4    ;;  0.4
+   0.08    ;;  0.085  ;; 0.10   ;;  0.08
+   0.26   ;; 0.085  ;; 0.21   ;;  0.26
+   "grip"
+   0.2
+   "TOP"))
 
 
 (defun place-test ()
@@ -62,7 +64,9 @@
    0.4
    0.07
    0.26
-   "place"))
+   "place"
+   0.2
+   "FRONT"))
 
 (defun grasp-test-top ()
   (cram-hsr-low-level::call-giskard-joints-grasping-action
@@ -71,15 +75,13 @@
         (cl-tf:transform*
          (cl-tf:transform-inv
           (cram-tf::lookup-transform cram-tf::*transformer* "map" "odom"))
-         (grasp-obj-from-floor-2)))
+         (top-grasp-table)))
          0.4    ;; 0.4    ;;  0.4
          0.055    ;;  0.085  ;; 0.10   ;;  0.08
          0.195   ;; 0.085  ;; 0.21   ;;  0.26
          "grip"
          0.2
-         'true
-         'false
-         'false))
+         "TOP"))
 
 (defun place-obj-on-table ()
   (cl-tf:make-transform
@@ -132,6 +134,13 @@
                          -0.608862876892
                          1.29)
    (cl-tf:make-identity-rotation)))
+
+(defun top-grasp-table ()
+  (cl-tf:make-transform
+   (cl-tf:make-3d-vector   2.03759264946 0.603420734406 0.5)
+   ;;(cl-tf:make-quaternion 0.6532814824381883 0.27059805007309845 0.27059805007309845 0.6532814824381883))
+    (cl-tf:make-identity-rotation))
+   )
 
 (defun top-grasp-floor ()
   (cl-tf:make-transform

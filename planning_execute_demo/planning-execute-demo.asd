@@ -13,6 +13,5 @@
   ((:module "src"
     :components
     ((:file "package")
-     (:file "init" :depends-on ("package"))
      (:file "demo-poses" :depends-on ("package"))
      (:file "high-level" :depends-on ("package"))))))

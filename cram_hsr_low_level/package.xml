@@ -7,7 +7,7 @@
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="corinna@todo.todo">corinna</maintainer>
+  <maintainer email="hawkin@uni-bremen.de">Alina Hawkin</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -60,6 +60,7 @@
   <build_depend>roslisp</build_depend>
   <build_depend>move</build_depend>
   <build_depend>turtle_actionlib</build_depend>
+  
   <run_depend>actionlib</run_depend>
   <run_depend>cl_tf</run_depend>
   <run_depend>geometry_msgs</run_depend>

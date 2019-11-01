@@ -14,5 +14,4 @@
     :components
     ((:file "package")
      (:file "text-to-speech" :depends-on ("package"))
-     (:file "perception-client" :depends-on ("package"))
-     ))))
+     (:file "vizbox-commands" :depends-on ("package"))))))
