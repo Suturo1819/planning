@@ -4,5 +4,6 @@
   (:export
    ;; main
    #:main
+   #:demo-v4r-small
    
    ))

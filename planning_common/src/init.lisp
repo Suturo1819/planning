@@ -15,17 +15,8 @@
   (chll:init-nav-client)
   (roslisp:ros-info (init-clients) "init move head action  client")
   (chll::init-move-head-action-client)
-  (roslisp:ros-info (init-clients) "init giskard joints action client")
-  (chll::init-giskard-joints-action-client)
-  (roslisp:ros-info (init-clients) "init robosherlock action client")
-  (chll:init-robosherlock-action-client)
-  (roslisp:ros-info (init-clients) "init vizbox publisher")
-  (pc::viz-box-init)
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
   (chll::init-marker-publisher)
-;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
-  ;; (chll:make-giskard-poses-action-client)
-  ;; (pc:init-perception-subscriber)
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
 (defun init-integration()

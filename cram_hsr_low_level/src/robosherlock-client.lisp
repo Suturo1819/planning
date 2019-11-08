@@ -31,7 +31,7 @@
                        (roslisp:make-message
                         "suturo_perception_msgs/ExtractObjectInfoGoal"
                         visualize visualisation-value
-                        regions regions-value)
+                        regions )
                        :timeout *robosherlock-action-timeout*
                        :result-timeout *robosherlock-action-timeout*))
 
