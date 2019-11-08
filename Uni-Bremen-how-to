@@ -1,0 +1,38 @@
+
+Before Cram:
+
+
+$ cd ~/cram_ws
+$ source devel/setup.bash
+
+Navigation (cram_ws/src/hsrb_navigation https://github.com/Suturo1819/hsr_navigation)
+
+$ roslaunch hsr_navigation roslaunch hsr_navigation hsr_map_and_snap_map.launch
+
+localize the robot via RVIZ -> config file: uni-bremen-cram.rviz (important for the tool-properties)
+
+
+Robosherlock (robosherlock_ws/src/... https://github.com/Vanessa-rin/rs_v4r https://github.com/Vanessa-rin/rs_v4r_ActionServer)
+
+$ rosrun hsr_perception perception_server
+
+
+Cram:
+
+
+$ roslisp_repl
+CL-USER> <,>
+CL-USER> r-l-s
+CL-USER> <enter>
+CL-USER> planning_execute_demo
+CL-USER> <enter>
+CL-USER> <enter>
+
+~wait
+NOTE: If you have not initlized yet first we need: (plc::init-planning) + <enter>
+
+CL-USER> (demo:v4r <tab>)            OR (planning-execute-demo:demo-v4r-small)
+
+CL-USER> <enter> NOTE: the robot will drive now CARE you can stop by CONTROL + C 
+
+
