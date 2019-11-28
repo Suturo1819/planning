@@ -76,9 +76,13 @@ So that the robot can move his arm safely."
                                                     (:LEFT (/ pi -2))))))
 
     ;;(pc::publish-marker-pose result-pose)
+    (format t "result pose table: ~a" result-pose)
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
-                             (cl-tf:origin result-pose)
+                             (cl-tf:make-3d-vector
+                              (cl-tf:x (cl-tf:origin result-pose))
+                              (cl-tf:y (cl-tf:origin result-pose))
+                              0.0)
                              (cl-tf:orientation result-pose))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; HEAD ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -280,9 +284,7 @@ if you want to stand infront of the table and look at an object, this parameter 
       (setq result-pose (cl-tf:transform*
                           (car result-pose)
                          ;;(cl-tf:transform-inv  map-T-obj)
-                         (cl-tf:transform-inv large-offset-transform)))
-
-      )
+                         (cl-tf:transform-inv large-offset-transform))))
      ;;calculate rotation for new pose, so that the robot will face the object.
     (setq rotation-pose
           (let* ((direction (case facing-direction
@@ -310,7 +312,7 @@ if you want to stand infront of the table and look at an object, this parameter 
                                  (cl-tf:y (cl-tf:translation result-pose))
                                  0.0)
            (cl-tf:orientation rotation-pose)))
-
+    (format t "result pose: ~a" result-pose)
 
     ;;(planning-communication::publish-marker-pose result-pose :id 100)
     ;;(planning-communication::publish-marker-pose rotation-pose :id 6)

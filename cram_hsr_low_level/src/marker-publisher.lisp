@@ -15,6 +15,7 @@
 
 
 (defun publish-marker-pose (pose &key (parent "map") id (g 0.0))
+  "gets a cl-tf:pose and places a visualization marker at the given pose"
   (let ((point (cl-transforms:origin pose))
         (rot (cl-transforms:orientation pose))
         (current-index 0))
