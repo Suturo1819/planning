@@ -15,6 +15,9 @@
     ;;(plc::make-pose-stamped 4.305 0.218 3.0)
 
     (plc::perceive-shelf)
+    ;; this is necessary for navigation TODO remove if possible
+    
+    (plc::turn :LEFT)
     (plc::perceive-table)
     
     ;; GRASPING OBJECT

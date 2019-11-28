@@ -35,11 +35,13 @@
                                                         :facing-direction :OBJECT
                                                         :relative-to :TABLE
                                                         :manipulation manipulation))))
-                    
+
+           
            (move (desig:a motion
                           (:type :going)
                           (:target (desig:a location
                                             (:pose ?pose))))))
+      (format t "~% +++ POSE NAV+++ : ~a ~%" ?pose)
       (cpl:seq
         (plc::say ?to-say)
         ;; (cram-executive:perform rotate) ;;TODO debug. calculate direction to face
@@ -50,17 +52,18 @@
   "move head, torso and perceive"
   ;;(pc::publish-challenge-step 3)
   ;;(plc::perceive-side)
-  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T)
+  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T) 
+  (plc::perceive-side)
   
-  (cpl:par
-    (plc::say "I am going to perceive the table now..")
-    (plc::move-torso (plc::table-head-difference))    
-    (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL))
+   (plc::move-torso (plc::table-head-difference))    
+   (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
 
+  (plc::move-head :right-down-2)
+  (plc::say "I am going to perceive the table now..")
   ;; TODO this is a hack
  ;;(plc::turn :RIGHT)
     
-  (plc::move-head :right-down-2)
+  
   (plc::perceive (vector "robocup_table"))
 ;;  (plc::go-to :to :TABLE :facing :SHELF :manipulation T)
   )
@@ -104,7 +107,7 @@
   ;;   (plc::move-head :left-down-3))
   ;; (plc::perceive (vector "robocup_shelf_1"))
   ;; (plc::perceive (vector "robocup_shelf_0"))
-  )
+  (plc::base-pose))
 
 
 

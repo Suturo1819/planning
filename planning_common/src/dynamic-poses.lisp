@@ -76,7 +76,6 @@ So that the robot can move his arm safely."
                                                     (:LEFT (/ pi -2))))))
 
     ;;(pc::publish-marker-pose result-pose)
-    (format t "result pose table: ~a" result-pose)
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:make-3d-vector

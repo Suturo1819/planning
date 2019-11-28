@@ -63,7 +63,7 @@ euler-z gives the rotation around the z axis."
   
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "nav-action-lisp-client"))
- ;; (format t "Pose: ~a " pose-stamped)
+  (format t "Pose: ~a " pose-stamped)
   (multiple-value-bind (result status)
       (let ((actionlib:*action-server-timeout* 20.0)
             (the-goal (cl-tf:to-msg

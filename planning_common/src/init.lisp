@@ -24,7 +24,7 @@
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
   (chll::init-marker-publisher)
   ;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
-   (chll:make-giskard-poses-action-client)
+   ;;(chll:make-giskard-poses-action-client)
    ;;(pc:init-perception-subscriber)
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
