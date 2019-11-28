@@ -18,7 +18,7 @@
     (plc::perceive-table)
     
     ;; GRASPING OBJECT
-    ;; TODO LOOP this for all available objects on the table
+    ;; LOOP this for all available objects on the table
     (loop while (not (eq (chll::prolog-table-objects) 1)) do
       ;; NOTE goto is now included in the plan
       (plc::grasp-object)

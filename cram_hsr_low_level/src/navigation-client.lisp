@@ -46,7 +46,7 @@ euler-z gives the rotation around the z axis."
              
             (the-goal (cl-tf:to-msg pose-stamped)))
         
-        (planning-communication::publish-marker-pose pose-stamped :g 1.0)
+        (chll::publish-marker-pose pose-stamped :g 1.0)
 
         (actionlib:call-goal 
          (get-nav-action-client)
@@ -72,7 +72,7 @@ euler-z gives the rotation around the z axis."
 
 
         
-       (planning-communication::publish-marker-pose pose-stamped :g 1.0)
+       (chll::publish-marker-pose pose-stamped :g 1.0)
 
         (actionlib:call-goal
          (get-nav-action-client)

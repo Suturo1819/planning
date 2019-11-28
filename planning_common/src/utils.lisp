@@ -196,7 +196,7 @@ relative to odom"
 (defun spawn-4-markers (poses-stamped &optional (id 0))
   (let* ((counter id))
     (mapcar (lambda (pose)
-              (planning-communication::publish-marker-pose
+              (chll::publish-marker-pose
                pose
                :parent "map"
                :id (setq counter

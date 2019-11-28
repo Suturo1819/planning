@@ -80,12 +80,13 @@
 
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
-  (pc::publish-challenge-step 1)
+  ;;(pc::publish-challenge-step 1)
   (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
   ;;high
   (cpl:par 
     (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation NIL)
     (plc::perceive-side))
+  ;;high
   ;;(cpl:par 
   ;;   (plc::move-torso (plc::shelf-head-difference "3"))
   ;;   (plc::move-head :left-down))
@@ -97,12 +98,13 @@
      (plc::move-head :left-down-2))
   (plc::perceive (vector "robocup_shelf_2"))
 
-   ;;low
-  (cpl:par
-    (plc::move-torso (plc::shelf-head-difference "0"))
-    (plc::move-head :left-down-3))
-  (plc::perceive (vector "robocup_shelf_1"))
-  (plc::perceive (vector "robocup_shelf_0")))
+  ;;low
+  ;; (cpl:par
+  ;;   (plc::move-torso (plc::shelf-head-difference "0"))
+  ;;   (plc::move-head :left-down-3))
+  ;; (plc::perceive (vector "robocup_shelf_1"))
+  ;; (plc::perceive (vector "robocup_shelf_0"))
+  )
 
 
 
@@ -110,7 +112,7 @@
 ;; -----
 (cpl:def-cram-function grasp-object (&optional (?modus NIL))
   "grasp object"
-  (pc::publish-challenge-step 4)
+  ;;(pc::publish-challenge-step 4)
     (let* ((all-table-objects (chll:prolog-table-objects))
            (closest-object (plc:frame-closest-to-robot all-table-objects))
            (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
@@ -136,7 +138,7 @@
                            (:depth ?depth)
                            (:modus ?modus))))
       ;;vars
-      (pc::publish-marker-pose ?pose)
+      ;;(pc::publish-marker-pose ?pose)
       (setq *height-obj-in-gripper* ?height)
       (format t "Object Class: ~a " object-class)
       (format t "MODUS: ~a " ?modus)
@@ -148,7 +150,7 @@
       (format t "grasp mode: ~a" ?modus)
       ;; movement
       (setq *object-dimensions* dimensions)
-      (planning-communication::publish-marker-pose ?pose)
+      ;;(planning-communication::publish-marker-pose ?pose)
       (cpl:par
         (plc::move-head :safe)
         (plc::say (concatenate 'String "I am going to grasp the " object-class " now."))
@@ -162,7 +164,7 @@
 ;; FRONT TOP
 (cpl:def-cram-function place-object (?modus)
   "place object"
-  (pc::publish-challenge-step 6)
+  ;;(pc::publish-challenge-step 6)
   (cpl:seq
     (let* ((?context NIL)
            (pose-from-prolog (multiple-value-bind (pose context)
@@ -203,7 +205,7 @@
                           (setq ?height (+ (second *object-dimensions*)))
                           (setq ?depth (third *object-dimensions*))))
       
-      (pc::publish-marker-pose ?pose)
+      ;;(pc::publish-marker-pose ?pose)
       (plc::say ?context)
       (cram-executive:perform place))))
 
@@ -222,7 +224,7 @@ or one of the following: :perceive :safe :front"
 
 (cpl:def-cram-function say (?text)
   "speaks the given text"
-  (pc::publish-robot-text ?text)
+  ;;(pc::publish-robot-text ?text)
     (let* ((say-text (desig:a motion
                              (:type :say)
                              (:text ?text))))     
@@ -249,8 +251,8 @@ or one of the following: :perceive :safe :front"
     (plc::say "Done perceiving.")))
     
 (cpl:def-cram-function base-pose ()
-  (pc::publish-challenge-step 0)
-  (pc::publish-operator-text "Toya, please clean up the table")
+  ;;(pc::publish-challenge-step 0)
+  ;;(pc::publish-operator-text "Toya, please clean up the table")
   (let* ((?pose (cl-tf:make-identity-transform))
          (?nil NIL)
          (?zero 0.0)

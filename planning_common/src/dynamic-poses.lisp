@@ -15,7 +15,7 @@
   "Calculates the pose for navigation to go to infront of the shelf.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
-  (pc::publish-challenge-step 5)
+  ;;(pc::publish-challenge-step 5)
   (let* ((shelf (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
@@ -50,7 +50,7 @@ So that the robot can move his arm safely."
   "Calculates the pose for navigation to go to infront of the table.
 If the manipulation parameter is set, the distance offset is higher
 So that the robot can move his arm safely."
-  (pc::publish-challenge-step 2)
+  ;;(pc::publish-challenge-step 2)
   (let* ((table (cl-tf2:lookup-transform
                  (plc:get-tf-listener)
                  "map"
@@ -75,7 +75,7 @@ So that the robot can move his arm safely."
                                                     (:RIGHT (/ pi 2))
                                                     (:LEFT (/ pi -2))))))
 
-    (pc::publish-marker-pose result-pose)
+    ;;(pc::publish-marker-pose result-pose)
     (cl-tf:make-pose-stamped "map"
                              (roslisp:ros-time)
                              (cl-tf:origin result-pose)
@@ -251,7 +251,7 @@ if you want to stand infront of the table and look at an object, this parameter 
 
 
     
-    (plc::spawn-4-markers poses-list)
+    ;;(plc::spawn-4-markers poses-list)
     ;; works till here. now elongate result-pose
     
     ;; add big offset
@@ -312,7 +312,7 @@ if you want to stand infront of the table and look at an object, this parameter 
            (cl-tf:orientation rotation-pose)))
 
 
-    (planning-communication::publish-marker-pose result-pose :id 100)
+    ;;(planning-communication::publish-marker-pose result-pose :id 100)
     ;;(planning-communication::publish-marker-pose rotation-pose :id 6)
     result-pose
     ))

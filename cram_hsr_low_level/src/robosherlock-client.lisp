@@ -68,7 +68,7 @@
 
 (defun call-robosherlock-door-pipeline ()
   "loops till door open"
-  (pc:publish-operator-text "Toya is the door open?")
+ ;; (pc:publish-operator-text "Toya is the door open?")
   (roslisp:ros-info (robosherlock-client) "Calling pipeline for door.")
   ;; actual call
   (roslisp:with-fields (door_open)
@@ -77,7 +77,7 @@
                                (chll::get-robosherlock-door-client))
                              :timeout *robosherlock-action-timeout*)
     (if door_open
-        (pc:publish-robot-text "The door is open Operator we can continute.")
+        ;;(pc:publish-robot-text "The door is open Operator we can continute.")
         (progn
           (sleep 1)
           (call-robosherlock-door-pipeline)))

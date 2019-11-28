@@ -4,7 +4,7 @@
   "Initialize all the interfaces from planning to other groups."
   (print "init ros node..")
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil);;)
-  ;; (cram-tf::init-tf)
+  (cram-tf::init-tf)
   
   ;;Init all the action clients
   (roslisp:ros-info (init-clients) "init tf listener")
@@ -19,13 +19,13 @@
   (chll::init-giskard-joints-action-client)
   (roslisp:ros-info (init-clients) "init robosherlock action client")
   (chll:init-robosherlock-action-client)
-  (roslisp:ros-info (init-clients) "init vizbox publisher")
-  (pc::viz-box-init)
+  ;;(roslisp:ros-info (init-clients) "init vizbox publisher")
+  ;;(pc::viz-box-init)
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
   (chll::init-marker-publisher)
-;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
-  ;; (chll:make-giskard-poses-action-client)
-  ;; (pc:init-perception-subscriber)
+  ;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
+   (chll:make-giskard-poses-action-client)
+   ;;(pc:init-perception-subscriber)
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
 (defun init-integration()
