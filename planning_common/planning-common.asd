@@ -6,7 +6,6 @@
                actionlib
                geometry_msgs-msg
                tmc_msgs-msg
-               planning-communication
                low-level-interfaces
                cram-prolog
                cram-designators

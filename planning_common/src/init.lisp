@@ -11,7 +11,7 @@
   (plc::get-tf-listener)
   
   (roslisp:ros-info (init-clients) "init text to speech client")
-  (pc::init-text-to-speech-action-client) ;; for text-to-speech
+  (lli:init-text-to-speech-action-client) ;; for text-to-speech
 
   (roslisp:ros-info (init-clients) "init navigation client")
   (lli:init-nav-client)
@@ -26,19 +26,19 @@
   (lli:init-robosherlock-action-client)
 
   ;;(roslisp:ros-info (init-clients) "init vizbox publisher")
-  ;;(pc::viz-box-init)
+  ;;(lli:viz-box-init)
 
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
   (lli::init-marker-publisher)
   ;;(lli:init-move-torso-action-client) ;;NOTE works via giskard now! :D
    ;;(lli:make-giskard-poses-action-client)
-   ;;(pc:init-perception-subscriber)
+
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
 (defun init-integration()
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
   (roslisp:ros-info (init-clients) "init speech client")
-  (pc::init-text-to-speech-action-client) ;; for text-to-speech
+  (lli:init-text-to-speech-action-client) ;; for text-to-speech
   (roslisp:ros-info (init-clients) "init navigation client")
   (lli:init-nav-client)
   (roslisp:ros-info (init-clients) "init moce-head client")
@@ -50,7 +50,7 @@
   (roslisp:ros-info (init-clients) "init tf-listener")
   (plc:get-tf-listener)
   (roslisp:ros-info (init-clients) "init viz-box")
-  (pc::viz-box-init))
+  (lli:viz-box-init))
 
 
 (defun init-local()
@@ -60,6 +60,6 @@
   (print "init tf-listener")
   (plc::get-tf-listener)
   (print "init viz-box")
-  (pc::viz-box-init)
+  (lli:viz-box-init)
   (print "init marker publisher")
   (lli:init-marker-publisher))

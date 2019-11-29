@@ -17,7 +17,9 @@
                trajectory_msgs-msg
                controller_manager_msgs-msg
                sensor_msgs-msg
-               suturo_perception_msgs-msg)
+               suturo_perception_msgs-msg
+               visualization_msgs-msg
+               cram-json-prolog)
   
   :components
   ((:module "src"
@@ -32,5 +34,7 @@
              (:file "marker-publisher" :depends-on ("package"))
              (:file "head-client" :depends-on ("package"))
              (:file "torso-client" :depends-on ("package"))
-             (:file "joint-state-client" :depends-on ("package"))))))
+             (:file "joint-state-client" :depends-on ("package"))
+             (:file "text-to-speech" :depends-on ("package"))
+     		 (:file "vizbox-commands" :depends-on ("package"))))))
 

@@ -34,9 +34,9 @@
     (lli::call-nav-action-ps pose-stamped)))
 
 (defun viz-inspection ()
-  (pc::get-marker-publisher)
+  (lli:get-marker-publisher)
   (mapcar (lambda (pose-stamped)
-            (planning-communication::publish-marker-pose pose-stamped :g 1.0)
+            (lli:publish-marker-pose pose-stamped :g 1.0)
             (sleep 2.0))
           *poses-list*))
 

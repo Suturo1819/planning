@@ -5,7 +5,6 @@
                actionlib
                geometry_msgs-msg
                tmc_msgs-msg
-               planning-communication
                low-level-interfaces
                planning-common
                suturo_manipulation_msgs-msg)

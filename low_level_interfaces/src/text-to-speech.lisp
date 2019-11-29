@@ -1,24 +1,13 @@
-(in-package :pc)
+;; The text to speech client the HSR comes with
+(in-package :lli)
 
 (defvar *text-to-speech-publisher* nil)
 (defparameter *enable-speech* T)
 
-(defun init () 
-  (roslisp:start-ros-node "planning_communication")
-  (setf *text-to-speech-publisher* (roslisp:advertise "/talk_request" "tmc_msgs/Voice")))
-
-(defun publish-text-to-speech (text)
-  (when *enable-speech*
-    (publish *text-to-speech-publisher*
-             (make-message "tmc_msgs/Voice"
-                           :language 1
-                           :sentence text))))
-
-;;action client
-
 (defvar *text-to-speech-action-client* nil)
 
 (defun init-text-to-speech-action-client ()
+  "Initializes the text to speech action client."
   (setf *text-to-speech-action-client* (actionlib:make-action-client
      "talk_request_action"
      "tmc_msgs/TalkRequestAction"))
@@ -28,11 +17,13 @@
                     "Text to speech action client created."))
 
 (defun get-text-to-speech-action-client ()
+  "Returns the current text to speech client. If none exists, one is created."
   (when (null *text-to-speech-action-client*)
     (init-text-to-speech-action-client))
   *text-to-speech-action-client*)
 
 (defun make-text-action-goal (text)
+  "Create a text-to-speech action goal with the given `text'"
   (actionlib:make-action-goal (get-text-to-speech-action-client)
     :data (make-message "tmc_msgs/Voice"
       :interrupting nil
@@ -41,6 +32,7 @@
       :sentence text)))
 
 (defun call-text-to-speech-action (text)
+  "Calls the text to speech action to perform the given `text'"
   (when *enable-speech*
     (multiple-value-bind (result status)
         (let ((actionlib:*action-server-timeout* 10.0))

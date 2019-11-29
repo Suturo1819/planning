@@ -58,4 +58,18 @@
    #:init-marker-publisher
    #:get-marker-publisher
    #:publish-marker-pose
+
+   ;; text to speech client
+   :*enable-speech*
+   :*text-to-speech-action-client*
+   #:init-text-to-speech-action-client
+   #:get-text-to-speech-action-client
+   #:make-text-action-goal
+   #:call-text-to-speech-action
+
+   ;;vizbox
+   #:viz-box-init
+   #:publish-challenge-step
+   #:publish-robot-text
+   #:publish-operator-text
    ))

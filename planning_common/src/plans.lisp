@@ -50,7 +50,7 @@
 ;;; -----
 (cpl:def-cram-function perceive-table ()
   "move head, torso and perceive"
-  ;;(pc::publish-challenge-step 3)
+  ;;(lli:publish-challenge-step 3)
   ;;(plc::perceive-side)
   ;;(plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
   (plc::go-to :to :TABLE :facing :TABLE :manipulation NIL)
@@ -86,7 +86,7 @@
 
 (cpl:def-cram-function perceive-shelf ()
   "move head, torso and perceive"
-  ;;(pc::publish-challenge-step 1)
+  ;;(lli:publish-challenge-step 1)
   (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
   ;;high
   (cpl:par 
@@ -118,7 +118,7 @@
 ;; -----
 (cpl:def-cram-function grasp-object (&optional (?modus NIL))
   "grasp object"
-  ;;(pc::publish-challenge-step 4)
+  ;;(lli:publish-challenge-step 4)
     (let* ((all-table-objects (lli:prolog-table-objects))
            (closest-object (plc:frame-closest-to-robot all-table-objects))
            (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
@@ -170,7 +170,7 @@
 ;; FRONT TOP
 (cpl:def-cram-function place-object (?modus)
   "place object"
-  ;;(pc::publish-challenge-step 6)
+  ;;(lli:publish-challenge-step 6)
   (cpl:seq
     (let* ((?context NIL)
            (pose-from-prolog (multiple-value-bind (pose context)
@@ -211,7 +211,7 @@
                           (setq ?height (+ (second *object-dimensions*)))
                           (setq ?depth (third *object-dimensions*))))
       
-      ;;(pc::publish-marker-pose ?pose)
+      ;;(lli:publish-marker-pose ?pose)
       (plc::say ?context)
       (cram-executive:perform place))))
 
@@ -230,7 +230,7 @@ or one of the following: :perceive :safe :front"
 
 (cpl:def-cram-function say (?text)
   "speaks the given text"
-  ;;(pc::publish-robot-text ?text)
+  ;;(lli:publish-robot-text ?text)
     (let* ((say-text (desig:a motion
                              (:type :say)
                              (:text ?text))))     
@@ -257,8 +257,8 @@ or one of the following: :perceive :safe :front"
     (plc::say "Done perceiving.")))
     
 (cpl:def-cram-function base-pose ()
-  ;;(pc::publish-challenge-step 0)
-  ;;(pc::publish-operator-text "Toya, please clean up the table")
+  ;;(lli:publish-challenge-step 0)
+  ;;(lli:publish-operator-text "Toya, please clean up the table")
   (let* ((?pose (cl-tf:make-identity-transform))
          (?nil NIL)
          (?zero 0.0)
