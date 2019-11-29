@@ -52,13 +52,16 @@
   "move head, torso and perceive"
   ;;(pc::publish-challenge-step 3)
   ;;(plc::perceive-side)
-  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation T) 
+  ;;(plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
+  (plc::go-to :to :TABLE :facing :TABLE :manipulation NIL)
+  (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
+  ;;(plc::turn :LEFT)
   (plc::perceive-side)
   
    (plc::move-torso (plc::table-head-difference))    
-   (plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
+   ;;(plc::go-to :to :TABLE :facing :PERCEIVE :manipulation NIL)
 
-  (plc::move-head :right-down-2)
+  (plc::move-head :right-down-3)
   (plc::say "I am going to perceive the table now..")
   ;; TODO this is a hack
  ;;(plc::turn :RIGHT)

@@ -16,8 +16,9 @@
 
     (plc::perceive-shelf)
     ;; this is necessary for navigation TODO remove if possible
-    
-    (plc::turn :LEFT)
+    (plc::go-to :to :SHELF :facing :SHELF :manipulation T)
+    ;;(plc::go-to :to :TABLE :facing :TABLE :manipulation NIL)
+    ;;(plc::turn :LEFT)
     (plc::perceive-table)
     
     ;; GRASPING OBJECT
