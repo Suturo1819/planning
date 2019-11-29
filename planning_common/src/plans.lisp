@@ -119,14 +119,14 @@
 (cpl:def-cram-function grasp-object (&optional (?modus NIL))
   "grasp object"
   ;;(pc::publish-challenge-step 4)
-    (let* ((all-table-objects (chll:prolog-table-objects))
+    (let* ((all-table-objects (lli:prolog-table-objects))
            (closest-object (plc:frame-closest-to-robot all-table-objects))
            (closest-object-pose (cl-tf2:lookup-transform (plc:get-tf-listener)
                                                          "map" closest-object :timeout 5))
-           (object-class (chll:object-name->class closest-object))
+           (object-class (lli:object-name->class closest-object))
            (?pose (cl-tf:make-pose (cl-tf:translation closest-object-pose)
                                    (cl-tf:rotation closest-object-pose)))
-           (dimensions (chll::prolog-object-dimensions closest-object))
+           (dimensions (lli:prolog-object-dimensions closest-object))
 
            (?weight 1.2)
            (?width (- (first dimensions) *width-offset*))
@@ -174,7 +174,7 @@
   (cpl:seq
     (let* ((?context NIL)
            (pose-from-prolog (multiple-value-bind (pose context)
-                                 (chll::prolog-object-goal-pose (chll::prolog-object-in-gripper))
+                                 (lli:prolog-object-goal-pose (lli:prolog-object-in-gripper))
                                (setq ?context context)
                                pose))
            

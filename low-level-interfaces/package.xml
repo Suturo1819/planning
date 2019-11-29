@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>cram_hsr_low_level</name>
+  <name>low_level_interfaces</name>
   <version>0.0.0</version>
   <description>The cram_hsr_low_level package</description>
 

@@ -121,7 +121,7 @@ relative to odom"
                                             tf-frame :timeout 5))
          (euler-angle (cl-tf:quaternion->euler (cl-tf:rotation transform)))
          (z-rot (nth (1+ (position :AZ euler-angle)) euler-angle))
-         (dimensions (chll:prolog-object-dimensions tf-frame)))
+         (dimensions (lli:prolog-object-dimensions tf-frame)))
     (unless (< (- (/ pi 2)) z-rot (/ pi 2))
       (setf z-rot (- z-rot (* (signum z-rot) pi))))
     (if (> (car (last dimensions)) 0.15)
@@ -196,7 +196,7 @@ relative to odom"
 (defun spawn-4-markers (poses-stamped &optional (id 0))
   (let* ((counter id))
     (mapcar (lambda (pose)
-              (chll::publish-marker-pose
+              (lli:publish-marker-pose
                pose
                :parent "map"
                :id (setq counter

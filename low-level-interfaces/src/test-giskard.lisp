@@ -1,4 +1,7 @@
-(in-package :chll)
+;;; Many tiny functins in order to test Manipulation independantly.
+;;; Might be deprecated so use with care. 
+
+(in-package :lli)
 
 (defun make-test-object-pose (x y z)
   ;; TODO: include orientation in params

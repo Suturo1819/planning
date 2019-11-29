@@ -6,7 +6,7 @@
                geometry_msgs-msg
                tmc_msgs-msg
                planning-communication
-               cram-hsr-low-level
+               low-level-interfaces
                planning-common
                suturo_manipulation_msgs-msg)
   :components

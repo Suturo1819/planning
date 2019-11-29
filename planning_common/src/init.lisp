@@ -9,22 +9,29 @@
   ;;Init all the action clients
   (roslisp:ros-info (init-clients) "init tf listener")
   (plc::get-tf-listener)
+  
   (roslisp:ros-info (init-clients) "init text to speech client")
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
+
   (roslisp:ros-info (init-clients) "init navigation client")
-  (chll:init-nav-client)
+  (lli:init-nav-client)
+
   (roslisp:ros-info (init-clients) "init move head action  client")
-  (chll::init-move-head-action-client)
+  (lli:init-move-head-action-client)
+
   (roslisp:ros-info (init-clients) "init giskard joints action client")
-  (chll::init-giskard-joints-action-client)
+  (lli:init-giskard-joints-action-client)
+
   (roslisp:ros-info (init-clients) "init robosherlock action client")
-  (chll:init-robosherlock-action-client)
+  (lli:init-robosherlock-action-client)
+
   ;;(roslisp:ros-info (init-clients) "init vizbox publisher")
   ;;(pc::viz-box-init)
+
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
-  (chll::init-marker-publisher)
-  ;;  (chll::init-move-torso-action-client) ;;NOTE works via giskard now! :D
-   ;;(chll:make-giskard-poses-action-client)
+  (lli::init-marker-publisher)
+  ;;(lli:init-move-torso-action-client) ;;NOTE works via giskard now! :D
+   ;;(lli:make-giskard-poses-action-client)
    ;;(pc:init-perception-subscriber)
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
@@ -33,15 +40,15 @@
   (roslisp:ros-info (init-clients) "init speech client")
   (pc::init-text-to-speech-action-client) ;; for text-to-speech
   (roslisp:ros-info (init-clients) "init navigation client")
-  (chll:init-nav-client)
+  (lli:init-nav-client)
   (roslisp:ros-info (init-clients) "init moce-head client")
-  (chll::init-move-head-action-client)
+  (lli:init-move-head-action-client)
   (roslisp:ros-info (init-clients) "init giskard-joints")
-  (chll::init-giskard-joints-action-client)
+  (lli:init-giskard-joints-action-client)
   (roslisp:ros-info (init-clients) "init move-torso client")
-  (chll::init-move-torso-action-client)
+  (lli:init-move-torso-action-client)
   (roslisp:ros-info (init-clients) "init tf-listener")
-  (plc::get-tf-listener)
+  (plc:get-tf-listener)
   (roslisp:ros-info (init-clients) "init viz-box")
   (pc::viz-box-init))
 
@@ -55,4 +62,4 @@
   (print "init viz-box")
   (pc::viz-box-init)
   (print "init marker publisher")
-  (chll::init-marker-publisher))
+  (lli:init-marker-publisher))

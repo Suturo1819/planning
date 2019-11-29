@@ -1,4 +1,4 @@
-(in-package :chll)
+(in-package :lli)
 
 (defparameter *perceived-data* nil)
 (defparameter *perception-subscriber* nil)

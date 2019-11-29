@@ -7,7 +7,7 @@
                geometry_msgs-msg
                tmc_msgs-msg
                planning-communication
-               cram-hsr-low-level
+               low-level-interfaces
                cram-prolog
                cram-designators
                cram-process-modules

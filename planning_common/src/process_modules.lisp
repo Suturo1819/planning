@@ -11,7 +11,7 @@
       ;;TODO differentiate types
       (going
        ;;(format t "COMMAND: ~a POSE: ~a" command (desig:reference target))
-       (chll::call-nav-action-ps (desig:reference target))
+       (lli::call-nav-action-ps (desig:reference target))
        )))) ;;??? maybe add (desig:reference ..)
 
   ;;;;;;;;;;;;;;;;;;;; BODY ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,32 +21,32 @@
   ;;                   motion-designator)
   (destructuring-bind (command pos) (desig:reference motion-designator)
     (if (typep pos 'sequence)
-        (chll::call-move-head-action pos)
+        (lli:call-move-head-action pos)
         (ecase pos
           (:front
-           (chll::call-move-head-action (vector 0.0 0.0)))
+           (lli:call-move-head-action (vector 0.0 0.0)))
           (:perceive
-           (chll::call-move-head-action (vector 0.0 -0.2)))
+           (lli::call-move-head-action (vector 0.0 -0.2)))
           (:perceive-down
-           (chll::call-move-head-action (vector 0.0 -0.4)))
+           (lli:call-move-head-action (vector 0.0 -0.4)))
           (:safe
-           (chll::call-move-head-action (vector 0.0 0.1)))
+           (lli:call-move-head-action (vector 0.0 0.1)))
           (:left
-           (chll::call-move-head-action (vector 1.5 0.1)))
+           (lli:call-move-head-action (vector 1.5 0.1)))
           (:left-down
-           (chll::call-move-head-action (vector 1.5 -0.3)))
+           (lli:call-move-head-action (vector 1.5 -0.3)))
           (:left-down-2
-           (chll::call-move-head-action (vector 1.5 -0.4)))
+           (lli:call-move-head-action (vector 1.5 -0.4)))
           (:left-down-3
-           (chll::call-move-head-action (vector 1.5 -0.7)))
+           (lli:call-move-head-action (vector 1.5 -0.7)))
           (:right
-           (chll::call-move-head-action (vector -1.5 0.1)))
+           (lli:call-move-head-action (vector -1.5 0.1)))
           (:right-down
-           (chll::call-move-head-action (vector -1.5 -0.3)))
+           (lli:call-move-head-action (vector -1.5 -0.3)))
           (:right-down-2
-           (chll::call-move-head-action (vector -1.5 -0.4)))
+           (lli:call-move-head-action (vector -1.5 -0.4)))
           (:right-down-3
-           (chll::call-move-head-action (vector -1.5 -0.7)))))))
+           (lli:call-move-head-action (vector -1.5 -0.7)))))))
 
   ;;;;;;;;;;;;;;;;;;;; TORSO ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-torso (motion-designator)
@@ -54,7 +54,7 @@
   ;;                   "hsr-torso called with motion designator `~a'."
   ;;                   motion-designator)
   (destructuring-bind (command ?height) (desig:reference motion-designator)
-    (chll::call-giskard-joints-move-action (vector ?height) (vector 0.0))))
+    (lli:call-giskard-joints-move-action (vector ?height) (vector 0.0))))
 
   ;;;;;;;;;;;;;;;;;;;; SAY ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-say (motion-designator)
@@ -76,7 +76,7 @@
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
       (perceive
-       (chll::call-robosherlock-pipeline list)))))
+       (lli:call-robosherlock-pipeline list)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-arm-motion (motion-designator)
@@ -93,7 +93,7 @@
       (desig:reference motion-designator)
     (ecase command
       (grasping
-       (chll::call-giskard-joints-grasping-action
+       (lli:call-giskard-joints-grasping-action
         ?pose
         (plc::map-T-odom ?pose) ;;?pose-odom
         ?weight
@@ -104,7 +104,7 @@
         ?modus))
       
       (placing
-       (chll::call-giskard-joints-grasping-action
+       (lli:call-giskard-joints-grasping-action
         ?pose
         (plc::map-T-odom ?pose) ;;?pose-odom
         ?weight
@@ -115,7 +115,7 @@
         ?modus))
        
        (perceiving
-        (chll::call-giskard-joints-grasping-action
+        (lli:call-giskard-joints-grasping-action
          ?pose
          ?pose ;;?pose-odom
          ?weight
@@ -126,7 +126,7 @@
          ?modus))
 
       (perceiving-high
-       (chll::call-giskard-joints-grasping-action
+       (lli:call-giskard-joints-grasping-action
         ?pose
         ?pose ;;?pose-odom
         ?weight
@@ -137,7 +137,7 @@
         ?modus))
 
       (perceiving-side
-       (chll::call-giskard-joints-grasping-action
+       (lli:call-giskard-joints-grasping-action
         ?pose
         ?pose ;;?pose-odom
         ?weight

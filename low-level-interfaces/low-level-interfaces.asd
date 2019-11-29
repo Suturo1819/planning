@@ -1,4 +1,4 @@
-(defsystem cram-hsr-low-level
+(defsystem low-level-interfaces
   :depends-on (roslisp
                roslisp-utilities
                cram-language

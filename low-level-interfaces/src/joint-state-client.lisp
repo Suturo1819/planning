@@ -1,4 +1,9 @@
-(in-package :chll)
+;;; Joint state client for the wrist flex joint.
+;;; Can be used as a "start the demo" sign/button.
+;;; Is currently not included in the demo. (It's commented out)
+
+
+(in-package :lli)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; START SIGNAL FOR THE DEMO ;;

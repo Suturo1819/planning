@@ -26,12 +26,12 @@
 
 
 (defun inspection ()
-  (chll::init-nav-client)
+  (lli:init-nav-client)
   (dolist (pose-stamped (subseq *poses-list* 0 5))
-    (chll::call-nav-action-ps pose-stamped))
+    (lli:call-nav-action-ps pose-stamped))
   (sleep 180)
   (dolist (pose-stamped (subseq *poses-list* 5))
-    (chll::call-nav-action-ps pose-stamped)))
+    (lli::call-nav-action-ps pose-stamped)))
 
 (defun viz-inspection ()
   (pc::get-marker-publisher)

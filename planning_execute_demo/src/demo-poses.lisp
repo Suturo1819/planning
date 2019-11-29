@@ -7,38 +7,38 @@
 
 
 (defun go-to-room-center ()
-  (chll::call-nav-action  -0.991062045097 0.265686005354 3.1))
+  (lli:call-nav-action  -0.991062045097 0.265686005354 3.1))
 
 (defun go-to-table ()
-  (chll::call-nav-action  -0.270028978586 -0.0241730213165 0))
+  (lli:call-nav-action  -0.270028978586 -0.0241730213165 0))
 
 (defun go-closer-to-table ()
-  (chll::call-nav-action  0.0915691405535 0.0654886364937 0))
+  (lli::call-nav-action  0.0915691405535 0.0654886364937 0))
 
 (defun go-to-shelf ()
-  (chll::call-nav-action  -0.56971013546  0.394732832909 -1.6))
+  (lli:call-nav-action  -0.56971013546  0.394732832909 -1.6))
 
 (defun move-to-home-pose ()
-  (chll::call-move-torso-action (vector 0.1 -0.1 1.5 -1.5 0.0)
+  (lli::call-move-torso-action (vector 0.1 -0.1 1.5 -1.5 0.0)
                                 (vector 0.0 0.0 0.0 0.0 0.0)))
 
 (defun go-to-perceive-middle-shelf ()
   (pc::call-text-to-speech-action "Approaching the center of the room.")
-  (chll::call-nav-action -0.2d0 0.2d0 0.0d0)
+  (lli:call-nav-action -0.2d0 0.2d0 0.0d0)
   (pc::call-text-to-speech-action "Detection pose.")
   ;; values perceived from joint-state-client
-  (chll:call-move-torso-action  (vector 0.5381456633458479d0
+  (lli:call-move-torso-action  (vector 0.5381456633458479d0
                                         -2.599288106413679d0 1.5700354334115825d0
                                         -1.6999959187217963d0 -0.015954257610744094d0)
                                 (vector 0.0 0.0 0.0 0.0 0.0))
-  (chll::call-move-head-action (vector 0.0 -0.7563733806702236))
+  (lli::call-move-head-action (vector 0.0 -0.7563733806702236))
   (pc::call-text-to-speech-action "Approaching the shelf.")
-  (chll::call-nav-action -0.459d0 -0.089d0 -1.519d0))
+  (lli::call-nav-action -0.459d0 -0.089d0 -1.519d0))
 
 ;; TODO test this
 ;; test new pose
 (defun grasp-test ()
-  (cram-hsr-low-level::call-giskard-joints-grasping-action
+  (lli:call-giskard-joints-grasping-action
    (top-grasp-table)
    (cl-tf:transform->pose 
     (cl-tf:transform*
@@ -54,7 +54,7 @@
 
 
 (defun place-test ()
-  (cram-hsr-low-level::call-giskard-joints-grasping-action
+  (lli:call-giskard-joints-grasping-action
    (grasp-from-shelf-very-low)
    (cl-tf:transform->pose 
     (cl-tf:transform*
@@ -69,7 +69,7 @@
    "FRONT"))
 
 (defun grasp-test-top ()
-  (cram-hsr-low-level::call-giskard-joints-grasping-action
+  (lli:call-giskard-joints-grasping-action
    (grasp-obj-from-floor-2)
        (cl-tf:transform->pose 
         (cl-tf:transform*

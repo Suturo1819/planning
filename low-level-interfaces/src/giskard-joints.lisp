@@ -1,4 +1,5 @@
-(in-package :chll)
+(in-package :lli)
+;; used for torso movement and grasping
 
 (defparameter *giskard-joints-action-timeout* 300.0 "in seconds")
 
@@ -138,12 +139,10 @@
             (roslisp:make-message
              "trajectory_msgs/JointTrajectoryPoint"
              :positions desired-values
-             :velocities desired-velocities
-             ))))
+             :velocities desired-velocities))))
                                        
       :action-timeout *giskard-joints-action-timeout*
       (roslisp:ros-info (move-joints-action) "do_move_joints move action finished.")
       (values result status)
-      (roslisp:msg-slot-value result :result_msg)
-      )))
-;;NOTE TODO (equal * "all joints are moved")
+      (roslisp:msg-slot-value result :result_msg))))
+;;NOTE (equal * "all joints are moved")
