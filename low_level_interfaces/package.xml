@@ -60,6 +60,7 @@
   <build_depend>roslisp</build_depend>
   <build_depend>move</build_depend>
   <build_depend>turtle_actionlib</build_depend>
+  <build_depend>giskard_msgs</build_depend>
   
   <run_depend>actionlib</run_depend>
   <run_depend>cl_tf</run_depend>
@@ -70,5 +71,6 @@
   <run_depend>actionlib_msgs</run_depend>
   <run_depend>move</run_depend>
   <run_depend>turtle_actionlib</run_depend>
+  <run_depend>giskard_msgs</run_depend>
 
 </package>

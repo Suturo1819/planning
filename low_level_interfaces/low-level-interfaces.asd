@@ -19,7 +19,8 @@
                sensor_msgs-msg
                suturo_perception_msgs-msg
                visualization_msgs-msg
-               cram-json-prolog)
+               cram-json-prolog
+               giskard_msgs-msg)
   
   :components
   ((:module "src"
@@ -36,5 +37,6 @@
              (:file "torso-client" :depends-on ("package"))
              (:file "joint-state-client" :depends-on ("package"))
              (:file "text-to-speech" :depends-on ("package"))
+             (:file "giskard-new" :depends-on ("package"))
      		 (:file "vizbox-commands" :depends-on ("package"))))))
 
