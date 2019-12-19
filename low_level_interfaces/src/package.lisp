@@ -34,7 +34,7 @@
    #:prolog-object-in-gripper
    #:prolog-object-goal-pose
    #:knowrob-symbol->string
-   #:prolog-objects-around-pose
+   ;; #:prolog-objects-around-pose
    #:dummy-test
 
    ;; joint state client
