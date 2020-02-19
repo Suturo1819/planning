@@ -130,7 +130,7 @@ So that the robot can move his arm safely."
          (head-height (cl-tf2:z
                        (cl-tf2:translation head-pos)))
          ;;TODO FIX THIS HARDCODED 0.2
-         (result (/ (- shelf-height 0.2) 1.5)))
+         (result (/ (- shelf-height 0.25) 1.5)))
 
     (format t "pre result: ~a" result)
     (if (> result 0.65)

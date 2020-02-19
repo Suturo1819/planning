@@ -4,15 +4,15 @@
 (defvar *width-offset* 0.05)
 ;; TODO move this to knowledge:
 (defvar *height-obj-in-gripper* NIL)
-(defparameter *placing-z-offset* 0.05)
+(defparameter *placing-z-offset* 0.0) ;;0.05
 (defparameter *placing-x-offset* 0.0)
-(defparameter *placing-y-offset* 0.1)
+(defparameter *placing-y-offset* 0.0) ;;0.1
 
 
 (cpl:def-cram-function go-to (&key (to NIL) (facing NIL) (manipulation NIL))
   "go to a predefined location"
   ;;NOTE the publish-callange-step is done in the dynamic-poses.lisp
-    (let* ((?to-say (concatenate 'string "I am going to the " (write-to-string to)))
+    (let* ((?to-say (concatenate 'string "I'm going to the " (write-to-string to)))
            (?pose (case to
                     (:SHELF
                      (case facing
@@ -89,9 +89,9 @@
   ;;(lli:publish-challenge-step 1)
   (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation T)
   ;;high
-  (cpl:par 
+  ;; (cpl:par 
     (plc::go-to :to :SHELF :facing :PERCEIVE :manipulation NIL)
-    (plc::perceive-side))
+    (plc::perceive-side);)
   ;;high
   ;;(cpl:par 
   ;;   (plc::move-torso (plc::shelf-head-difference "3"))
@@ -99,9 +99,9 @@
   ;; (plc::perceive (vector "robocup_shelf_3"))
   
   ;;middle
-   (cpl:par
+   ;;(cpl:par
      (plc::move-torso (plc::shelf-head-difference "2"))
-     (plc::move-head :left-down-2))
+     (plc::move-head :left-down-2);;)
   (plc::perceive (vector "robocup_shelf_2"))
 
   ;;low
@@ -157,15 +157,15 @@
       ;; movement
       (setq *object-dimensions* dimensions)
       ;;(planning-communication::publish-marker-pose ?pose)
-      (cpl:par
+      ;;(cpl:par
         (plc::move-head :safe)
         (plc::say (concatenate 'String "I am going to grasp the " object-class " now."))
-        (cram-executive:perform grasp))
+        (cram-executive:perform grasp);)
       
-      (cpl:par
+      ;;(cpl:par
         (plc::say "done grasping")
         (plc::perceive-side)
-        (plc::go-to :to :SHELF :facing :SHELF :manipulation T))))
+        (plc::go-to :to :SHELF :facing :SHELF :manipulation T)));;)
 
 ;; FRONT TOP
 (cpl:def-cram-function place-object (?modus)

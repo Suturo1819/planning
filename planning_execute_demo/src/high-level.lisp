@@ -18,7 +18,10 @@
     ;; this is necessary for navigation TODO remove if possible
     (plc::go-to :to :SHELF :facing :SHELF :manipulation T)
     ;;(plc::go-to :to :TABLE :facing :TABLE :manipulation NIL)
-    (plc::turn :LEFT)
+    ;;(plc::turn :LEFT)
+    (plc::say "I'm going to the table")
+    (lli:call-nav-action  -0.174 0.668 2.80)
+    (lli:call-nav-action  -0.877 0.632 2.80)
     (plc::perceive-table)
     
     ;; GRASPING OBJECT
@@ -29,5 +32,6 @@
 
     ;; PLACING OBJECT
       (plc::go-to :to :SHELF :facing :SHELF :manipulation T)
-      (plc::place-object "FRONT"))))
+      (plc::place-object "FRONT"))
+    (plc::say "I'm done.")))
 

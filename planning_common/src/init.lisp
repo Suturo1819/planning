@@ -3,7 +3,7 @@
 (defun init-planning ()
   "Initialize all the interfaces from planning to other groups."
   (print "init ros node..")
-  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil);;)
+  (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
   (cram-tf::init-tf)
   
   ;;Init all the action clients
@@ -31,7 +31,7 @@
   (roslisp:ros-info (init-clients) "init visualization marker publisher")
   (lli::init-marker-publisher)
   ;;(lli:init-move-torso-action-client) ;;NOTE works via giskard now! :D
-   ;;(lli:make-giskard-poses-action-client)
+  ;;(lli:make-giskard-poses-action-client)
 
   (roslisp:ros-info (init-clients) "All action clients are set up.")) ;; for navigation
   
@@ -59,7 +59,7 @@
   (roslisp-utilities:startup-ros :name "planning_node" :anonymous nil)
   (print "init tf-listener")
   (plc::get-tf-listener)
-  (print "init viz-box")
-  (lli:viz-box-init)
+  ;;  (print "init viz-box")
+  ;;  (lli:viz-box-init)
   (print "init marker publisher")
   (lli:init-marker-publisher))

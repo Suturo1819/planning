@@ -76,7 +76,7 @@
     ;(format t "command: ~a  text: ~a"command text)
     (ecase command
       (perceive
-       (lli:call-robosherlock-pipeline list)))))
+       (lli::call-robosherlock-pipeline list)))))
 
   ;;;;;;;;;;;;;;;;;;;; ARM ;;;;;;;;;;;;;;;;;;;;;;;;
 (cram-process-modules:def-process-module hsr-arm-motion (motion-designator)

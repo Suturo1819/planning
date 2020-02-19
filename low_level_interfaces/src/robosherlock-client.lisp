@@ -34,7 +34,7 @@
   (roslisp:ros-info (robosherlock-client) "Calling pipeline for regions ~a." regions-value)
   ;; actual call
   (format t "vector: ~a" regions-value)
-  (actionlib:call-goal (:get-robosherlock-client)
+  (actionlib:call-goal (get-robosherlock-client)
                        (roslisp:make-message
                         "suturo_perception_msgs/ExtractObjectInfoGoal"
                         visualize visualisation-value

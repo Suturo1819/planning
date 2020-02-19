@@ -36,7 +36,7 @@ CARE: the action has the gripper in mind. "
     ;;:goal_id 3
     ;;:goal_id (actionlib::make-goal-id)
      
-    :type 1
+    :type 2
     :cmd_seq (vector (roslisp:make-message
               "giskard_msgs/MoveCmd"
               :constraints (vector) ;; empty
@@ -77,3 +77,45 @@ CARE: the action has the gripper in mind. "
        :action-timeout *giskard-new-action-timeout*)
     (roslisp:ros-info (giskard-new-action-client) "giskard action finished.")
     (values result status)))
+
+
+
+;; (defun test-hand ()
+;;   (call-giskard-new-action 
+;;       (cl-tf:make-pose-stamped
+;;        "hand_palm_link"
+;;        0.0
+;;        (cl-tf:make-3d-vector -0.02 0.0 0.0)
+;;        (cl-tf:make-identity-rotation)) "hand_palm_link" "odom"))
+
+;; (defun test-base ()
+;;   (let* ((pose-stamped (cl-tf:make-pose-stamped
+;;                        "map"
+;;                        0.0
+;;                        (cl-tf:make-3d-vector -0.02 0.82 0.0)
+;;                        (cl-tf:make-identity-rotation)))
+         
+;;          (pose (cl-tf:pose-stamped->pose pose-stamped))
+         
+;;          (map-T-odom (planning-common::map-T-odom-pose pose))
+         
+;;          (odom-T-base-link (planning-common::stuff-T-stuff
+;;                             map-T-odom
+;;                             "odom" "base_link"))
+         
+
+;;          (final-pose (cl-tf:pose->pose-stamped
+;;                       "base_link"
+;;                       0.0
+;;                       (cl-tf:transform->pose
+;;                         ;; odom-T-map
+;;                         (cl-tf:transform-inv
+;;                          (cl-tf:transform*
+;;                           (cl-tf:pose->transform pose) ;; map-T-map
+;;                           (cl-tf:pose->transform map-T-odom) ;; map-T-odom
+;;                           ;:(cl-tf:pose->transform  odom-T-base-link);;)
+;;                           )
+;;                         )))))
+;;      final-pose
+;;          (call-giskard-new-action final-pose "base_link" "odom")
+;;     ))
